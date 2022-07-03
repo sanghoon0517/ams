@@ -1,0 +1,22 @@
+package com.ams.user.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.ams.mapper.UserMapper;
+import com.ams.user.dto.User;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Service
+public class UserService {
+	private UserMapper userMapper;
+	
+	public List<User> getAllUser() {
+		final List<User> userList = userMapper.findAll();
+		
+		return userList;
+	}
+}
