@@ -8,6 +8,6 @@ public class TempControllerTest {
 	
 	@GetMapping("/temp/jsp")
 	public String tempHome() {
-		return "test";
+		return "template";
 	}
 }
