@@ -10,4 +10,8 @@ public class TempControllerTest {
 	public String tempHome() {
 		return "template";
 	}
+	@GetMapping("/calendar")
+	public String temp1Home() {
+		return "calendar";
+	}
 }
