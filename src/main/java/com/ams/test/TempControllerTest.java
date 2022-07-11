@@ -11,6 +11,10 @@ public class TempControllerTest {
 	public String mainPage() {
 		return "common/main";
 	}
+	@GetMapping("/login")
+	public String login() {
+		return "common/login";
+	}
 	@GetMapping("/test")
 	public String temp() {
 		return "test";
