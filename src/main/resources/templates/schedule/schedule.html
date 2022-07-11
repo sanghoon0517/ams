@@ -2,104 +2,92 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/template}">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here1</title>
+<title>Insert title here</title>
 <link th:href='@{/fullcalendar/lib/main.css}' rel='stylesheet' />
 <script th:src='@{/fullcalendar/lib/main.js}'></script>
 <script>
-	var date_type= 'Month';
-	//pills-profile-tab
-
-/* 	document.addEventListener('DOMContentLoaded', function() {
-		var calendarEl = document.getElementById('calendar');
-		var calendar = new FullCalendar.Calendar(calendarEl, {
-			initialView : 'dayGrid'+date_type,
-			 events: [
-				    {
-				      title  : 'event1',
-				      start  : '2022-07-01'
-				    },
-				    {
-				      title  : 'event2',
-				      start  : '2022-07-05',
-				      end    : '2022-07-07'
-				    },
-				    {
-				      title  : 'event3',
-				      start  : '2010-01-09T12:30:00',
-				      allDay : false // will make the time show
-				    }
-				  ]
-			
-		});
-		
-		calendar.render();
- 
-
-	  });*/
 	$(function(){
-		var date_type= 'dayGridMonth';
-		var calendarEl = document.getElementById('calendar');
-		var calendar = new FullCalendar.Calendar(calendarEl, {
-			initialView : date_type,
-			 eventClick: function(info) {
-			        var eventObj = info.event;		
-			          //alert('Clicked ' + eventObj.start + eventObj.end + eventObj.title);
-			        $('#myModal').modal('show'); 
-			 },
-
-
-			 events	: [
-				    {
-				      title  : 'event1',
-				      start  : '2022-07-01'
-				    },
-				    {
-				      title  : 'event2',
-				      start  : '2022-07-05',
-				      end    : '2022-07-07'
-				    },
-				    {
-				      title  : 'event3',
-				      start  : '2010-01-09T12:30:00',
-				      allDay : false // will make the time show
-				    }
-				  ]
-			
-		});
-		calendar.render();
-		function calendar123(date_type){
-			
+		function calendar_init(date_type){
+			let draggableEl = document.getElementById('mydraggable');
 			var calendarEl = document.getElementById('calendar');
 			var calendar = new FullCalendar.Calendar(calendarEl, {
 				initialView : date_type,
+				locale: 'ko', // 한국어 설정
+				headerToolbar: {
+					left: 'prev,next today',
+					center: 'title',
+					right: 'dayGridMonth,timeGridWeek,timeGridDay'
+				},
+				dayMaxEvents: true, // 일정개수 이상의 이벤트시 팝오버 생김
+				selectable: true, 
+				editable: true,
+				droppable: true,  // 드래그 가능
+				drop: function(arg) {
+				
+					alert("hi")
+				},
+				eventClick: function(info) { //이벤트 클릭시 이벤트 정보 출력 이벤트
+			        var eventObj = info.event;		
+			          //alert('Clicked ' + eventObj.start + eventObj.end + eventObj.title);
+			        $('#myModal').modal('show'); 
+			 	},
+				eventChange: function(obj){ // 드래그 수정시 발생 이벤트
+					alert(obj.event.title);
+					alert(obj.event.start);
+					
+				},
+			 	select: function(arg) { // 칸 클릭시 발생하는 추가 이벤트
+					var title = prompt('Event Title:');
+					console.log("hi");
+					if (title) {
+						calendar.addEvent({
+							title: title,
+							start: arg.start,
+							end: arg.end,
+							allDay: arg.allDay
+						});
+						calendar.unselect();
+				}
+			},
 				 events: [
 					    {
 					      title  : 'event1',
-					      start  : '2022-07-01'
+					      start  : '2022-07-01',
+						  color	 : '#141FF7' // 컬러 코드로도 저장 가능
 					    },
 					    {
 					      title  : 'event2',
 					      start  : '2022-07-09T12:30:00',
-					      end	 : '2022-07-09T15:30:00'
+					      end	 : '2022-07-19T15:30:00',
+						  color	 : 'purple'
 					 
 					    },
 					    {
 					      title  : 'event3',
-					      start  : '2010-01-09T12:30:00',
-					      allDay : false // will make the time show
+					      start  : '2022-07-29T12:30:00',
+					      allDay : true // 하루 종일 여부
 					    }
 					  ]
 				
 			});
 			calendar.render();
 		}
-		
-		$('#test').click(function(){
-			date_type='timeGridWeek';
-			alert(date_type);
-			calendar123(date_type);
+		//페이지 로딩시 월간일정 init
+		calendar_init('dayGridMonth');
+
+		// 월간 일정
+		$('#pills-home-tab').click(function(){
+			date_type='dayGridMonth';
+			
+			calendar_init(date_type);
 		});
-	
+		// 주간 일정
+		$('#pills-profile-tab').click(function(){
+			date_type='timeGridWeek';
+			
+			calendar_init(date_type);
+		});
+		
 
 		
 	});
@@ -109,18 +97,16 @@
 
 <body>
 	<div class="container-fluid" layout:fragment="content">
-		<div><button type="button" id="test">test</button></div>
 		<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
 			<li class="nav-item" role="presentation">
 				<button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">월간일정</button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">주간일정</button>
+				<button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="#pills-home" aria-selected="false">주간일정</button>
 			</li>
-			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Contact</button>
-			</li>
+			<div style="padding-left: 20px;"><button type="button" class="btn btn-info">일정등록</button></div>
 		</ul>
+		
 		<div class="tab-content" id="pills-tabContent">
 			<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
 				<div id='calendar'></div>
