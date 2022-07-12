@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.ams.mapper.UserMapper;
 import com.ams.user.model.dto.User;
 
 import lombok.RequiredArgsConstructor;
