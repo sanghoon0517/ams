@@ -21,11 +21,11 @@ public class TempControllerTest {
 	}
 	@GetMapping("/studentEnroll")
 	public String enroll(){
-		return "enroll/student_enroll";
+		return "student/enroll";
 	}
 	@GetMapping("/studentList")
 	public String enrollList(){
-		return "enroll/student_list";
+		return "student/article";
 	}
 	@GetMapping("/schedule")
 	public String schedule(){

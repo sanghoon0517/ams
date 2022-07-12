@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.ams.user.model.dto.User;
 import com.ams.user.service.UserService;
-import com.ams.user.dto.User;
 
 import lombok.RequiredArgsConstructor;
 

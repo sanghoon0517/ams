@@ -1,4 +1,4 @@
-package com.ams.user.dto;
+package com.ams.user.model.dto;
 
 import lombok.Data;
 
