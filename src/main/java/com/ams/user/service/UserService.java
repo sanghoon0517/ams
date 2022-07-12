@@ -12,11 +12,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-	private UserMapper userMapper;
+	private String userMapper;
 	
 	public List<User> getAllUser() {
-		final List<User> userList = userMapper.findAll();
+		//final List<User> userList = userMapper.findAll();
 		
-		return userList;
+		return null;
 	}
 }
