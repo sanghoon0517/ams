@@ -27,9 +27,5 @@ public class TempControllerTest {
 	public String enrollList(){
 		return "student/article";
 	}
-	@GetMapping("/schedule")
-	public String schedule(){
-		return "schedule/schedule";
 
-	}
 }

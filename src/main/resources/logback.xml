@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<Pattern>
+				 %d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+			</Pattern>
+		</encoder>
+	</appender>
+	<logger name="com.ams" level="info"/>
+	
+	<!-- sql 로거 설정 -->
+	<logger name="jdbc" level="OFF"/>
+	<logger name="jdbc.sqlonly" level="DEBUG"/>
+	<logger name="jdbc.sqltiming" level="OFF"/>
+	<logger name="jdbc.resultset" level="OFF"/>
+	<logger name="jdbc.resultsettable" level="DEBUG"/>
+	<logger name="jdbc.connection" level="OFF"/>
+	
+	
+	<root>
+		<appender-ref ref="console"/>
+	</root>
+</configuration>
