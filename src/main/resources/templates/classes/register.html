@@ -1,142 +1,147 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/template}">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<link th:href='@{/fullcalendar/lib/main.css}' rel='stylesheet' />
-<script th:src='@{/fullcalendar/lib/main.js}'></script>
-<script>
-	$(function(){
-		function calendar_init(date_type){
-			let draggableEl = document.getElementById('mydraggable');
-			var calendarEl = document.getElementById('calendar');
-			var calendar = new FullCalendar.Calendar(calendarEl, {
-				initialView : date_type,
-				locale: 'ko', // 한국어 설정
-				headerToolbar: {
-					left: 'prev,next today',
-					center: 'title',
-					right: 'dayGridMonth,timeGridWeek,timeGridDay'
-				},
-				dayMaxEvents: true, // 일정개수 이상의 이벤트시 팝오버 생김
-				selectable: true, 
-				editable: true,
-				droppable: true,  // 드래그 가능
-				drop: function(arg) {
-				
-					alert("hi")
-				},
-				eventClick: function(info) { //이벤트 클릭시 이벤트 정보 출력 이벤트
-			        var eventObj = info.event;		
-			          //alert('Clicked ' + eventObj.start + eventObj.end + eventObj.title);
-			        $('#myModal').modal('show'); 
-			 	},
-				eventChange: function(obj){ // 드래그 수정시 발생 이벤트
-					alert(obj.event.title);
-					alert(obj.event.start);
-					
-				},
-			 	select: function(arg) { // 칸 클릭시 발생하는 추가 이벤트
-					var title = prompt('Event Title:');
-					console.log("hi");
-					if (title) {
-						calendar.addEvent({
-							title: title,
-							start: arg.start,
-							end: arg.end,
-							allDay: arg.allDay
-						});
-						calendar.unselect();
-				}
-			},
-				 events: [
-					    {
-					      title  : 'event1',
-					      start  : '2022-07-01',
-						  color	 : '#141FF7' // 컬러 코드로도 저장 가능
-					    },
-					    {
-					      title  : 'event2',
-					      start  : '2022-07-09T12:30:00',
-					      end	 : '2022-07-19T15:30:00',
-						  color	 : 'purple'
-					 
-					    },
-					    {
-					      title  : 'event3',
-					      start  : '2022-07-29T12:30:00',
-					      allDay : true // 하루 종일 여부
-					    }
-					  ]
-				
-			});
-			calendar.render();
-		}
-		//페이지 로딩시 월간일정 init
-		calendar_init('dayGridMonth');
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<title>Table - Brand</title>
 
-		// 월간 일정
-		$('#pills-home-tab').click(function(){
-			date_type='dayGridMonth';
-			
-			calendar_init(date_type);
-		});
-		// 주간 일정
-		$('#pills-profile-tab').click(function(){
-			date_type='timeGridWeek';
-			
-			calendar_init(date_type);
-		});
-		
-
-		
+</head>
+<script type="text/javascript">
+$(function(){
+	$("#register").click(function(){
+		location.href="";
 	});
+	
+});
 
 </script>
-</head>
 
-<body>
-	<div class="container-fluid" layout:fragment="content">
-		<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-			<li class="nav-item" role="presentation">
-				<button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">월간일정</button>
-			</li>
-			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="#pills-home" aria-selected="false">주간일정</button>
-			</li>
-			<div style="padding-left: 20px;"><button type="button" class="btn btn-info">일정등록</button></div>
-		</ul>
-		
-		<div class="tab-content" id="pills-tabContent">
-			<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-				<div id='calendar'></div>
-			</div>
-			<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-				<div id='calendar_week'></div>
-			</div>
-			<div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
-		</div>
-
-<div class="modal" id="myModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Modal body text goes here.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+<div class="container-fluid" layout:fragment="content">
+	<h3 class="text-dark mb-4">클래스 등록</h3>
+    <div class="row mb-3">
+        <div class="col-lg-8 col-xl-12">
+            <div class="row mb-3 d-none">
+                <div class="col">
+                    <div class="card text-white bg-primary shadow">
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <p class="m-0">Peformance</p>
+                                    <p class="m-0"><strong>65.2%</strong></p>
+                                </div>
+                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
+                            </div>
+                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i> 5% since last month</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card text-white bg-success shadow">
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <p class="m-0">Peformance</p>
+                                    <p class="m-0"><strong>65.2%</strong></p>
+                                </div>
+                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
+                            </div>
+                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i> 5% since last month</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="card shadow mb-3">
+                        <div class="card-header py-3">
+                            <p class="text-primary m-0 fw-bold">클래스 상세</p>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="username"><strong>클래스명</strong></label><input id="username" class="form-control" type="text" placeholder="user.name" name="username" /></div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="email"><strong>클래스 설명</strong></label><input id="email" class="form-control" type="email" placeholder="user@example.com" name="email" /></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="first_name"><strong>클래스 허용 인원</strong><br /></label><input id="first_name" class="form-control" type="text" placeholder="John" name="first_name" /></div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="last_name"><strong>담당 선생님</strong><br /></label><input id="last_name" class="form-control" type="text" placeholder="Doe" name="last_name" /></div>
+                                    </div>
+                                </div>
+                                <div class="mb-3"></div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card shadow"></div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+    <div class="col">
+        <div class="card shadow mb-3">
+            <div class="card-header py-3">
+                <p class="text-primary m-0 fw-bold">클래스 시간대</p>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3"><label class="form-label" for="username"><strong>클래스 시작 시간</strong><br /></label><input id="username-1" class="form-control" placeholder="user.name" name="username" /></div>
+                        </div>
+                        <div class="col">
+                            <div class="mb-3"><label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="email-1" class="form-control" type="email" placeholder="user@example.com" name="email" /></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-6">
+                            <div class="mb-3"><label class="form-label" for="first_name"><strong>클래스 요일</strong><br /></label><input id="first_name-1" class="form-control" type="text" placeholder="John" name="first_name" /></div>
+                        </div>
+                        <div class="col-xl-6">
+                            <div class="mb-3"><label class="form-label" for="first_name"><strong>클래스 요일</strong><br /></label><input id="first_name-2" class="form-control" type="text" placeholder="John" name="first_name" /></div>
+                        </div>
+                    </div>
+                    <div class="mb-3"></div>
+                </form>
+            </div>
+        </div>
+        <div class="card shadow"></div>
+    </div>
+    <div class="col">
+        <div class="card shadow mb-3">
+            <div class="card-header py-3">
+                <p class="text-primary m-0 fw-bold">클래스 원생 등록</p>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col"><button class="btn btn-primary" type="button" style="width: 100%;border-radius: 30px;"><i class="fas fa-plus"></i></button></div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body" style="padding-bottom: 40px;padding-top: 20px;margin-bottom: -2px;height: 100px;">
+                                <h4 class="card-title">이영헌</h4>
+                                <h5 class="card-title">이영헌</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                </div>
+                <form>
+                    <div class="mb-3"></div>
+                </form>
+            </div>
+        </div>
+        <div class="card shadow"></div>
+    </div>
 </div>
 
-	</div>
-	
-	
 
 </html>

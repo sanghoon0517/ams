@@ -5,20 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 <title>Table - Brand</title>
 
+<script type="text/javascript">
+$(function(){
+	$("#register").click(function(){
+		// contextpath 구하기
+		var contextPath = $('#register').attr('data-contextPath') ? $('#register').attr('data-contextPath') : '';
+		location.href = contextPath+"/class/register";
+	});
+});
+
+</script>
 </head>
 
 <div class="container-fluid" layout:fragment="content">
 	<h3 class="text-dark mb-4">클래스 관리</h3>
 	<div class="row">
 		<div class="col">
-			<div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('https://i.pinimg.com/originals/58/18/92/581892a6b895a958afb3b6550c6ac778.jpg');">
+			<button class="btn btn-info" type="button" id="register" th:data-contextPath="${#httpServletRequest.getContextPath()}">클래스 등록</button>
+		</div>
+		<br/><br/>
+	</div>
+	<div class="row">
+		<div class="col">
+			<div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('https://i.pinimg.com/originals/58/18/92/581892a6b895a958afb3b6550c6ac778.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
 				<div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
 					<h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">클래스명</h2>
 					<ul class="d-flex list-unstyled mt-auto">
-						<li class="d-flex align-items-center me-3"><small>인원</small></li>
-						<li class="d-flex align-items-center me-3"><small>수업 요일</small></li>
-						<li class="d-flex align-items-center"><small>수업 시간대</small></li>
+						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-children"></i>&nbsp;&nbsp;<small>인원</small></li>
+						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;<small>수업 요일</small></li>
+						<li class="d-flex align-items-center"><i class="fa-solid fa-clock"></i>&nbsp;&nbsp;<small>수업 시간대</small></li>
 					</ul>
+					<button class="btn btn-outline-light" type="button">클래스 수정</button>
 				</div>
 			</div>
 		</div>
