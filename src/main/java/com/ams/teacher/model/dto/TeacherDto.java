@@ -11,17 +11,5 @@ public class TeacherDto {
 	private String t_pwd;
 	private String t_pn;
 	private Role t_role;
-	
-	@Override
-	public String toString() {
-		String dtoprint;
-		dtoprint = "[TeacherDto] : " +
-		"t_idx : "+t_idx+
-		"t_id : "+t_id+
-		"t_pwd : "+t_pwd+
-		"t_pn : "+t_pn+
-		"t_role : "+t_role;
-		return dtoprint;
-	}
-	
+	private String t_name;
 }

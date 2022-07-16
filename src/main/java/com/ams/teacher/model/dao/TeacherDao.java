@@ -9,4 +9,6 @@ import com.ams.teacher.model.dto.TeacherDto;
 @Mapper
 public interface TeacherDao {
 	public List<TeacherDto> listDao();
+	public void insertDao(TeacherDto dto);
+	public TeacherDto selectOneDao(String t_id);
 }

@@ -15,4 +15,9 @@ public interface TeacherSerivce{
 	 * @return 선생님 리스트 값
 	 */
 	public List<TeacherDto> listDao();
+
+	public TeacherDto selectOneDao(String t_id);
+
+	public void insertDao(TeacherDto dto);
+
 }

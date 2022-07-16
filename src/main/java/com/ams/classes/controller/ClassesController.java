@@ -27,6 +27,6 @@ public class ClassesController {
 	
 	@GetMapping("/schedule")
 	public String schedule(){
-		return "classes/schedule";
+		return "schedule/schedule";
 	}
 }
