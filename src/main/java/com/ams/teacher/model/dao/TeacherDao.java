@@ -11,4 +11,5 @@ public interface TeacherDao {
 	public List<TeacherDto> listDao();
 	public void insertDao(TeacherDto dto);
 	public TeacherDto selectOneDao(String t_id);
+	public int checkIdDao(String t_id);
 }

@@ -20,4 +20,5 @@ public interface TeacherSerivce{
 
 	public void insertDao(TeacherDto dto);
 
+	public int checkIdDao(String t_id);
 }

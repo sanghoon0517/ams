@@ -16,6 +16,45 @@
 </head>
 <script>
     $(function(){
+        $('#teacherid').blur(function(){
+            function getContextPath() {
+                var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+                return location.href.substring( hostIndex, location.href.indexOf("/", hostIndex + 1) );
+		    };
+            let data={
+                t_id: $('#teacherid').val(),
+            };
+            if(data.t_id.length < 5){
+                $( '#teacherid' ).removeClass( 'is-invalid' );
+                $( '#teacherid' ).removeClass( 'is-valid' );
+                $('#idValidateFail').attr('style', "display:none;");
+                $('#idValidateOk').attr('style', "display:none;");
+                return alert("id는 5자 이상만 가능합니다");
+            }
+            $.ajax({
+                type: "POST", //요청 method 타입
+                url: getContextPath()+"/signup/idCheck", //요청보낼 url
+                data: JSON.stringify(data), //보내는 data => json으로 넘기기
+                contentType:"application/json;charset=utf-8", //마임타입 지정
+                dataType:"json"
+            }).done(function(resp){
+                if(resp.status == 200){
+                    alert("성공");
+                    $( '#teacherid' ).removeClass( 'is-invalid' );
+                    $( '#teacherid' ).addClass( 'is-valid' );
+                    $('#idValidateOk').attr('style', "display:inline;");
+                    $('#idValidateFail').attr('style', "display:none;");
+                }else{
+                    $( '#teacherid' ).removeClass( 'is-valid' );
+                    $( '#teacherid' ).addClass( 'is-invalid' );
+                    $('#idValidateOk').attr('style', "display:none;");
+                    $('#idValidateFail').attr('style', "display:inline;");
+                }
+            }).fail(function(error){
+            });
+        });
+
+
         $('#signup').click(function(){
             function getContextPath() {
                 var hostIndex = location.href.indexOf( location.host ) + location.host.length;
@@ -65,12 +104,15 @@
                             <form class="user">
                                 <div class="row mb-3">
                                     <div class="mb-3"><input class="form-control form-control-user" type="text" id="teachername" placeholder="이름" name="t_name"></div>
-                                    <div class="mb-3"><input class="form-control form-control-user" type="text" id="teacherid" placeholder="아이디" name="t_id"></div>
-                                </div>
-                                <div class="mb-3"><input class="form-control form-control-user" type="tel" id="teacherpn" aria-describedby="emailHelp" placeholder="휴대폰번호" name="t_pn"></div>
-                                <div class="row mb-3">
+                                    <div class="mb-3">
+                                        <input class="form-control form-control-user" type="text" id="teacherid" placeholder="아이디" name="t_id">
+                                        <span class="text-left valid-feedback" style="display: none;" id="idValidateOk">&nbsp;&nbsp;사용가능한 아이디입니다.</span>
+                                        <span class="text-left invalid-feedback" style="display: none;" id="idValidateFail">&nbsp;&nbsp;중복된 아이디입니다.</span>
+                                    </div>
                                     <div class="mb-3"><input class="form-control form-control-user" type="password" id="teacherpwd" placeholder="비밀번호" name="t_pwd"></div>
-                                </div><button class="btn btn-primary d-block btn-user w-100" id="signup" type="button">회원등록</button>
+                                    <div class="mb-3"><input class="form-control form-control-user" type="tel" id="teacherpn" aria-describedby="emailHelp" placeholder="휴대폰번호" name="t_pn"></div>
+                                </div>
+                               <button class="btn btn-primary d-block btn-user w-100" id="signup" type="button">회원등록</button>
                                 <hr>
                             </form>
                             <div class="text-center"><a class="small" href="forgot-password.html">Forgot Password?</a></div>

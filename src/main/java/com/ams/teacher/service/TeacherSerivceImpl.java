@@ -39,6 +39,12 @@ public class TeacherSerivceImpl implements TeacherSerivce{
 		dao.insertDao(dto);
 	}
 
+	@Override
+	public int checkIdDao(String t_id) {
+		int result =dao.checkIdDao(t_id);
+		return result;
+	}
+
 
 	
 }
