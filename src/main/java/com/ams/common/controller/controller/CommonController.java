@@ -23,53 +23,55 @@ import ch.qos.logback.core.net.SyslogOutputStream;
 @RestController
 public class CommonController {
 
-    @Autowired
-    TeacherSerivce teacherSerivce;
-    @Autowired
-    private AuthenticationManager manager;
+	@Autowired
+	TeacherSerivce teacherSerivce;
+	@Autowired
+	private AuthenticationManager manager;
 
-    @Autowired
-    PrincipleDetailService principleDetailService;
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+	@Autowired
+	PrincipleDetailService principleDetailService;
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @PostMapping("/login")
-    public ResponseDto<Integer> login(@RequestBody TeacherDto dto) {
-        TeacherDto teacher = teacherSerivce.selectOneDao(dto.getT_id());
+	@PostMapping("/login")
+	public ResponseDto<Integer> login(@RequestBody TeacherDto dto) {
+		TeacherDto teacher = teacherSerivce.selectOneDao(dto.getT_id());
 
-        //비밀번호 검증
-        if(bCryptPasswordEncoder.matches(dto.getT_pwd(), teacher.getT_pwd())){
-            //맞을시 로직
-            Authentication authentication = manager.authenticate(
-                new UsernamePasswordAuthenticationToken(teacher.getT_id(), dto.getT_pwd()));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            
-            //200리턴
-            return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
-        }else{
-            //비밀번호 틀렸을시 로직
-            //400 리턴
-            return new ResponseDto<Integer>(HttpStatus.INTERNAL_SERVER_ERROR.value(), -1);
-        }
-    @PostMapping("/signup/idCheck")
-    public ResponseDto<Integer> idCheck(@RequestBody TeacherDto dto) {
+		// 비밀번호 검증
+		if (bCryptPasswordEncoder.matches(dto.getT_pwd(), teacher.getT_pwd())) {
+			// 맞을시 로직
+			Authentication authentication = manager
+					.authenticate(new UsernamePasswordAuthenticationToken(teacher.getT_id(), dto.getT_pwd()));
+			SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        if(teacherSerivce.checkIdDao(dto.getT_id())>=1){
-            return new ResponseDto<Integer>(HttpStatus.INTERNAL_SERVER_ERROR.value(), 1);
-        }else{
-            return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
-        }
+			// 200리턴
+			return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+		} else {
+			// 비밀번호 틀렸을시 로직
+			// 400 리턴
+			return new ResponseDto<Integer>(HttpStatus.INTERNAL_SERVER_ERROR.value(), -1);
+		}
+	}
 
-        
-    }
-    /*
-     * 회원가입 요청 
-     */
-    @PostMapping("/signup")
-    public ResponseDto<Integer> signup(@RequestBody TeacherDto dto) {
-        System.out.println(dto.toString());
-        dto.setT_pwd(bCryptPasswordEncoder.encode(dto.getT_pwd()));
-        teacherSerivce.insertDao(dto);
-        return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
-    }
+	@PostMapping("/signup/idCheck")
+	public ResponseDto<Integer> idCheck(@RequestBody TeacherDto dto) {
+
+		if (teacherSerivce.checkIdDao(dto.getT_id()) >= 1) {
+			return new ResponseDto<Integer>(HttpStatus.INTERNAL_SERVER_ERROR.value(), 1);
+		} else {
+			return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+		}
+
+	}
+
+	/*
+	 * 회원가입 요청
+	 */
+	@PostMapping("/signup")
+	public ResponseDto<Integer> signup(@RequestBody TeacherDto dto) {
+		System.out.println(dto.toString());
+		dto.setT_pwd(bCryptPasswordEncoder.encode(dto.getT_pwd()));
+		teacherSerivce.insertDao(dto);
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
 }
