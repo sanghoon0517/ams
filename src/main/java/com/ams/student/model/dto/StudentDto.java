@@ -19,6 +19,7 @@ public class StudentDto {
 	private String st_en_dt;	//학생등록일자
 	private String st_dis_dt;	//학생퇴원일자
 	private String st_prt_nm;	//학생부모명
+	private Parent st_prt_rlt;	//학생과의 관계
 	private String st_prt_pn;	//학생부모연락처
 	private String st_adr;		//학생주소
 	private String st_dtl;		//학생당부사항
