@@ -4,14 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 <title>Table - Brand</title>
-</head>
-    
+<script>
+    $(function(){
+        // function getContextPath() {
+        //         var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+        //         return location.href.substring( hostIndex, location.href.indexOf("/", hostIndex + 1) );
+		//     };
+        // $.ajax({
+        //         type: "POST", 
+        //         url: getContextPath()+"/classes/teacherList",
+        //         contentType:"application/json;charset=utf-8",
+        //         dataType:"json" 
+        //     }).done(function(resp){
+        //         if(resp.status == "200"){
+        //         }else{
+        //             alert("선생님 리스트 불러오기 실패");
+        //         }
+
+        //     }).fail(function(error){
+        //         alert("로그인 실패 - 서버 오류");
+        //     }); 
+    });
+
 </script>
+</head>
+
 <div class="container-fluid" layout:fragment="content">
     
 	<h3 class="text-dark mb-4">클래스 등록</h3>
-    <div class="row mb-3">
-        <div class="col-lg-8 col-xl-12">
+    <div class="row">
+        <div class="col">
             <div class="row">
                 <div class="col">
                     <div class="card shadow mb-3">
@@ -19,7 +41,6 @@
                             <p class="text-primary m-0 fw-bold">클래스 상세</p>
                         </div>
                         <div class="card-body">
-                            <form>
                                 <div class="row">
                                     <div class="col">
                                         <div class="mb-3"><label class="form-label" for="username"><strong>클래스명</strong></label><input id="username" class="form-control" type="text" placeholder="user.name" name="username" /></div>
@@ -33,11 +54,18 @@
                                         <div class="mb-3"><label class="form-label" for="first_name"><strong>클래스 허용 인원</strong><br /></label><input id="first_name" class="form-control" type="text" placeholder="John" name="first_name" /></div>
                                     </div>
                                     <div class="col">
-                                        <div class="mb-3"><label class="form-label" for="last_name"><strong>담당 선생님</strong><br /></label><input id="last_name" class="form-control" type="text" placeholder="Doe" name="last_name" /></div>
+                                        <div class="mb-3"><label class="form-label" for="last_name"><strong>담당 선생님</strong><br/></label>
+                                            <select class="form-select form-control" aria-label="Default select example">
+                                            <th:block th:each="teacher : ${list}">
+                                                <option th:text="${teacher.t_name}" th:value="${teacher.t_idx}">Open this select menu</option>
+                                            </th:block>  
+                                            </select>
+                                              
+                                        </div>
+
                                     </div>
                                 </div>
                                 <div class="mb-3"></div>
-                            </form>
                         </div>
                     </div>
                     <div class="card shadow"></div>
@@ -51,7 +79,6 @@
                 <p class="text-primary m-0 fw-bold">클래스 시간대</p>
             </div>
             <div class="card-body">
-                <form>
                     <div class="row">
                         <div class="col">
                             <div class="mb-3"><label class="form-label" for="username"><strong>클래스 시작 시간</strong><br /></label><input id="username-1" class="form-control" placeholder="user.name" name="username" /></div>
@@ -70,7 +97,6 @@
                         </div>
                     </div>
                     <div class="mb-3"></div>
-                </form>
             </div>
         </div>
         <div class="card shadow"></div>

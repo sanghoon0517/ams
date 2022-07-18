@@ -39,7 +39,6 @@
                 dataType:"json"
             }).done(function(resp){
                 if(resp.status == 200){
-                    alert("성공");
                     $( '#teacherid' ).removeClass( 'is-invalid' );
                     $( '#teacherid' ).addClass( 'is-valid' );
                     $('#idValidateOk').attr('style', "display:inline;");
@@ -65,6 +64,7 @@
                 t_pwd: $('#teacherpwd').val(),
                 t_name: $('#teachername').val(),
                 t_pn: $('#teacherpn').val(),
+                t_email: $('#email1').val()+'@'+$('#email2').val()
 		    };
 
             $.ajax({
@@ -76,7 +76,7 @@
                 dataType:"json" // 응답 데이터 타입 지정 ( default는 버퍼로 전송되기때문에 string을 전송됨), 만일 json이 넘어오면 자바스크립트 object로 변경해준다.
             }).done(function(resp){
                 if(resp.status==500){
-				alert("회원가입에 실패하였습니다.");
+				alert("회원가입에 실패하였습니다.\n" + resp.msg);
 			}else{
 				alert("회원가입 완료");
 				location.href=getContextPath()+"/login"; // 성공시 반환 위치
@@ -111,8 +111,13 @@
                                     </div>
                                     <div class="mb-3"><input class="form-control form-control-user" type="password" id="teacherpwd" placeholder="비밀번호" name="t_pwd"></div>
                                     <div class="mb-3"><input class="form-control form-control-user" type="tel" id="teacherpn" aria-describedby="emailHelp" placeholder="휴대폰번호" name="t_pn"></div>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control form-control-user" id="email1" placeholder="이메일" aria-label="Username">
+                                        <span class="input-group-text form-control-user">@</span>
+                                        <input type="text" class="form-control form-control-user" id="email2" placeholder="도메인" aria-label="Server">
+                                    </div>
                                 </div>
-                               <button class="btn btn-primary d-block btn-user w-100" id="signup" type="button">회원등록</button>
+                               <button class="btn btn-primary d-block btn-user w-100" id="signup" type="button">회&nbsp;원&nbsp;등&nbsp;록</button>
                                 <hr>
                             </form>
                             <div class="text-center"><a class="small" href="forgot-password.html">Forgot Password?</a></div>
