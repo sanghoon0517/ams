@@ -40,10 +40,10 @@ function enroll() {
 
 /*
 작성자 : jsh
-함수명 : comChkNum(value)
+함수명 : chkNum(value)
 파라미터 : value : String값
 함수내용 : value값에 숫자 이외의 값들을 전부 삭제함
 */
-function comChkNum(value) {
+function chkNum(value) {
 	return value.replace(/([^0-9])/g, "")
 }
