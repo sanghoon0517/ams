@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-public class StudentDataController {
+public class StudentApiController {
 	
 	private final StudentService studentService;
 	
