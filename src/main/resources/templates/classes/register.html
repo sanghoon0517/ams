@@ -35,7 +35,6 @@
 </style>
 <script>
 $(function(){
-	alert("Test");
     $("#colorpicker").spectrum({
         color: "#f00"
     });
@@ -44,6 +43,14 @@ $(function(){
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl)
     })
+
+    $('#endtime').blur(function(){
+        var test = $('#endtime').val();
+        var test1 = $('#starttime').val();
+        var h2= test1.split(':');
+        var h = test.split(':');
+        alert(parseInt(h[0])-parseInt(h2[0]));
+    });
 });
 
 </script>
@@ -63,12 +70,12 @@ $(function(){
 							<div class="row">
 								<div class="col">
 									<div class="mb-3">
-										<label class="form-label" for="username"><strong >클래스명</strong></label><input id="username" class="form-control" type="text" placeholder="클래스명" name="" />
+										<label class="form-label" for="username"><strong >클래스명</strong></label><input id="username" class="form-control" type="text" placeholder="클래스명" name="c_nm" />
 									</div>
 								</div>
 								<div class="col">
 									<div class="mb-3">
-										<label class="form-label" for="first_name"><strong data-bs-toggle="tooltip" data-bs-placement="right" title="클래스 / 캘린더 목록 컬러">클래스 표시 컬러</strong><br/></label><input id="colorpicker" class="form-control"  name="first_name" />
+										<label class="form-label" for="first_name"><strong data-bs-toggle="tooltip" data-bs-placement="right" title="클래스 / 캘린더 목록 컬러">클래스 표시 컬러</strong><br/></label><input id="colorpicker" class="form-control"  name="c_color" />
 									</div>
 
 								</div>
@@ -76,12 +83,12 @@ $(function(){
 							<div class="row">
 								<div class="col">
 									<div class="mb-3">
-										<label class="form-label" for="first_name"><strong>클래스 허용 인원</strong><br /></label><input id="first_name" class="form-control" type="number" placeholder="0" name="first_name" />
+										<label class="form-label" for="first_name"><strong>클래스 허용 인원</strong><br /></label><input id="first_name" class="form-control" type="number" placeholder="0" name="c_cap" />
 									</div>
 								</div>
 								<div class="col">
 									<div class="mb-3">
-										<label class="form-label" for="last_name"><strong>담당 선생님</strong><br /></label> <select class="form-select form-control" aria-label="Default select example">
+										<label class="form-label" for="last_name"><strong>담당 선생님</strong><br /></label> <select class="form-select form-control" aria-label="Default select example" name="">
 											<th:block th:each="teacher : ${list}">
 												<option th:text="${teacher.t_name}" th:value="${teacher.t_idx}">Open this select menu</option>
 											</th:block>
@@ -100,7 +107,6 @@ $(function(){
 							<div class="mb-3"></div>
 						</div>
 					</div>
-					<div class="card shadow"></div>
 				</div>
 			</div>
 		</div>
@@ -114,32 +120,36 @@ $(function(){
 				<div class="row">
 					<div class="col">
 						<div class="mb-3">
-							<label class="form-label" for="username"><strong>클래스 시작 시간</strong><br /></label><input id="username-1" class="form-control" placeholder="user.name" name="username" />
+							<label class="form-label" for="username"><strong>클래스 시작 시간</strong><br /></label><input id="starttime" class="form-control" type="time"  name="c_st_tm" />
 						</div>
 					</div>
 					<div class="col">
 						<div class="mb-3">
-							<label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="email-1" class="form-control" type="email" placeholder="user@example.com" name="email" />
+							<label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="endtime" class="form-control" type="time"  name="c_ed_tm" />
 						</div>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xl-6">
+					<div class="col">
 						<div class="mb-3">
-							<label class="form-label" for="first_name"><strong>클래스 요일</strong><br /></label><input id="first_name-1" class="form-control" type="text" placeholder="John" name="first_name" />
+							<label class="form-label" for="first_name"><strong>클래스 요일</strong><br /></label>
+                            <select class="form-select form-control" aria-label="Default select example" name="c_wkd">
+                                <option selected value="2">월요일</option>
+                                <option value="3">화요일</option>
+                                <option value="4">수요일</option>
+                                <option value="5">목요일</option>
+                                <option value="6">금요일</option>
+                                <option value="7">토요일</option>
+                                <option value="1">일요일</option>
+                              </select>
 						</div>
 					</div>
-					<div class="col-xl-6">
-						<div class="mb-3">
-							<label class="form-label" for="first_name"><strong>클래스 표시 컬러</strong><br /></label><input id="demo-inputq" class="form-control" value="rgb(255, 128, 0)" type="text" placeholder="John" name="first_name" />
-						</div>
-
+					<div class="col">
 					</div>
 				</div>
 				<div class="mb-3"></div>
 			</div>
 		</div>
-		<div class="card shadow"></div>
 	</div>
 	<div class="col">
 		<div class="card shadow mb-3">
@@ -147,7 +157,7 @@ $(function(){
 				<p class="text-primary m-0 fw-bold">클래스 원생 등록</p>
 			</div>
 			<div class="card-body">
-				<div class="row">
+				<div class="row" style="padding-bottom: 10px;">
 					<div class="col">
 						<button class="btn btn-primary" type="button" style="width: 100%; border-radius: 30px;">
 							<i class="fas fa-plus"></i>
@@ -155,24 +165,13 @@ $(function(){
 					</div>
 				</div>
 				<div class="row">
-					<div class="col">
-						<div class="card">
-							<div class="card-body" style="padding-bottom: 40px; padding-top: 20px; margin-bottom: -2px; height: 100px;">
-								<h4 class="card-title">이영헌</h4>
-								<h5 class="card-title">이영헌</h5>
-							</div>
-						</div>
-					</div>
-					<div class="col"></div>
-					<div class="col"></div>
-					<div class="col"></div>
+
 				</div>
 				<form>
 					<div class="mb-3"></div>
 				</form>
 			</div>
 		</div>
-		<div class="card shadow"></div>
 	</div>
 </div>
 
