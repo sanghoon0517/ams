@@ -1,5 +1,7 @@
 package com.ams.student.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,4 +24,18 @@ public class StudentServiceImpl implements StudentService{
 		return result;
 	}
 
+	@Transactional(readOnly = true)
+	@Override
+	public String getStdDate() {
+		// TODO Auto-generated method stub
+		return studentDao.getStdDate();
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public List<StudentDto> getStudentList() {
+		// TODO Auto-generated method stub
+		return studentDao.getStudentList();
+	}
+	
 }

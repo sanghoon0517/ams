@@ -3,7 +3,7 @@ function enroll() {
 	if(c_idx.value === "") {
 		alert("특정 수업을 선택해주세요.");
 		return false;
-	} else if(c_idx.value !== "1") {
+	} else if(c_idx.value !== "4") {
 		alert("현재 준비중인 수업입니다.");
 		return false;
 	}
@@ -18,7 +18,11 @@ function enroll() {
 	if(jsonArr) {
 		let jsonObj = new Object();
 		$.each(jsonArr, (i)=>{
-			jsonObj[jsonArr[i].name] = jsonArr[i].value;
+			if(jsonArr[i].name == "st_bth" || jsonArr[i].name == "st_en_dt" || jsonArr[i].name == "st_pn" || jsonArr[i].name == "st_prt_pn") {
+				jsonObj[jsonArr[i].name] = chkNum(jsonArr[i].value);
+			} else {
+				jsonObj[jsonArr[i].name] = jsonArr[i].value;				
+			}
 		});
 		console.log("[jsh] jsonObj : "+JSON.stringify(jsonObj));
 		$.ajax({
@@ -29,6 +33,7 @@ function enroll() {
 			data: JSON.stringify(jsonObj) 
 		}).done(res=>{
 			alert("등록되었습니다.");
+			location.href = `/ams/studentEnroll`; //임시채널이동
 			console.log(res);
 		}).fail(error=>{
 			alert("등록 처리 중 에러가 발생했습니다.");

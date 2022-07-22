@@ -6,25 +6,32 @@
 <meta charset="utf-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-<style>
-@media(max-width: 700px){
-	#find_address{
-		display: flex;
-		color: red;
-/* 		width: 100%; */
-/*  		height: 80%; */
-/*  		font-size: 0.9em; */
-	}
-}
-</style>
 <script th:src='@{/js/student/student.js}'></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 $(document).ready(function(){
+	
+	let date = new Date();
+	date.setMonth(0);
+	date.setDate(1);
+	let defaultBirthDate = (date.getFullYear()-12)+"-0"+(date.getMonth()+1)+"-0"+date.getDate();
+	$("#st_bth").val(defaultBirthDate);
+
+	//숫자 키코드(48~57까지)
+	let numKeyCodeList = [48,49,50,51,52,53,54,55,56,57];
+	
+	$("#st_pn, #st_prt_pn").keypress(function(e){
+		if(!numKeyCodeList.includes(e.keyCode)) {
+			return false;
+		}
+   });     
+	
 	//date 타입 날짜 입력 형식이 에러가 있어 키보드 입력 막음
 	$("input[type='date']").keypress((e)=>{
 		return false;
 	});
+	
+	
 });
 function findPostCode() {
     new daum.Postcode({
@@ -67,25 +74,25 @@ function findPostCode() {
 							<label class="form-label" for="st_nm">
 								<strong>이름</strong>
 							</label>
-							<input class="form-control" type="text" id="st_nm" placeholder="이름" name="st_nm">
+							<input class="form-control" type="text" id="st_nm" placeholder="이름" name="st_nm" >
 						</div>
 						<div class="mb-3">
 							<label class="form-label" for="st_bth">
 								<strong>생년월일</strong>
 							</label>
-							<input id="st_bth" class="form-control" type="date" name="st_bth" value="2015-01-01" />
+							<input id="st_bth" class="form-control" type="date" name="st_bth" th:value="${std_date}"/>
 						</div>
 						<div class="mb-3">
 							<label class="form-label" for="st_en_dt">
 								<strong>입원일자</strong>
 							</label>
-							<input id="st_en_dt" class="form-control" type="date"placeholder="John" name="st_en_dt" />
+							<input id="st_en_dt" class="form-control" type="date" name="st_en_dt" />
 						</div>
 						<div class="mb-3">
-							<label class="form-label" for="email">
+							<label class="form-label" for="st_pn">
 								<strong>원생 연락처</strong>
 							</label>
-							<input class="form-control" type="tel" id="st_phone" placeholder="010-0000-0000" name="st_phone">
+							<input class="form-control" type="tel" id="st_pn" placeholder="숫자만 입력 가능합니다." name="st_pn" maxlength=11>
 						</div>
 					</div>
 					<div class="col-xl-6">
@@ -97,7 +104,7 @@ function findPostCode() {
 							<label class="form-label" for="st_prt_pn">
 								<strong>부모님 연락처</strong>
 							</label>
-							<input class="form-control" type="tel" id="st_prt_pn" placeholder="010-0000-0000" name="st_prt_pn">
+							<input class="form-control" type="tel" id="st_prt_pn" placeholder="숫자만 입력 가능합니다." name="st_prt_pn" maxlength=11>
 						</div>
 						<div class="mb-3">
 							<label class="form-label" for="st_prt_rlt"><strong>학생과의 관계</strong><br></label>
@@ -175,9 +182,9 @@ function findPostCode() {
 					</div>
 					<div class="col">
 						<div class="mb-3">
-							<label class="form-label" for="last_name"><strong>이메일</strong><br></label><input
-								class="form-control" type="email" id="last_name-1"
-								placeholder="sample@sample.com" name="last_name">
+							<label class="form-label" for="st_prt_em"><strong>이메일</strong><br></label><input
+								class="form-control" type="email" id="st_prt_em"
+								placeholder="sample@sample.com" name="st_prt_em">
 						</div>
 					</div>
 				</div>
@@ -189,12 +196,19 @@ function findPostCode() {
 							</label>
 							<select class="form-control" id="c_idx" name="c_idx">
 								<option value="">수업을 선택해주세요.</option>
-								<option value="1">1번수업</option>
+								<option value="4">4번수업</option>
 								<option value="2">2번수업</option>
 							</select>
 						</div>
 					</div>
-					<div class="col"></div>
+					<div class="col">
+						<div class="mb-3">
+							<label class="form-label" for="st_schl">
+								<strong>학교/유치원</strong><br>
+							</label>
+							<input type="text" class="form-control" id="st_schl" name="st_schl">
+						</div>
+					</div>
 					<div class="col"></div>
 					<div class="col"></div>
 				</div>
@@ -205,8 +219,7 @@ function findPostCode() {
 					<div class="col-md-6 col-xl-12">
 						<div class="mb-3">
 							<label class="form-label" for="st_dtl"><strong>특이사항</strong><br></label>
-							<textarea class="form-control" id="st_dtl" rows="4"
-								name="st_dtl"></textarea>
+							<textarea class="form-control" id="st_dtl" rows="4" name="st_dtl"></textarea>
 						</div>
 						<div class="mb-3"></div>
 						<div class="mb-3">

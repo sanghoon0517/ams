@@ -27,9 +27,9 @@ public class TempControllerTest {
 //	public String enroll(){
 //		return "student/enroll";
 //	}
-	@GetMapping("/studentList")
-	public String enrollList(){
-		return "student/article";
-	}
+//	@GetMapping("/studentList")
+//	public String enrollList(){
+//		return "student/article";
+//	}
 
 }

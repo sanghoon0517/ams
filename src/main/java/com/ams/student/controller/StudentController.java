@@ -1,5 +1,7 @@
 package com.ams.student.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +19,17 @@ public class StudentController {
 	private final StudentService studentService;
 	
 	@GetMapping("/studentEnroll")
-	public String enroll(){
+	public String enroll(Model model){
+//		String stdDate = studentService.getStdDate();
+//		model.addAttribute("std_date", stdDate);
 		return "student/enroll";
+	}
+	
+	@GetMapping("/studentList")
+	public String studentlList(StudentDto vo, Model model){
+		List<StudentDto> resultList = studentService.getStudentList();
+		model.addAttribute("stdList", resultList);
+		return "student/article";
 	}
 	
 	@PostMapping("student/enroll")

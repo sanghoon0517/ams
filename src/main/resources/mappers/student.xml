@@ -9,10 +9,13 @@
 			, st_bth
 			, st_gen
 			, st_pn
+			, st_schl
 			, st_en_dt
 			, st_dis_dt
 			, st_prt_nm
+			, st_prt_rlt
 			, st_prt_pn
+			, st_prt_em
 			, st_adr
 			, st_dtl
 			, st_rm_c_cnt
@@ -22,13 +25,21 @@
 			, #{st_bth}
 			, #{st_gen}
 			, #{st_pn}
+			, #{st_schl}
 			, #{st_en_dt}
 			, #{st_dis_dt}
 			, #{st_prt_nm}
 			, #{st_prt_pn}
+			, #{st_prt_em}
 			, #{st_adr}
 			, #{st_dtl}
 			, #{st_rm_c_cnt}
 		)
 	</insert>
+	<select id="getStudentList" resultType="com.ams.student.model.dto.StudentDto">
+		SELECT * FROM a_member
+	</select>
+	<select id="getStdDate" resultType="String">
+		SELECT DATE_SUB(MAKEDATE(year(now()),1), INTERVAL 12 YEAR) AS STANDARD_DATE
+	</select>
 </mapper>
