@@ -26,7 +26,7 @@ public class ClassesApiController {
      * @param dto
      * @return
      */
-    @PostMapping("/classes/teacherList")
+    @PostMapping("/classes/teacherlist")
 	public ResponseEntity<?> idCheck(Model model) {
         int code=1;
 		String msg= "";

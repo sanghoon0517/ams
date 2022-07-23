@@ -6,24 +6,21 @@
 <title>Table - Brand</title>
 <script>
 	$(function() {
-		// function getContextPath() {
-		//         var hostIndex = location.href.indexOf( location.host ) + location.host.length;
-		//         return location.href.substring( hostIndex, location.href.indexOf("/", hostIndex + 1) );
-		//     };
-		// $.ajax({
-		//         type: "POST", 
-		//         url: getContextPath()+"/classes/teacherList",
-		//         contentType:"application/json;charset=utf-8",
-		//         dataType:"json" 
-		//     }).done(function(resp){
-		//         if(resp.status == "200"){
-		//         }else{
-		//             alert("선생님 리스트 불러오기 실패");
-		//         }
+		function getContextPath() {
+		        var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+		        return location.href.substring( hostIndex, location.href.indexOf("/", hostIndex + 1) );
+		    };
+		$.ajax({
+		        type: "POST", 
+		        url: getContextPath()+"/classes/teacherlist",
+		        contentType:"application/json;charset=utf-8",
+		        dataType:"json" 
+		    }).done(function(resp){
+		    }).fail(function(error){
+		        alert("로그인 실패 - 서버 오류");
+		    }); 
+		
 
-		//     }).fail(function(error){
-		//         alert("로그인 실패 - 서버 오류");
-		//     }); 
 	});
 </script>
 <script th:src="@{/js/colorpicker/spectrum.min.js}"></script>
@@ -50,12 +47,29 @@ $(function(){
         var test1 = $('#starttime').val();
         var h2= test1.split(':');
         var h = test.split(':');
-        alert(parseInt(h[0])-parseInt(h2[0]));
+        //alert(parseInt(h[0])-parseInt(h2[0]));
     });
-    $('#multi').click(function(){
-        alert("test");
+	
+	// 선택한 학생을 확정란으로 옮기기 
+    $('#multiple').mouseup(function(){
+		var selectVal = $("#multiple option:selected").val();
+		var selectText =  $("#multiple option:selected").text();
+		//$("#multiple option:selected").attr("disabled",true);
+		//$("#multiple option:selected").css("background-color","darkslategray");
+		$("select#multiple option[value="+selectVal+"]").remove();
+		var option = $("<option value='"+selectVal+"'>"+selectText+"</option>");
+		$("#multiple2").append(option);
     });
-
+	//선택된 학생들 취소 옮기기
+    $('#multiple2').mouseup(function(){
+		var selectVal = $("#multiple2 option:selected").val();
+		var selectText =  $("#multiple2 option:selected").text();
+		//$("#multiple option:selected").attr("disabled",true);
+		//$("#multiple option:selected").css("background-color","darkslategray");
+		$("select#multiple2 option[value="+selectVal+"]").remove();
+		var option = $("<option value='"+selectVal+"'>"+selectText+"</option>");
+		$("#multiple").append(option);
+    });
 });
 
 </script>
@@ -168,18 +182,17 @@ $(function(){
 			<div class="card-body">
 				<div class="row" style="padding-bottom: 10px;">
 					<div class="col">
-						<select class="form-select form-control" multiple aria-label="multiple select example">
-							<option selected>Open this select menu</option>
-							<option value="1">One</option>
-							<option value="2">Two</option>
-							<option value="3">Three</option>
+						<label class="form-label" for="username"><strong>원생 리스트</strong><br /></label>
+						<select class="form-select form-control" id="multiple" multiple aria-label="multiple select example" style="height: 300px;">
+							<th:block th:each="student : ${list2}">
+								<option th:text="${student.st_nm}+'('+${#strings.toString(student.st_gen) == 'M'?'남':'여'}+') ' + ${student.st_bth} +'살'" th:value="${student.st_idx}">Open this select menu</option>
+							</th:block>
 						  </select>
 					</div>
 					<div class="col">
-						<select class="form-select form-control" multiple aria-label="multiple select example">
-							<option value="1">One <button class="btn btn-primary" id="multi" type="button" style="background-color: red;">x</button></option>
-							<option value="2">Two</option>
-							<option value="3">Three</option>
+						<label class="form-label" for="username"><strong>등록할 원생</strong><br /></label>
+						<select class="form-select form-control" id="multiple2" multiple aria-label="multiple select example" style="height: 300px;">
+
 						  </select>	
 					</div>
 				</div>
