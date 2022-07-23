@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,12 +27,14 @@ public class ClassesApiController {
      * @return
      */
     @PostMapping("/classes/teacherList")
-	public ResponseDto<List<?>> idCheck(Model model) {
-        
+	public ResponseEntity<?> idCheck(Model model) {
+        int code=1;
+		String msg= "";
+		String data = "";
         //선생님 리스트 
         List<TeacherDto> list =service.listDao();
         model.addAttribute("list", list);
-		return new ResponseDto<List<?>>(HttpStatus.OK.value(), list);
+		return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.OK);
 
 	}
 }

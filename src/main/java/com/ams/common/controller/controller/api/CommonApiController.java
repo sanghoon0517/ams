@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,9 +38,11 @@ public class CommonApiController {
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@PostMapping("/login")
-	public ResponseDto<Integer> login(@RequestBody TeacherDto dto) {
+	public ResponseEntity<?> login(@RequestBody TeacherDto dto) {
 		TeacherDto teacher = teacherSerivce.selectOneDao(dto.getT_id());
-
+		int code=1;
+		String msg= "";
+		String data = "";
 		// 비밀번호 검증
 		if (bCryptPasswordEncoder.matches(dto.getT_pwd(), teacher.getT_pwd())) {
 			// 맞을시 로직
@@ -48,21 +51,23 @@ public class CommonApiController {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 
 			// 200리턴
-			return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+			return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.OK);
 		} else {
 			// 비밀번호 틀렸을시 로직
 			// 500 리턴
-			return new ResponseDto<Integer>(HttpStatus.INTERNAL_SERVER_ERROR.value(), -1);
+			return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.OK);
 		}
 	}
 
 	@PostMapping("/signup/idCheck")
-	public ResponseDto<Integer> idCheck(@RequestBody TeacherDto dto) {
-
+	public ResponseEntity<?>  idCheck(@RequestBody TeacherDto dto) {
+		int code=1;
+		String msg= "";
+		String data = "";
 		if (teacherSerivce.checkIdDao(dto.getT_id()) >= 1) {
-			return new ResponseDto<Integer>(HttpStatus.INTERNAL_SERVER_ERROR.value(), 1);
+			return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.OK);
 		} else {
-			return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+			return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.OK);
 		}
 
 	}
@@ -72,14 +77,16 @@ public class CommonApiController {
 	 */
 	
 	@PostMapping("/signup")
-	public ResponseDto<Integer> signup(@RequestBody TeacherDto dto) {
-
+	public ResponseEntity<?>  signup(@RequestBody TeacherDto dto) {
+		int code=1;
+		String msg= "";
+		String data = "";
 
 		dto.setT_pwd(bCryptPasswordEncoder.encode(dto.getT_pwd()));
 		int	 result = teacherSerivce.insertDao(dto);
 		System.out.println("#############################################");
 		System.out.println(result);
 		System.out.println("#############################################");
-		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+		return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.OK);
 	}
 }
