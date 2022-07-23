@@ -76,7 +76,10 @@ public class CommonApiController {
 
 
 		dto.setT_pwd(bCryptPasswordEncoder.encode(dto.getT_pwd()));
-		teacherSerivce.insertDao(dto);
+		int	 result = teacherSerivce.insertDao(dto);
+		System.out.println("#############################################");
+		System.out.println(result);
+		System.out.println("#############################################");
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 }

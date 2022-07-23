@@ -27,7 +27,7 @@ public interface TeacherSerivce{
 	 * 회원 가입 요청
 	 * @param dto
 	 */
-	public void insertDao(TeacherDto dto);
+	public int insertDao(TeacherDto dto);
 
 	
 	/**

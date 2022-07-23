@@ -20,4 +20,5 @@
 	<select id="checkIdDao" parameterType="String" resultType="Integer">
 		select count(*) from a_teacher where t_id = #{t_id}
 	</select>
+
 </mapper>

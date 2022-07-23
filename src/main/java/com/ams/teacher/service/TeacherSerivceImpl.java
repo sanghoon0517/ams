@@ -35,8 +35,9 @@ public class TeacherSerivceImpl implements TeacherSerivce{
 	}
 
 	@Override
-	public void insertDao(TeacherDto dto) {
-		dao.insertDao(dto);
+	public int insertDao(TeacherDto dto) {
+		int result = dao.insertDao(dto);
+		return result;
 	}
 
 	@Override
