@@ -1,4 +1,4 @@
-package com.ams.student.controller.rest;
+package com.ams.student.controller.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
