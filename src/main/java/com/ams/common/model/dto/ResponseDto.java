@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ResponseDto<T> {
-	int status;
-	T data;
+	int code; // 성공여부 반환 : 성공시 1 실패시 0
+	String msg; // 메세지 반환
+	T data; // 넘기는 데이터값 반환
 }

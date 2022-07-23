@@ -26,12 +26,12 @@ public class ClassesApiController {
      * @return
      */
     @PostMapping("/classes/teacherList")
-	public ResponseDto<Integer> idCheck(Model model) {
+	public ResponseDto<List<?>> idCheck(Model model) {
         
         //선생님 리스트 
         List<TeacherDto> list =service.listDao();
         model.addAttribute("list", list);
-		return new ResponseDto<>(HttpStatus.OK.value(), 1);
+		return new ResponseDto<List<?>>(HttpStatus.OK.value(), list);
 
 	}
 }
