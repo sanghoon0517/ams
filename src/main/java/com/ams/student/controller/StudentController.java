@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.ams.common.model.dto.PaginationCriteriaDto;
+import com.ams.common.model.dto.PaginationDto;
 import com.ams.student.model.dto.StudentDto;
 import com.ams.student.service.StudentService;
 
@@ -26,9 +28,18 @@ public class StudentController {
 	}
 	
 	@GetMapping("/studentList")
-	public String studentlList(StudentDto vo, Model model){
-		List<StudentDto> resultList = studentService.getStudentList();
+	public String studentlList(PaginationCriteriaDto criteria, StudentDto vo, Model model){
+//		List<StudentDto> resultList = studentService.getStudentList();
+		
+		int studentTotalCnt = studentService.getStudentListCount();
+		
+		PaginationDto pagination = new PaginationDto();
+		pagination.setCriteria(criteria);
+		pagination.setTotalCount(studentTotalCnt);
+		
+		List<StudentDto> resultList = studentService.getStudentListPaging(criteria);
 		model.addAttribute("stdList", resultList);
+		model.addAttribute("pagination", pagination);
 		return "student/article";
 	}
 	

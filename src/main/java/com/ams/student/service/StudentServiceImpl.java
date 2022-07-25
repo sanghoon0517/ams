@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ams.common.model.dto.PaginationCriteriaDto;
 import com.ams.student.model.dao.StudentDao;
 import com.ams.student.model.dto.StudentDto;
 
@@ -36,6 +37,18 @@ public class StudentServiceImpl implements StudentService{
 	public List<StudentDto> getStudentList() {
 		// TODO Auto-generated method stub
 		return studentDao.getStudentList();
+	}
+
+	@Override
+	public List<StudentDto> getStudentListPaging(PaginationCriteriaDto pagingparam) {
+		// TODO Auto-generated method stub
+		return studentDao.getStudentListPaging(pagingparam);
+	}
+
+	@Override
+	public int getStudentListCount() {
+		// TODO Auto-generated method stub
+		return studentDao.getStudentListCount();
 	}
 	
 }
