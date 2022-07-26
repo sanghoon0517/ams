@@ -4,6 +4,7 @@
 	<select id="listDao" resultType="com.ams.teacher.model.dto.TeacherDto">
 		select * from a_teacher
 	</select>
+	
 	<select id="selectOneDao" parameterType="String" resultType="com.ams.teacher.model.dto.TeacherDto">
 		select * from a_teacher where t_id = #{t_id}
 	</select>

@@ -5,23 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 <title>Table - Brand</title>
 <script>
-	$(function() {
-		function getContextPath() {
-		        var hostIndex = location.href.indexOf( location.host ) + location.host.length;
-		        return location.href.substring( hostIndex, location.href.indexOf("/", hostIndex + 1) );
-		    };
-		$.ajax({
-		        type: "POST", 
-		        url: getContextPath()+"/classes/teacherlist",
-		        contentType:"application/json;charset=utf-8",
-		        dataType:"json" 
-		    }).done(function(resp){
-		    }).fail(function(error){
-		        alert("로그인 실패 - 서버 오류");
-		    }); 
-		
 
-	});
 </script>
 <script th:src="@{/js/colorpicker/spectrum.min.js}"></script>
 <link rel="stylesheet" type="text/css" th:href="@{/js/colorpicker/spectrum.min.css}"/>
@@ -70,6 +54,51 @@ $(function(){
 		var option = $("<option value='"+selectVal+"'>"+selectText+"</option>");
 		$("#multiple").append(option);
     });
+
+	function getContextPath() {
+		var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+		return location.href.substring( hostIndex, location.href.indexOf("/", hostIndex + 1) );
+	};
+	
+
+	$("#submit").click(function(){
+		
+		alert("test");
+		var len = $("#multiple2").children().length;
+		let student = [];
+		for(var i =0;i<len ; i++){
+			var st_idx = $("#multiple2").children().eq(i).val();
+			student.push(st_idx);
+		}
+
+		let data = {
+			c_nm: $('#c_nm').val(),
+			c_color: $('#colorpicker').val(),
+			c_cap: $('#c_cap').val(),
+			t_idx: $('select#t_idx option:selected').val(),
+			c_detail: $('#c_detail').val(),
+			c_st_tm: $('#c_st_tm').val(),
+			c_ed_tm: $('#c_ed_tm').val(),
+			c_wkd: $('select#c_wkd option:selected').val(),
+			st_idx: student
+		}
+		
+			
+		$.ajax({
+			type: "POST", 
+			url: getContextPath()+"/class",
+			data: JSON.stringify(data),
+			contentType:"application/json;charset=utf-8",
+			dataType:"json" 
+		}).done(function(resp){
+			alert("클래스 등록 완료");
+			location.href = getContextPath()+"/class/all";
+		}).fail(function(error){
+			alert("클래스 등록 실패");
+		}); 		
+	});
+
+
 });
 
 </script>
@@ -93,7 +122,7 @@ $(function(){
 							<div class="row">
 								<div class="col">
 									<div class="mb-3">
-										<label class="form-label" for="username"><strong >클래스명</strong></label><input id="username" class="form-control" type="text" placeholder="클래스명" name="c_nm" />
+										<label class="form-label" for="username"><strong >클래스명</strong></label><input id="c_nm" class="form-control" type="text" placeholder="클래스명" name="c_nm" />
 									</div>
 								</div>
 								<div class="col">
@@ -106,12 +135,12 @@ $(function(){
 							<div class="row">
 								<div class="col">
 									<div class="mb-3">
-										<label class="form-label" for="first_name"><strong>클래스 허용 인원</strong><br /></label><input id="first_name" class="form-control" type="number" placeholder="0" name="c_cap" />
+										<label class="form-label" for="first_name"><strong>클래스 허용 인원</strong><br /></label><input id="c_cap" class="form-control" type="number" placeholder="0" name="c_cap" />
 									</div>
 								</div>
 								<div class="col">
 									<div class="mb-3">
-										<label class="form-label" for="last_name"><strong>담당 선생님</strong><br /></label> <select class="form-select form-control" aria-label="Default select example" name="">
+										<label class="form-label" for="last_name"><strong>담당 선생님</strong><br /></label> <select class="form-select form-control" id="t_idx" aria-label="Default select example" name="t_idx">
 											<th:block th:each="teacher : ${list}">
 												<option th:text="${teacher.t_name}" th:value="${teacher.t_idx}">Open this select menu</option>
 											</th:block>
@@ -124,7 +153,7 @@ $(function(){
 							<div class="row">
 								<div class="mb-3">
 									<label class="form-label" for="c_detail"><strong>클래스 설명</strong></label>
-									<textarea class="form-control" id="st_dtl" rows="4" name="c_detail"></textarea>
+									<textarea class="form-control" id="c_detail" rows="4" name="c_detail"></textarea>
 								</div>
 							</div>
 							<div class="mb-3"></div>
@@ -143,12 +172,12 @@ $(function(){
 				<div class="row">
 					<div class="col">
 						<div class="mb-3">
-							<label class="form-label" for="username"><strong>클래스 시작 시간</strong><br /></label><input id="starttime" class="form-control" type="time"  name="c_st_tm" />
+							<label class="form-label" for="username"><strong>클래스 시작 시간</strong><br /></label><input id="c_st_tm" class="form-control" type="time"  name="c_st_tm" />
 						</div>
 					</div>
 					<div class="col">
 						<div class="mb-3">
-							<label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="endtime" class="form-control" type="time"  name="c_ed_tm" />
+							<label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="c_ed_tm" class="form-control" type="time"  name="c_ed_tm" />
 						</div>
 					</div>
 				</div>
@@ -156,8 +185,8 @@ $(function(){
 					<div class="col">
 						<div class="mb-3">
 							<label class="form-label" for="first_name"><strong>클래스 요일</strong><br /></label>
-                            <select class="form-select form-control" aria-label="Default select example" name="c_wkd">
-                                <option selected value="2">월요일</option>
+                            <select class="form-select form-control" id="c_wkd" aria-label="Default select example" name="c_wkd">
+                                <option value="2">월요일</option>
                                 <option value="3">화요일</option>
                                 <option value="4">수요일</option>
                                 <option value="5">목요일</option>
@@ -196,13 +225,12 @@ $(function(){
 						  </select>	
 					</div>
 				</div>
+				<br/><br/><br/>
 				<div class="row">
-
-				</div>
-				<form>
-					<div class="mb-3"></div>
-				</form>
+					<button type="button" id="submit" class="btn btn-primary">클래스 등록</button>
 			</div>
+			</div>
+			
 		</div>
 	</div>
 </div>

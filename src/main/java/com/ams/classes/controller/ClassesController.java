@@ -26,7 +26,7 @@ public class ClassesController {
 	 * 클래스 정보 등록 화면 연결
 	 * @return
 	 */
-	@RequestMapping("/class/register")
+	@GetMapping("/class")
 	public String register(Model model) {
 		List<TeacherDto> list =service.listDao();
 		List<StudentDto> list2 = service2.getStudentList();
@@ -46,7 +46,7 @@ public class ClassesController {
 	 * 클래스 정보 리스트
 	 * @return
 	 */
-	@RequestMapping("/class")
+	@RequestMapping("/class/all")
 	public String list() {
 		return "classes/list";
 	}
