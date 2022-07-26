@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.ams.classes.model.dto.ClassDto;
+import com.ams.classes.service.ClassService;
 import com.ams.student.model.dto.StudentDto;
 import com.ams.student.service.StudentService;
 import com.ams.teacher.model.dto.TeacherDto;
@@ -22,6 +24,9 @@ public class ClassesController {
     private TeacherSerivce service;
 	@Autowired
 	private StudentService service2;
+
+	@Autowired
+	private ClassService classService;
 	/**
 	 * 클래스 정보 등록 화면 연결
 	 * @return
@@ -47,7 +52,18 @@ public class ClassesController {
 	 * @return
 	 */
 	@RequestMapping("/class/all")
-	public String list() {
+	public String list(Model model) {
+		List<ClassDto> list = classService.getAllClasses();
+		for(ClassDto dto : list){
+			if(dto.getC_wkd()!=null){
+				String day = classService.numToDay(Integer.parseInt(dto.getC_wkd()));
+				dto.setC_wkd(day);
+				int current_student_count = classService.countStClass(dto.getC_idx());
+				dto.setCurrent_student_count(current_student_count);
+			}
+
+		}
+		model.addAttribute("classes", list);
 		return "classes/list";
 	}
 	

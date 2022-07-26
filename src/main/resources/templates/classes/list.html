@@ -30,53 +30,29 @@ $(function(){
 	</div>
 		<div class="col-auto">
 			
-			<button class="btn btn-info" type="button" id="register" th:data-contextPath="${#httpServletRequest.getContextPath()}">클래스 등록</button>
+			<button class="btn btn-info" type="button" id="register" style="color: white;" th:data-contextPath="${#httpServletRequest.getContextPath()}">클래스 등록</button>
 		</div>
 		<br/><br/>
 	</div>
 	<div class="row">
-		<div class="col" style="padding: 20px;">
-			<div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('https://i.pinimg.com/originals/58/18/92/581892a6b895a958afb3b6550c6ac778.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
-				<div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-					<h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">클래스명</h2>
-					<ul class="d-flex list-unstyled mt-auto">
-						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-children"></i>&nbsp;&nbsp;<small>인원</small></li>
-						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;<small>수업 요일</small></li>
-						<li class="d-flex align-items-center"><i class="fa-solid fa-clock"></i>&nbsp;&nbsp;<small>수업 시간대</small></li>
-					</ul>
-					<button class="btn btn-outline-light" type="button">클래스 수정</button>
-				</div>
-			</div>
-			
-		</div>
-		<div class="col" style="padding: 20px;">
+		<th:block th:each="class : ${classes}">
+		<div class="col-4" style="padding: 20px;">
+			<!-- th:style="|background-color: ${class.c_color}|"  -->
 			<div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-position: center; background-repeat: no-repeat; background-size: cover;">
-				<div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1" style="background-color: burlywood">
-					<h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">클래스명</h2>
+				<div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1" th:style="|background-color: ${class.c_color}|">
+					<h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold" th:text="${class.c_nm}">클래스명</h2>
 					<ul class="d-flex list-unstyled mt-auto">
-						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-children"></i>&nbsp;&nbsp;<small>인원</small></li>
-						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;<small>수업 요일</small></li>
-						<li class="d-flex align-items-center"><i class="fa-solid fa-clock"></i>&nbsp;&nbsp;<small>수업 시간대</small></li>
+						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-children"></i>&nbsp;&nbsp;<small th:text="${class.current_student_count}+' / '+${class.c_cap}+'명'">인원</small></li>
+						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;<small th:text="${class.c_wkd}">수업 요일</small></li>
+						<li class="d-flex align-items-center"><i class="fa-solid fa-clock"></i>&nbsp;&nbsp;<small th:text="${class.c_st_tm} + ' ~ ' + ${class.c_ed_tm}">수업 시간대</small></li>
 					</ul>
 					<button class="btn btn-outline-light" type="button">클래스 수정</button>
 				</div>
 			</div>
 			
 		</div>
-		<div class="col" style="padding: 20px;">
-			<div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('https://i.pinimg.com/originals/58/18/92/581892a6b895a958afb3b6550c6ac778.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
-				<div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-					<h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">클래스명</h2>
-					<ul class="d-flex list-unstyled mt-auto">
-						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-children"></i>&nbsp;&nbsp;<small>인원</small></li>
-						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;<small>수업 요일</small></li>
-						<li class="d-flex align-items-center"><i class="fa-solid fa-clock"></i>&nbsp;&nbsp;<small>수업 시간대</small></li>
-					</ul>
-					<button class="btn btn-outline-light" type="button">클래스 수정</button>
-				</div>
-			</div>
-			
-		</div>
+	</th:block>
+
 	</div>
 </div>
 
