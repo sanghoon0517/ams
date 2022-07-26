@@ -90,11 +90,11 @@ $(document).ready(function(){
 				<div class="col-md-6">
 					<nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
 						<ul class="pagination">
-							<li class="page-item disabled"><a class="page-link" aria-label="Previous" href="#"><span aria-hidden="true">«</span></a></li>
-							<li class="page-item active"><a class="page-link" href="#">1</a></li>
-							<li class="page-item"><a class="page-link" href="#">2</a></li>
-							<li class="page-item"><a class="page-link" href="#">3</a></li>
-							<li class="page-item disabled"><a class="page-link" aria-label="Next" href="#"><span aria-hidden="true">»</span></a></li>
+							<li  class="page-item" th:classappend="${pagination.prev} == false ? 'disabled'"><a class="page-link" aria-label="Previous" th:href="@{/studentList?page={page} (page=${pagination.startPage -1})}"><span aria-hidden="true">«</span></a></li>
+							<th:block th:with="start = ${pagination.startPage}, end=${pagination.endPage}">
+								<li th:classappend="${pagination.criteria.page} == ${pageButton} ? 'active'" class="page-item" th:with="start = ${pagination.startPage}, end =  ${pagination.endPage}" th:each="pageButton : ${#numbers.sequence(start,end)}"><a class="page-link" th:href="@{/studentList?page={page} (page=${pageButton})}" th:text=${pageButton}></a></li>
+							</th:block>
+							<li th:classappend="${pagination.next} == false ? 'disabled'" class="page-item disabled"><a class="page-link" aria-label="Next" href="@{/studentList?page={page} (page=${pagination.endPage +1})}"><span aria-hidden="true">»</span></a></li>
 						</ul>
 					</nav>
 				</div>
