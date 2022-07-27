@@ -84,11 +84,14 @@ $(document).ready(function(){
 				</table>
 			</div>
 			<div class="row">
-				<div class="col-md-6 align-self-center">
+				<div class="col-md align-self-center">
 					<p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite" th:text="'Showing '+${pagination.criteria.page}+' to '+${pagination.finalEndPage}+' of '+${pagination.totalCount}"></p>
 				</div>
-				<div class="col-md-6">
-					<nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+			</div>
+			<div class="row">
+				<div class="col-md">
+<!-- 					<nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers"> -->
+					<nav class="d-flex justify-content-center dataTables_paginate paging_simple_numbers">
 						<ul class="pagination">
 							<li  class="page-item" th:classappend="${pagination.prev} == false ? 'disabled'"><a class="page-link" aria-label="Previous" th:href="@{/studentList?page={page} (page=${pagination.startPage-1})}"><span aria-hidden="true">«</span></a></li>
 							<th:block th:with="start = ${pagination.startPage}, end=${pagination.endPage}">
@@ -97,7 +100,7 @@ $(document).ready(function(){
 							<li th:classappend="${pagination.next} == false ? 'disabled'" class="page-item"><a class="page-link" aria-label="Next" th:href="@{/studentList?page={page} (page=${pagination.endPage+1})}"><span aria-hidden="true">»</span></a></li>
 						</ul>
 					</nav>
-				</div>
+				</div>			
 			</div>
 		</div>
 	</div>
