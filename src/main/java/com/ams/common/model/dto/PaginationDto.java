@@ -12,6 +12,7 @@ public class PaginationDto {
 	private int displayPageNum = 10; //게시판 화면에서 한번에 보여질 페이지 번호 개수
 	private int startPage; //화면 시작번호
 	private int endPage; //화면 끝 번호
+	private int finalEndPage; //최종 페이지 끝번호
 	private boolean prev; //페이지네이션 이전버튼 활성화
 	private boolean next; //페이지네이션 다음버튼 활성화
 	
@@ -24,6 +25,10 @@ public class PaginationDto {
 	public void setTotalCount(int totalCount) {
 		this.totalCount = totalCount;
 		paginationData();
+	}
+	
+	public int getFinalEndPage() {
+		return this.finalEndPage = (int) Math.ceil(totalCount/(double) displayPageNum);
 	}
 	
 	private void paginationData() {

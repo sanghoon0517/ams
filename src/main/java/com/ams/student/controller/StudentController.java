@@ -36,6 +36,7 @@ public class StudentController {
 		PaginationDto pagination = new PaginationDto();
 		pagination.setCriteria(criteria);
 		pagination.setTotalCount(studentTotalCnt);
+		System.out.println("[jsh] pagination : "+pagination.toString());
 		
 		List<StudentDto> resultList = studentService.getStudentListPaging(criteria);
 		model.addAttribute("stdList", resultList);
