@@ -7,11 +7,14 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.ams.classes.model.dto.ClassDto;
+import com.ams.student.model.dto.StudentDto;
 
 @Mapper
 public interface ClassDao {
     public int insertClass(ClassDto vo);
-    public int updateStClass(HashMap<String,String> map);
+    public int updateStClass(ClassDto vo);
     public List<ClassDto> getAllClasses();
     public int countStClass(int c_idx);
+    public List<StudentDto> getAllSchl();
+    public List<StudentDto> getStudent(ClassDto dto);
 }

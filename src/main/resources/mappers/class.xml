@@ -7,7 +7,7 @@
 		values(#{c_nm},#{c_color},#{c_cap},#{t_idx},#{c_detail},#{c_st_tm},#{c_ed_tm},#{c_wkd})
 	</insert>
 
-    <update id="updateStClass" parameterType="java.util.Map">
+    <update id="updateStClass" parameterType="com.ams.classes.model.dto.ClassDto">
         update a_member
         set c_idx = 
             (
@@ -17,14 +17,46 @@
                 and c_color=#{c_color} 
                 and c_detail=#{c_detail}
             )
-        where st_idx = #{st_idx}
+        where st_idx IN
+        <foreach collection="st_idx" item="arr" open="(" close=")" separator=",">
+        #{arr}
+        </foreach>
     </update>
 
     <select id="getAllClasses" resultType="com.ams.classes.model.dto.ClassDto">
         select c_nm,c_idx,c_color,c_cap,t_idx,c_detail,c_st_tm,c_ed_tm,c_wkd from a_class
     </select>
+
     <select id="countStClass" parameterType="Integer" resultType="Integer">
         select count(*) as totalStudent from a_member where c_idx = #{c_idx}
     </select>
-  
+    
+    <select id="getAllSchl" resultType="com.ams.student.model.dto.StudentDto">
+       select DISTINCT st_schl from a_member
+    </select>    
+
+    <select id="getStudent" parameterType="com.ams.classes.model.dto.ClassDto" resultType="com.ams.student.model.dto.StudentDto">
+        select a.st_idx, a.st_nm , a.st_bth, a.st_gen, a.st_pn, a.st_schl, c.c_idx, c.c_nm
+        from a_member a, a_class c
+        <where>
+            a.c_idx = c.c_idx
+            <if test="st_nm != null and st_nm != '' ">
+                AND st_nm = #{st_nm}
+            </if>
+            <if test="st_schl != null and st_schl != '' ">
+                AND st_schl = #{st_schl}
+            </if>
+         
+            <if test="age_min != null and age_max !=null">
+               <![CDATA[
+                AND convert(LEFT(st_bth,4), signed) <= #{age_min}
+               ]]> 
+            </if>
+            <if test="age_max !=null">
+               <![CDATA[
+                AND convert(LEFT(st_bth,4), signed) >= #{age_max}
+               ]]> 
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ams.classes.model.dao.ClassDao;
 import com.ams.classes.model.dto.ClassDto;
+import com.ams.student.model.dto.StudentDto;
 
 @Service
 @Transactional
@@ -24,8 +25,8 @@ public class ClassServiceImpl implements ClassService{
     }
 
     @Override
-    public int updateStClass(HashMap<String, String> map) {
-        int result = dao.updateStClass(map);
+    public int updateStClass(ClassDto dto) {
+        int result = dao.updateStClass(dto);
         return result;
     }
 
@@ -65,5 +66,28 @@ public class ClassServiceImpl implements ClassService{
         int result = dao.countStClass(c_idx);
         return result;
     }
+
+
+
+/**
+ * 클래스 등록시 조회에 가져올 학교 정보 불러오기
+ */
+@Override
+public List<StudentDto> getAllSchl() {
+      List<StudentDto> list = dao.getAllSchl();
+      return list;
+}
+
+
+/**
+ * 클래스 등록시 조회된 학생 리스트 정보 가져오기
+ */
+@Override
+public List<StudentDto> getStudent(ClassDto dto) {
+      List<StudentDto> list = dao.getStudent(dto);
+      return list;
+}
+    
+
     
 }

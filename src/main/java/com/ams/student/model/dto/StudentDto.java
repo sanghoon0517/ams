@@ -12,6 +12,7 @@ import lombok.ToString;
 public class StudentDto {
 	private int st_idx;		//학생idx
 	private int c_idx;			//클래스idx
+	private String c_nm;		//클래스 명
 	private String st_nm;		//학생이름
 	private String st_bth;		//학생생년월일
 	private Gender st_gen;		//학생성별

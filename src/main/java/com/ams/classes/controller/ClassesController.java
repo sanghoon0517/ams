@@ -2,6 +2,9 @@ package com.ams.classes.controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -33,18 +36,26 @@ public class ClassesController {
 	 */
 	@GetMapping("/class")
 	public String register(Model model) {
-		List<TeacherDto> list =service.listDao();
-		List<StudentDto> list2 = service2.getStudentList();
+		List<TeacherDto> list =service.listDao(); // 선생님 목록 가져오기
+		List<StudentDto> list2 = service2.getStudentList(); // 원생 정보 불러오기
+		List<StudentDto> list3 = classService.getAllSchl(); // 학교 정보 불러오기
+		List<Integer> ages = new ArrayList<>();
 		for(StudentDto vo : list2){
 			int birth = Integer.parseInt(vo.getSt_bth().substring(0, 4));
 			LocalDate now = LocalDate.now();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy");
 			int nowYear = Integer.parseInt(now.format(formatter));
 			String result =String.valueOf(nowYear-birth+1);
+			ages.add(Integer.parseInt(result));
 			vo.setSt_bth(result);
 		}
+		int min = Collections.min(ages);
+		int max = Collections.max(ages);
+		model.addAttribute("min", min);
+		model.addAttribute("max", max);
         model.addAttribute("list", list);
 		model.addAttribute("list2", list2);
+		model.addAttribute("list3", list3);
 		return "classes/register";
 	}
 	/**
