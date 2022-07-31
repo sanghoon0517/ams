@@ -20,6 +20,24 @@
 		<java.version>11</java.version>
 	</properties>
 	<dependencies>
+		<!-- 엑셀작업 의존성 추가 확장자 가져오는 역할 https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		    <version>2.11.0</version>
+		</dependency>
+		<!-- 엑셀작업 의존성 추가 POI https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml</artifactId>
+		    <version>5.2.2</version>
+		</dependency>
+		<!-- 엑셀작업 의존성 추가 POI https://mvnrepository.com/artifact/org.apache.poi/poi -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi</artifactId>
+		    <version>5.2.2</version>
+		</dependency>
 		<!-- AOP추가 -->
 		<dependency>
 		    <groupId>org.springframework.boot</groupId>
