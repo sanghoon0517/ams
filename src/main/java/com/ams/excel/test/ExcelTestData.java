@@ -51,4 +51,15 @@ public class ExcelTestData {
     @ExcelHeader(headerName = "금액", colIndex = 4, rowIndex = 1, headerStyle = @HeaderStyle(background = @Background("#ECEFF3")))
     @ExcelBody(rowIndex = 1, colIndex = 4, bodyStyle = @BodyStyle(numberFormat = "#,000원"))
     private BigDecimal money;
+    
+    public ExcelTestData(String seq, String name, String korean, String math, String english, String history, LocalDateTime birthDay, BigDecimal money) {
+        this.seq = seq;
+        this.name = name;
+        this.korean = korean;
+        this.math = math;
+        this.english = english;
+        this.history = history;
+        this.birthDay = birthDay;
+        this.money = money;
+    }
 }
