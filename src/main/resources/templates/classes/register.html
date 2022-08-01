@@ -142,7 +142,7 @@ $(function(){
 		for(var i=0;i<$("#selected-student").children().length;i++){
 			var info = $("#selected-student").children().eq(i).text();
 			var column = $('<div class="col-sm-4 col-lg-3 add-student"  style="padding-bottom: 10px;">');
-			var studentbtn = $('<button type="button" class="btn btn-info studentlists" value='+$("#selected-student").children().eq(i).val()+'>'+info+'<i class="fa-solid fa-xmark"></i></button>');
+			var studentbtn = $('<button type="button" class="btn btn-info studentlists" onclick="test()" value='+$("#selected-student").children().eq(i).val()+'>'+info+'<i class="fa-solid fa-xmark"></i></button>');
 			column.append(studentbtn);
 			$('#student-div').append(column);
 		}
@@ -193,6 +193,9 @@ $(function(){
 
 });
 
+function test() {
+	alert("test");
+}
 </script>
 
 </head>
