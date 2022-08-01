@@ -72,7 +72,6 @@ public class ClassesApiController {
             dto.setAge_max(Integer.toString(age_max));
             dto.setAge_min(Integer.toString(age_min));
         }
-        System.out.println(dto.toString());
         List<StudentDto> list = classService.getStudent(dto);
         for(StudentDto vo : list){
             int birth = Integer.parseInt(vo.getSt_bth().substring(0, 4));
@@ -82,7 +81,6 @@ public class ClassesApiController {
 			String result =String.valueOf(nowYear-birth+1);
 			vo.setSt_bth(result);
         }
-        System.out.println(list.toString());
         return new ResponseEntity<>(new ResponseDto<List<StudentDto>>(code,msg,list), HttpStatus.OK);
     }
     
