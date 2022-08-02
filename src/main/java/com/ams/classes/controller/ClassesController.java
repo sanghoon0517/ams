@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ams.classes.model.dto.ClassDto;
 import com.ams.classes.service.ClassService;
@@ -83,4 +86,22 @@ public class ClassesController {
 	public String schedule(){
 		return "schedule/schedule";
 	}
+
+	// @PutMapping("/class")
+    // public String updateClass(@RequestBody int c_idx, Model model) {
+    //     ClassDto dto = classService.getClass(c_idx);
+    //     List<StudentDto> st_list = classService.getClassStudent(c_idx);
+    //     int current_student_count = classService.countStClass(c_idx);
+    //     for(StudentDto vo : st_list){
+    //         vo.setSt_bth(classService.getKoreanAge(vo.getSt_bth()));
+    //     }
+
+    //     dto.setSt_list(st_list);
+    //     dto.setCurrent_student_count(current_student_count);
+    //     dto.setT_name(classService.getTeachername(c_idx));
+
+	// 	model.addAttribute("class", dto);
+	// 	return "classes/update";
+    // }
+    
 }

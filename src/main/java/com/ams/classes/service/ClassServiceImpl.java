@@ -1,5 +1,7 @@
 package com.ams.classes.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -86,6 +88,41 @@ public List<StudentDto> getAllSchl() {
 public List<StudentDto> getStudent(ClassDto dto) {
       List<StudentDto> list = dao.getStudent(dto);
       return list;
+}
+
+/**
+ * 클래스 조회
+ * c_idx로 조회된 클래스 정보 가져오기
+ */
+@Override
+public ClassDto getClass(int c_idx) {
+      ClassDto dto = dao.getClass(c_idx);
+      return dto;
+}
+
+@Override
+public List<StudentDto> getClassStudent(int c_idx) {
+      List<StudentDto> list = dao.getClassStudent(c_idx);
+      return list;
+}
+
+@Override
+public String getTeachername(int c_idx) {
+      String t_name = dao.getTeachername(c_idx);
+      return t_name;
+}
+
+/**
+ * 한국나이로 환산 19990911 -> 나이로
+ */
+@Override
+public String getKoreanAge(String st_bth) {
+      int birth = Integer.parseInt(st_bth.substring(0, 4));
+      LocalDate now = LocalDate.now();
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy");
+      int nowYear = Integer.parseInt(now.format(formatter));
+      String result =String.valueOf(nowYear-birth+1);
+      return result;
 }
     
 

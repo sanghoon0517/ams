@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +21,10 @@ import com.ams.common.model.dto.ResponseDto;
 import com.ams.student.model.dto.StudentDto;
 import com.ams.teacher.model.dto.TeacherDto;
 import com.ams.teacher.service.TeacherSerivce;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -74,14 +79,32 @@ public class ClassesApiController {
         }
         List<StudentDto> list = classService.getStudent(dto);
         for(StudentDto vo : list){
-            int birth = Integer.parseInt(vo.getSt_bth().substring(0, 4));
-			LocalDate now = LocalDate.now();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy");
-			int nowYear = Integer.parseInt(now.format(formatter));
-			String result =String.valueOf(nowYear-birth+1);
-			vo.setSt_bth(result);
+            vo.setSt_bth(classService.getKoreanAge(vo.getSt_bth()));
         }
         return new ResponseEntity<>(new ResponseDto<List<StudentDto>>(code,msg,list), HttpStatus.OK);
     }
+
+    @GetMapping(value="/class/{c_idx}")
+    public ResponseEntity<?> getMethodName(@PathVariable int c_idx) {
+        int code=1;
+		String msg= "";
+        
+        ClassDto dto = classService.getClass(c_idx);
+        List<StudentDto> st_list = classService.getClassStudent(c_idx);
+        int current_student_count = classService.countStClass(c_idx);
+        if(dto.getC_wkd()!=null){
+            dto.setC_wkd(classService.numToDay(Integer.parseInt(dto.getC_wkd())));
+        }
+        for(StudentDto vo : st_list){
+            vo.setSt_bth(classService.getKoreanAge(vo.getSt_bth()));
+        }
+        dto.setSt_list(st_list);
+        dto.setCurrent_student_count(current_student_count);
+        dto.setT_name(classService.getTeachername(c_idx));
+
+
+        return new ResponseEntity<>(new ResponseDto<ClassDto>(code,msg,dto), HttpStatus.OK);
+    }
     
+
 }

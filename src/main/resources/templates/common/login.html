@@ -7,6 +7,7 @@
     <title>Login - Brand</title>
     <link rel="stylesheet" th:href="@{/assets/bootstrap/css/bootstrap.min.css}">
     <script th:src="@{/webjars/jquery/3.6.0/dist/jquery.min.js}"></script>
+    <script th:src="@{/js/common/common.js}"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
     <link rel="stylesheet" th:href="@{/assets/fonts/fontawesome-all.min.css}">
     <link rel="stylesheet" th:href="@{/assets/css/Bootstrap-Calendar.css}">
@@ -18,10 +19,7 @@
     $(function(){
         $('#login').click(function(){
             loading();
-            function getContextPath() {
-                var hostIndex = location.href.indexOf( location.host ) + location.host.length;
-                return location.href.substring( hostIndex, location.href.indexOf("/", hostIndex + 1) );
-		    };
+            $('#mask').show();
             let data={
                 t_id: $('#teacherid').val(),
                 t_pwd: $('#teacherpwd').val()
@@ -46,34 +44,7 @@
                 
             }); 
         });
-//div class="d-flex justify-content-center">
-//   <div class="spinner-border" role="status">
-//     <span class="visually-hidden">Loading...</span>
-//   </div>
-// </div>
-        function loading(){
-            var maskHeight = $(document).height();
-            var maskWidth = window.document.body.clientWidth;
-            var mask = $("<div id='mask' style='position:absolute; z-index:9000; background-color:#000000; display:none; left:0; top:0;'></div>");
-            var box1 = $('<div class="d-flex justify-content-center">');
-            var box2 = $('<div class="spinner-border" role="status">');
-            var box3 = $('<span class="visually-hidden">Loading...</span>');
-            box2.append(box3);
-            box1.append(box2);
-            mask.append(box1);
-            $('body').append(mask);
-            $('#mask').css({
-                'width' : maskWidth,
-                'height': maskHeight,
-                'opacity' : '0.7'
-            });
-            $('#mask').show();
-            $('#mask').css({
-                'display': 'flex',
-                'justify-content': 'center',
-                'align-items': 'center'
-            });
-        }
+
 
         
     });

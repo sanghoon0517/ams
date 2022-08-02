@@ -17,4 +17,8 @@ public interface ClassDao {
     public int countStClass(int c_idx);
     public List<StudentDto> getAllSchl();
     public List<StudentDto> getStudent(ClassDto dto);
+    public ClassDto getClass(int c_idx);
+    public List<StudentDto> getClassStudent(int c_idx);
+    public String getTeachername(int c_idx);
+
 }
