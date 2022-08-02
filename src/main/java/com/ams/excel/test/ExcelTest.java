@@ -6,11 +6,15 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+
+import com.ams.excel.annotation.ExcelBody;
 
 public class ExcelTest {
 	public static void main(String[] args) {
@@ -21,12 +25,17 @@ public class ExcelTest {
                 new ExcelTestData("1반","김영희","100","90", "80", "100", LocalDateTime.of(1997, 4, 1,0,0,0), null)
         );
 		
+		//순서 정렬 - 반으로 정렬했음
+		Collections.sort(sample1List);
+		
+		
 		ResponseEntity<Resource> responseEntity = null;
 		FileOutputStream fileOutputStream = null;
         try {
-        	responseEntity = ExcelTestExport.export("test",ExcelTestData.class, sample1List);
-        	fileOutputStream = new FileOutputStream("test.xlsx");
+        	responseEntity = ExcelUtil.export("test",ExcelTestData.class, sample1List);
+        	fileOutputStream = new FileOutputStream("C://dev/test.xlsx");
 			fileOutputStream.write(((ByteArrayResource)responseEntity.getBody()).getByteArray());
+			System.out.println("파일쓰기 완료");
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -39,6 +48,7 @@ public class ExcelTest {
 		} finally {
 			try {
 				fileOutputStream.close();
+				System.out.println("fos 닫음");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

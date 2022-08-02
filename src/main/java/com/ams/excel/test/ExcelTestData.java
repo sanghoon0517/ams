@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExcelTestData {
+public class ExcelTestData implements Comparable<ExcelTestData>{
     @ExcelHeader(headerName = "반", colIndex = 0, rowIndex = 0, rowSpan = 1, headerStyle = @HeaderStyle(background = @Background("#ECEFF3")))
     @ExcelBody(rowIndex = 0,colIndex = 0,rowGroup = true, bodyStyle = @BodyStyle(horizontalAlignment = HorizontalAlignment.CENTER))
     private String seq;
@@ -61,5 +61,11 @@ public class ExcelTestData {
         this.history = history;
         this.birthDay = birthDay;
         this.money = money;
+    }
+    
+    //https://webfirewood.tistory.com/131 객체 sorting 참고
+    @Override
+    public int compareTo(ExcelTestData other) {
+        return this.seq.compareTo(other.seq);
     }
 }
