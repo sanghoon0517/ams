@@ -42,19 +42,19 @@ public class ClassServiceImpl implements ClassService{
     public String numToDay(int c_wkd) {
         String day = "";
         switch (c_wkd) {
-                    case 1: day = "월";
+                    case 2: day = "월";
                           break;
-                    case 2: day = "화";
+                    case 3: day = "화";
                           break;
-                    case 3: day = "수";
+                    case 4: day = "수";
                           break;
-                    case 4: day = "목";
+                    case 5: day = "목";
                           break;
-                    case 5: day = "금";
+                    case 6: day = "금";
                           break;
-                    case 6: day = "토";
+                    case 7: day = "토";
                           break;
-                    case 7: day = "일"; 
+                    case 1: day = "일"; 
                           break;
               default:
                     break;
@@ -122,6 +122,21 @@ public String getKoreanAge(String st_bth) {
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy");
       int nowYear = Integer.parseInt(now.format(formatter));
       String result =String.valueOf(nowYear-birth+1);
+      return result;
+}
+
+@Override
+public String getGender(String st_gen) {
+      String result = st_gen=="M"? "(남)":"(여)";
+      return result;
+}
+
+/**
+ * 클래스 업데이트 기능
+ */
+@Override
+public int updateClass(int c_idx) {
+      int result = dao.updateClass(c_idx);
       return result;
 }
     

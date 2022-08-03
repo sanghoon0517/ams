@@ -19,4 +19,6 @@ public interface ClassService {
     public List<StudentDto> getClassStudent(int c_idx);
     public String getTeachername(int c_idx);
     public String getKoreanAge(String st_bth);
+    public String getGender(String st_gen);
+    public int updateClass(int c_idx);
 }

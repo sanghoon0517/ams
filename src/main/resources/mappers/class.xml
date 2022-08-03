@@ -61,7 +61,7 @@
     </select>
 
     <select id="getClassStudent" parameterType="Integer" resultType="com.ams.student.model.dto.StudentDto">
-        SELECT c.st_nm, c.st_schl,  c.st_bth, c.st_gen
+        SELECT c.st_nm, c.st_schl,  c.st_bth, c.st_gen, c.st_idx
         FROM a_class a , a_member c 
         WHERE a.c_idx = c.c_idx 
         AND a.c_idx = #{c_idx}
@@ -79,4 +79,15 @@
         WHERE a.t_idx = c.t_idx
         AND c.c_idx = #{c_idx}
     </select>
+    <!-- <update id="updateClass" parameterType="Integer">
+        UPDATE a_class
+        SET 
+        c_title =
+        c_color = 
+        c_cap = 
+        c_detail =
+        c_st_tm =
+        c_ed_tm = 
+        c_wkd =
+    </update> -->
 </mapper>

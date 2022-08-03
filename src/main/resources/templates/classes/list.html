@@ -98,20 +98,8 @@ $(function(){
 
 
 	$('#class-update').click(function(){
-		let data={
-			c_idx: $('#class-update').val()
-		};
-
-		$.ajax({
-                type: "PUT",
-                url: getContextPath()+"/class",
-                data: JSON.stringify(data),
-                contentType:"application/json;charset=utf-8", 
-                dataType:"json"
-            }).done(function(resp){
-            }).fail(function(error){
-                alert("로그인 실패");
-            }); 
+		alert("페이지 이동");
+		location.href = getContextPath()+"/class/"+$('#class-update').val()+"/post";
 	});
 });
 
@@ -163,7 +151,7 @@ $(function(){
 		  <div class="row">
 				<div class="col-sm-12 col-lg-6">
 					<h5>클래스명</h5>
-					<h6 id="c-title">유치부-소묘</h6>
+					<h6 id="c-title"></h6>
 				</div>
 				<div class="col-6 col-sm-6 col-lg-6">
 					<h5>클래스 표시 컬러</h5>
@@ -185,6 +173,7 @@ $(function(){
 					<h5>클래스 요일</h5>
 					<h6 id="c-wkd">이영헌</h6>
 				</div>
+	
 				<div class="col-sm-12 col-lg-12">
 					<h5>클래스 설명</h5>
 					<h6 id="c-detail"></h6>

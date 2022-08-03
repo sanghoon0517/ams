@@ -21,6 +21,9 @@ import com.ams.common.model.dto.ResponseDto;
 import com.ams.student.model.dto.StudentDto;
 import com.ams.teacher.model.dto.TeacherDto;
 import com.ams.teacher.service.TeacherSerivce;
+
+import retrofit2.http.Path;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,6 +66,7 @@ public class ClassesApiController {
             return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.OK);
         }
 	}
+
     @PostMapping(value="/class/studentlist")
     public ResponseEntity<?> studentlist(@RequestBody ClassDto dto) {
         int code=1;
@@ -106,5 +110,27 @@ public class ClassesApiController {
         return new ResponseEntity<>(new ResponseDto<ClassDto>(code,msg,dto), HttpStatus.OK);
     }
     
+    // @PutMapping("/class/{c_idx}")
+	// public ResponseEntity<?> idCheck(@PathVariable int c_idx) {
+    //     int code=1;
+	// 	String msg= "";
+	// 	String data = "";
 
+    //     //클래스 먼저 생성
+    //     int result = classService.insertClass(dto);
+    //     int result2 = 1;
+    //     if(result==0){
+    //         msg = "클래스 생성 실패";
+    //         return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.BAD_REQUEST);
+    //     }else{
+    //         // 클래스 생성 성공이후 학생 테이블에 클래스 등록처리
+    //         result2 = classService.updateStClass(dto);
+    //         if(result2==0){
+    //             msg = "원생->클래스 등록 실패";
+    //             return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.BAD_REQUEST);
+    //         }
+    //         msg ="클래스 등록, 원생 클래스 등록 완료";
+    //         return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.OK);
+    //     }
+	// }
 }

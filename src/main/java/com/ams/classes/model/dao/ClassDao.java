@@ -20,5 +20,5 @@ public interface ClassDao {
     public ClassDto getClass(int c_idx);
     public List<StudentDto> getClassStudent(int c_idx);
     public String getTeachername(int c_idx);
-
+    public int updateClass(int c_idx);
 }

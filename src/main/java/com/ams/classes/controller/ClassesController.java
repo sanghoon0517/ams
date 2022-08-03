@@ -7,11 +7,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,8 +26,13 @@ import com.ams.student.service.StudentService;
 import com.ams.teacher.model.dto.TeacherDto;
 import com.ams.teacher.service.TeacherSerivce;
 
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class ClassesController {
+	
     @Autowired
     private TeacherSerivce service;
 	@Autowired
@@ -86,22 +93,50 @@ public class ClassesController {
 	public String schedule(){
 		return "schedule/schedule";
 	}
+	
+	/**
+	 * 수정 페이지로 이동
+	 * @param c_idx
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/class/{c_idx}/post")
+    public String updateClass(@PathVariable int c_idx ,Model model) {
+		System.out.println("###################등록 기본 정보 로딩#####################");
+		List<TeacherDto> list =service.listDao(); // 선생님 목록 가져오기
+		List<StudentDto> list2 = service2.getStudentList(); // 원생 정보 불러오기
+		List<StudentDto> list3 = classService.getAllSchl(); // 학교 정보 불러오기
+		List<Integer> ages = new ArrayList<>();
+		for(StudentDto vo : list2){
+			int birth = Integer.parseInt(vo.getSt_bth().substring(0, 4));
+			LocalDate now = LocalDate.now();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy");
+			int nowYear = Integer.parseInt(now.format(formatter));
+			String result =String.valueOf(nowYear-birth+1);
+			ages.add(Integer.parseInt(result));
+			vo.setSt_bth(result);
+		}
+		int min = Collections.min(ages);
+		int max = Collections.max(ages);
+		model.addAttribute("min", min);
+		model.addAttribute("max", max);
+        model.addAttribute("list", list);
+		model.addAttribute("list2", list2);
+		model.addAttribute("list3", list3);
 
-	// @PutMapping("/class")
-    // public String updateClass(@RequestBody int c_idx, Model model) {
-    //     ClassDto dto = classService.getClass(c_idx);
-    //     List<StudentDto> st_list = classService.getClassStudent(c_idx);
-    //     int current_student_count = classService.countStClass(c_idx);
-    //     for(StudentDto vo : st_list){
-    //         vo.setSt_bth(classService.getKoreanAge(vo.getSt_bth()));
-    //     }
+		System.out.println("##################클래스 정보 로딩######################");
+        ClassDto dto = classService.getClass(c_idx);
+        List<StudentDto> st_list = classService.getClassStudent(c_idx);
+        int current_student_count = classService.countStClass(c_idx);
+        for(StudentDto vo : st_list){
+            vo.setSt_bth(classService.getKoreanAge(vo.getSt_bth()));
+        }
 
-    //     dto.setSt_list(st_list);
-    //     dto.setCurrent_student_count(current_student_count);
-    //     dto.setT_name(classService.getTeachername(c_idx));
-
-	// 	model.addAttribute("class", dto);
-	// 	return "classes/update";
-    // }
+        dto.setSt_list(st_list);
+        dto.setCurrent_student_count(current_student_count);
+        dto.setT_name(classService.getTeachername(c_idx));
+		model.addAttribute("class", dto);
+		return "classes/update";
+    }
     
 }
