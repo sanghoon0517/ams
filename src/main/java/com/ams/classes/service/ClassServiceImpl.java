@@ -135,8 +135,8 @@ public String getGender(String st_gen) {
  * 클래스 업데이트 기능
  */
 @Override
-public int updateClass(int c_idx) {
-      int result = dao.updateClass(c_idx);
+public int updateClass(ClassDto vo) {
+      int result = dao.updateClass(vo);
       return result;
 }
     

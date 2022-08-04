@@ -16,6 +16,7 @@
                 where c_nm=#{c_nm} 
                 and c_color=#{c_color} 
                 and c_detail=#{c_detail}
+                and c_st_tm = #{c_st_tm}
             )
         where st_idx IN
         <foreach collection="st_idx" item="arr" open="(" close=")" separator=",">
@@ -79,15 +80,18 @@
         WHERE a.t_idx = c.t_idx
         AND c.c_idx = #{c_idx}
     </select>
-    <!-- <update id="updateClass" parameterType="Integer">
+    <update id="updateClass" parameterType="com.ams.classes.model.dto.ClassDto">
         UPDATE a_class
         SET 
-        c_title =
-        c_color = 
-        c_cap = 
-        c_detail =
-        c_st_tm =
-        c_ed_tm = 
-        c_wkd =
-    </update> -->
+            c_nm = #{c_nm},
+            c_color = #{c_color},
+            t_idx = #{t_idx},
+            c_cap = #{c_cap},
+            c_detail =#{c_detail},
+            c_st_tm = #{c_st_tm},
+            c_ed_tm = #{c_ed_tm},
+            c_wkd = #{c_wkd}
+        WHERE 
+            c_idx = #{c_idx}
+    </update>
 </mapper>
