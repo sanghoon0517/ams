@@ -163,15 +163,18 @@ public class ExcelUtil {
         
         //그룹필드값을 받아서 하나씩 처리하겠음
         List<Field> groupField = Arrays.stream(excelClass.getDeclaredFields())
+        		//ExcelBody 어노테이션이 달려있는 필드값 중에 rowGroup 필드값이 true인 것만 가져옴
                 .filter(field -> field.isAnnotationPresent(ExcelBody.class) && field.getDeclaredAnnotation(ExcelBody.class).rowGroup())
                 .map(field -> {
                     field.setAccessible(true);
                     return field;
                 })
-                .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(ExcelBody.class).colIndex()))
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparing(field -> field.getDeclaredAnnotation(ExcelBody.class).colIndex())) //colIndex기준으로 정렬
+                .collect(Collectors.toList()); //필드값들 전부 모아서 "List<Field>" 타입으로 리턴해줌 
 
         Map<Field, List<Integer>> groupMap = new HashMap<>();
+        
+        //List에서 Field를 하나씩 뽑아서 Map에다가 하나씩 집어넣음
         for (Field field : groupField){
             groupMap.put(field, new ArrayList<>());
             for(int i=0; i< data.size(); i++){
@@ -179,6 +182,7 @@ public class ExcelUtil {
 
                 for(int j = i+1;j < data.size(); j++){
                     Object o2 = field.get(data.get(j));
+                    //현재행과 다음행을 비교하여 값이 다른 인덱스를 탐색
                     if(!o1.equals(o2)){
                         groupMap.get(field).add((j)* headerMap.size()+headerMap.keySet().size()-1);
                         i = j-1;
@@ -189,6 +193,7 @@ public class ExcelUtil {
             groupMap.get(field).add(sheet.getLastRowNum());
         }
 
+        //데이터 출력이후 셀들의 전체 테두리 재설정을 위한 작업 
         for(Field field: groupMap.keySet()){
             int dataRowIndex = headerMap.keySet().size();
             for(int i=0; i<groupMap.get(field).size(); i++){
@@ -202,6 +207,7 @@ public class ExcelUtil {
 
             }
         }
+        //전체 테두리 재설정 적용
         List<CellRangeAddress> mergedRegions = sheet.getMergedRegions();
         for(CellRangeAddress rangeAddress : mergedRegions) {
             RegionUtil.setBorderBottom(BorderStyle.THIN, rangeAddress, sheet);
@@ -230,7 +236,7 @@ public class ExcelUtil {
                 .body(new ByteArrayResource(byteArrayOutputStream.toByteArray()));
     }
 
-
+	//배경색 데이터 체크
     private static boolean isHex(String hexCode) {
         if (StringUtils.startsWith(hexCode, "#")) {
             for (Character c : hexCode.substring(1).toCharArray()) {

@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.ams.classes.model.dto.ClassDto;
+import com.ams.classes.service.ClassService;
 import com.ams.common.model.dto.PaginationCriteriaDto;
 import com.ams.common.model.dto.PaginationDto;
 import com.ams.student.model.dto.StudentDto;
@@ -20,10 +22,15 @@ public class StudentController {
 	
 	private final StudentService studentService;
 	
+	private final ClassService classService;
+	
 	@GetMapping("/studentEnroll")
 	public String enroll(Model model){
 //		String stdDate = studentService.getStdDate();
 //		model.addAttribute("std_date", stdDate);
+		
+		List<ClassDto> classList  = classService.getAllClasses();
+		model.addAttribute("clsList", classList);
 		return "student/enroll";
 	}
 	
