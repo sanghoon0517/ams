@@ -194,10 +194,11 @@ function findPostCode() {
 							<label class="form-label" for="c_idx">
 								<strong>학생 수업</strong><br>
 							</label>
-							<select th:field="${clsList}" class="form-control" id="c_idx" name="c_idx">
-								<option value="">수업을 선택해주세요.</option>
-								<option value="4">4번수업</option>
-								<option value="2">2번수업</option>
+							<select class="form-control" id="c_idx" name="c_idx">
+								<option value="">[수업 선택]</option>
+		                        <th:block th:each="class : ${clsList}">
+	                                <option th:text="${class.c_nm}" th:value="${class.c_idx}"></option>
+								</th:block>
 							</select>
 						</div>
 					</div>
