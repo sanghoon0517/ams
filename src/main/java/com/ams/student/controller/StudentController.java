@@ -48,7 +48,7 @@ public class StudentController {
 		List<StudentDto> resultList = studentService.getStudentListPaging(criteria);
 		model.addAttribute("stdList", resultList);
 		model.addAttribute("pagination", pagination);
-		return "student/article";
+		return "student/manage";
 	}
 	
 	@PostMapping("student/enroll")

@@ -50,5 +50,11 @@ public class StudentServiceImpl implements StudentService{
 		// TODO Auto-generated method stub
 		return studentDao.getStudentListCount();
 	}
+
+	@Override
+	public StudentDto getStudentInfoByIdx(int st_idx) {
+		// TODO Auto-generated method stub
+		return studentDao.getStudnetInfoByIdx(st_idx);
+	}
 	
 }
