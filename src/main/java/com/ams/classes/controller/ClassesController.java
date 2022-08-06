@@ -79,20 +79,16 @@ public class ClassesController {
 			if(dto.getC_wkd()!=null){
 				String day = classService.numToDay(Integer.parseInt(dto.getC_wkd()));
 				dto.setC_wkd(day);
-				int current_student_count = classService.countStClass(dto.getC_idx());
-				dto.setCurrent_student_count(current_student_count);
 			}
+			int current_student_count = classService.countStClass(dto.getC_idx());
+			dto.setCurrent_student_count(current_student_count);
 
 		}
 		model.addAttribute("classes", list);
 		return "classes/list";
 	}
 	
-	
-	@GetMapping("/schedule")
-	public String schedule(){
-		return "schedule/schedule";
-	}
+
 	
 	/**
 	 * 수정 페이지로 이동

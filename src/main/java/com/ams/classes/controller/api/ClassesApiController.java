@@ -24,6 +24,7 @@ import com.ams.teacher.service.TeacherSerivce;
 
 import retrofit2.http.Path;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -133,4 +134,18 @@ public class ClassesApiController {
             return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.OK);
         }
 	}
+
+    @DeleteMapping("/class/{c_idx}")
+    public ResponseEntity<?> deleteClass(@PathVariable int c_idx) {
+		String msg= "";
+		String data = "";
+        int result = classService.deleteClass(c_idx);
+        if(result == 0){
+            msg= "클래스 삭제에 실패했습니다.";
+            return new ResponseEntity<>(new ResponseDto<String>(result,msg,data), HttpStatus.BAD_REQUEST);
+        }else{
+            msg= "클래스 삭제에 성공했습니다.";
+            return new ResponseEntity<>(new ResponseDto<String>(result,msg,data), HttpStatus.OK);
+        }
+    }
 }

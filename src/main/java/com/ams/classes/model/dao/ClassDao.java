@@ -21,4 +21,6 @@ public interface ClassDao {
     public List<StudentDto> getClassStudent(int c_idx);
     public String getTeachername(int c_idx);
     public int updateClass(ClassDto vo);
+    public int deleteClass(int c_idx);
+    public int resetStClass(int c_idx); // 리셋용도(클래스 삭제시 원생들 클래스 => 미등록 클래스로)
 }

@@ -42,7 +42,6 @@ $(function(){
     $("#colorpicker").spectrum({
         color: [[${class.c_color}]]
     });
-    alert([[${class.c_wkd}]]);
     $("select#c_wkd option[value="+[[${class.c_wkd}]]+"]").attr("selected","selected");
 
 
@@ -155,21 +154,9 @@ $(function(){
         }
         $('#searchstudent').modal('hide');
     });
-    // $('#student-register').click(function(){
-    //  for(var i=0;i<$("#selected-student").children().length;i++){
-    //      var info = $("#selected-student").children().eq(i).text();
-    //      var column = $('<div class="col-sm-4 col-lg-3 add-student"  style="padding-bottom: 10px;">');
-    //      var studentbtn = $('<button type="button" class="btn btn-info studentlists" value='+$("#selected-student").children().eq(i).val()+'>'+info+'<i class="fa-solid fa-xmark"></i></button>');
-    //      column.append(studentbtn);
-    //      $('#student-div').append(column);
-    //  }
-    //  $('#searchstudent').modal('hide');
-        
-    // });
-
 
     
-
+    // 클래스 수정 완료 submit 버튼 이벤트 
     $("#submit").click(function(){
         alert("유효성검사 필요!");
         var len = $("#selected-student").children().length;
@@ -178,7 +165,6 @@ $(function(){
             var st_idx = $("#selected-student").children().eq(i).val();
             student.push(st_idx);
         }
-        alert(student);
         let data = {
             c_nm: $('#c_nm').val(),
             c_color: $('#colorpicker').val(),
@@ -193,9 +179,7 @@ $(function(){
 
         /*<![CDATA[*/
         var c_idx = [[${class.c_idx}]];
-
         /*]]>*/
-        alert(c_idx);
         $.ajax({
             type: "PUT",
             url: getContextPath() + "/class/" + c_idx,
@@ -209,7 +193,28 @@ $(function(){
             alert("클래스 수정 실패");
         });         
     });
+    //클래스 삭제 버튼
+    $('#delete').click(function(){
+        if(confirm("해당 클래스를 삭제하시겠습니까? \n(삭제시 클래스의 정보와 클래스에 등록된 원생의 클래스는 초기화됩니다.)")){
+            /*<![CDATA[*/
+            var c_idx = [[${class.c_idx}]];
+            /*]]>*/
+            $.ajax({
+                type: "DELETE",
+                url: getContextPath() + "/class/" + c_idx,
+                contentType: "application/json;charset=utf-8",
+                dataType: "json"
+            }).done(function (resp) {
+                alert("클래스 삭제 완료");
+                location.href = getContextPath() + "/class/all";
+            }).fail(function (error) {
+                alert("클래스 삭제 실패");
+            });     
+        }else{
+            return
+        }
 
+    });
 
 });
 
@@ -337,11 +342,17 @@ $(function(){
                     </th:block>
                 </div>
                 <br/><br/><br/>
-            <div class="row">
-                    <button type="button" id="submit" class="btn btn-primary">클래스 수정 완료</button>
-            </div>
+
             </div>
             
+        </div>
+    </div>
+    <div class="row justify-content-end">
+        <div class="col col-sm-4 col-lg-4">
+            <button type="button" id="submit" class="btn btn-primary" style="width: 100%;">클래스 수정 완료</button>
+        </div>
+        <div class="col col-sm-3 col-lg-2">
+            <button type="button" id="delete" class="btn btn-danger" style="width: 100%;">클래스 삭제</button>
         </div>
     </div>
 

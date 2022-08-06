@@ -59,18 +59,18 @@ $(function(){
 			//클래스 디테일
 			$('#c-detail').text(resp.data.c_detail);
 			//원생 리스트
-			var defaultcolumn = $('<div class="col-sm-6 col-lg-4 add-student"  style="padding-bottom: 10px;">');
-			var defaultbtn = $('<button type="button" class="btn btn-primary default-btn"><i class="fa-solid fa-plus"></i></button>');
-			defaultcolumn.append(defaultbtn);
+			//var defaultcolumn = $('<div class="col-sm-6 col-lg-4 add-student"  style="padding-bottom: 10px;">');
+			//var defaultbtn = $('<button type="button" class="btn btn-primary default-btn"><i class="fa-solid fa-plus"></i></button>');
+			//defaultcolumn.append(defaultbtn);
 			for(var i=0;i<resp.data.st_list.length;i++){
 				var column = $('<div class="col-sm-6 col-lg-4 add-student"  style="padding-bottom: 10px;">');
 				var gen = resp.data.st_list[i].st_gen=='M'?'남':'여';
 				var studentbtn = $('<button type="button" class="btn btn-info studentlists">'+
-					resp.data.st_list[i].st_nm+'('+gen+') '+ resp.data.st_list[i].st_bth +'살 '+resp.data.st_list[i].st_schl+'<i class="fa-solid fa-xmark"></i></button>');
+					resp.data.st_list[i].st_nm+'('+gen+') '+ resp.data.st_list[i].st_bth +'살 '+resp.data.st_list[i].st_schl+'</button>');
 				column.append(studentbtn);
 				$('#c-student').append(column);			
 			}
-			$('#c-student').append(defaultcolumn);
+			//$('#c-student').append(defaultcolumn);
 			$('.studentlists').css({
 				'display': 'flex',
 				'justify-content': 'space-between',
@@ -98,7 +98,6 @@ $(function(){
 
 
 	$('#class-update').click(function(){
-		alert("페이지 이동");
 		location.href = getContextPath()+"/class/"+$('#class-update').val()+"/post";
 	});
 });
@@ -120,21 +119,24 @@ $(function(){
 	</div>
 	<div class="row">
 		<th:block th:each="class : ${classes}">
-		<div class="col-sm-6 col-lg-4" style="padding: 20px;">
-			<!-- th:style="|background-color: ${class.c_color}|"  -->
-			<div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-position: center; background-repeat: no-repeat; background-size: cover;">
-				<div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1" th:style="|background-color: ${class.c_color}|">
-					<h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold" th:text="${class.c_nm}">클래스명</h2>
-					<ul class="d-flex list-unstyled mt-auto">
-						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-children"></i>&nbsp;&nbsp;<small th:text="${class.current_student_count}+' / '+${class.c_cap}+'명'">인원</small></li>
-						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;<small th:text="${class.c_wkd}">수업 요일</small></li>
-						<li class="d-flex align-items-center"><i class="fa-solid fa-clock"></i>&nbsp;&nbsp;<small th:text="${class.c_st_tm} + ' ~ ' + ${class.c_ed_tm}">수업 시간대</small></li>
-					</ul>
-					<button class="btn btn-outline-light view-class"  th:value="${class.c_idx}" type="button">클래스 상세보기</button>
+			<th:block th:if="${class.c_idx != 0}">
+				<div class="col-sm-6 col-lg-4" style="padding: 20px;">
+					<!-- th:style="|background-color: ${class.c_color}|"  -->
+					<div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-position: center; background-repeat: no-repeat; background-size: cover;">
+						<div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1" th:style="|background-color: ${class.c_color}|">
+							<h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold" th:text="${class.c_nm}">클래스명</h2>
+							<ul class="d-flex list-unstyled mt-auto">
+								<li class="d-flex align-items-center me-3"><i class="fa-solid fa-children"></i>&nbsp;&nbsp;<small th:text="${class.current_student_count}+' / '+${class.c_cap}+'명'">인원</small></li>
+								<li class="d-flex align-items-center me-3"><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;<small th:text="${class.c_wkd}">수업 요일</small></li>
+								<li class="d-flex align-items-center"><i class="fa-solid fa-clock"></i>&nbsp;&nbsp;<small th:text="${class.c_st_tm} + ' ~ ' + ${class.c_ed_tm}">수업 시간대</small></li>
+							</ul>
+							<button class="btn btn-outline-light view-class"  th:value="${class.c_idx}" type="button">클래스 상세보기</button>
+						</div>
+					</div>
+					
 				</div>
-			</div>
-			
-		</div>
+			</th:block>
+
 	</th:block>
 
 	</div>

@@ -25,7 +25,16 @@
     </update>
 
     <select id="getAllClasses" resultType="com.ams.classes.model.dto.ClassDto">
-        select c_nm,c_idx,c_color,c_cap,t_idx,c_detail,c_st_tm,c_ed_tm,c_wkd from a_class
+        select 
+            c_nm,
+            c_idx,
+            c_color,
+            c_cap,t_idx,
+            c_detail,
+            c_st_tm,
+            c_ed_tm,
+            c_wkd 
+        from a_class
     </select>
 
     <select id="countStClass" parameterType="Integer" resultType="Integer">
@@ -93,5 +102,15 @@
             c_wkd = #{c_wkd}
         WHERE 
             c_idx = #{c_idx}
+    </update>
+
+    <delete id="deleteClass" parameterType="Integer">
+        DELETE FROM a_class WHERE c_idx = #{c_idx}
+    </delete>
+    <update id="resetStClass" parameterType="Integer">
+        UPDATE a_member
+        SET
+            c_idx = '0'
+        WHERE c_idx = #{c_idx}    
     </update>
 </mapper>

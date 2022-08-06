@@ -21,4 +21,5 @@ public interface ClassService {
     public String getKoreanAge(String st_bth);
     public String getGender(String st_gen);
     public int updateClass(ClassDto vo);
+    public int deleteClass(int c_idx);
 }
