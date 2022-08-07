@@ -2,14 +2,11 @@ package com.ams.classes.controller.api;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,15 +16,12 @@ import com.ams.classes.model.dto.ClassDto;
 import com.ams.classes.service.ClassService;
 import com.ams.common.model.dto.ResponseDto;
 import com.ams.student.model.dto.StudentDto;
-import com.ams.teacher.model.dto.TeacherDto;
 import com.ams.teacher.service.TeacherSerivce;
 
-import retrofit2.http.Path;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -83,9 +77,10 @@ public class ClassesApiController {
             dto.setAge_min(Integer.toString(age_min));
         }
         List<StudentDto> list = classService.getStudent(dto);
-        for(StudentDto vo : list){
-            vo.setSt_bth(classService.getKoreanAge(vo.getSt_bth()));
-        }
+        // 처리시간 오래걸리는 원인! parseInt 
+        // for(StudentDto vo : list){
+        //     vo.setSt_bth(classService.getKoreanAge(vo.getSt_bth()));
+        // }
         return new ResponseEntity<>(new ResponseDto<List<StudentDto>>(code,msg,list), HttpStatus.OK);
     }
 

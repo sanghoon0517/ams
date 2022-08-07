@@ -46,10 +46,17 @@
     </select>    
 
     <select id="getStudent" parameterType="com.ams.classes.model.dto.ClassDto" resultType="com.ams.student.model.dto.StudentDto">
-        select a.st_idx, a.st_nm , a.st_bth, a.st_gen, a.st_pn, a.st_schl, c.c_idx, c.c_nm
-        from a_member a, a_class c
+        select 
+            a.st_idx, 
+            a.st_nm , 
+            a.st_bth, 
+            a.st_gen, 
+            a.st_pn, 
+            a.st_schl, 
+            a.c_idx, 
+            (select c_nm from a_class where c_idx = a.c_idx) as c_nm
+        from a_member a
         <where>
-            a.c_idx = c.c_idx
             <if test="st_nm != null and st_nm != '' ">
                 AND st_nm = #{st_nm}
             </if>

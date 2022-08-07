@@ -82,11 +82,14 @@ $(function(){
         }).done(function(resp){
             //기존의 조회된 내역 제거
             $('#mask').hide();
+            let today = new Date(); 
+            let year = today.getFullYear();
             $('#searched-student').empty();
             for(var i=0; i<resp.data.length; i++){
                 var gender = resp.data[i].st_gen=='M'? '(남)':'(여)';
                 var classnm = resp.data[i].c_nm !=null ? '['+resp.data[i].c_nm+']' : "";
-                var option = $("<option value='"+resp.data[i].st_idx+"'>"+resp.data[i].st_nm+gender+" "+resp.data[i].st_bth+"살 "+resp.data[i].st_schl+" "+classnm +"</option>");
+                var age = year - resp.data[i].st_bth.substring(0,4)+1;
+                var option = $("<option value='"+resp.data[i].st_idx+"'>"+resp.data[i].st_nm+gender+" "+age+"살 "+resp.data[i].st_schl+" "+classnm +"</option>");
                 $("#searched-student").append(option);
             }
 

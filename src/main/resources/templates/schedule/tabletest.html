@@ -1,169 +1,142 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/template}">
-<head>
-    <meta charset="UTF-8">
-    <title>Insert title here</title>
-    <link href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/tableExport.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF/jspdf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
-    <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
-</head>
-	<div class="container-fluid" layout:fragment="content">
-        
-        <div id="toolbar" class="select">
-            <select class="form-control">
-              <option value="">Export Basic</option>
-              <option value="all">Export All</option>
-              <option value="selected">Export Selected</option>
-            </select>
-          </div>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/template}">
 
-        <table id="table"  
-        data-click-to-select="true" 
-        data-pagination="true" 
-        data-show-columns="true"
-        data-show-columns-toggle-all="true" 
-        data-search="true"
-        data-custom-search="customSearch" 
-        data-detail-view="true" 
-        data-detail-formatter="detailFormatter" 
-        data-show-refresh="true"
-        data-show-export="true"
-        data-toolbar="#toolbar"
-        data-show-toggle="true"
-        >
-        <!-- data-url="https://examples.wenzhixin.net.cn/examples/bootstrap_table/data"   -->
-            <thead>
+<head>
+  <meta charset="UTF-8">
+  <title>Insert title here</title>
+  <link href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/tableExport.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF/jspdf.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js"></script>
+  <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
+  <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
+</head>
+<div class="container-fluid" layout:fragment="content">
+
+  <div id="toolbar" class="select">
+    <select class="form-control">
+      <option value="">defualt</option>
+      <option value="all">전체 출력</option>
+      <option value="selected">선택한 원생만 출력</option>
+    </select>
+  </div>
+
+  <table id="table" data-click-to-select="true" data-pagination="true" data-show-columns="true"
+    data-show-columns-toggle-all="true" data-search="true" data-custom-search="customSearch" data-detail-view="true"
+    data-detail-formatter="detailFormatter" data-show-refresh="true" data-show-export="true" data-toolbar="#toolbar"
+    data-show-toggle="true">
+    <!-- data-url="https://examples.wenzhixin.net.cn/examples/bootstrap_table/data"   -->
+    <!-- <thead>
               <tr>
-                <!-- <th data-field="state" data-checkbox="true"></th> -->
+                <th data-field="state" data-checkbox="true"></th>
                 <th data-sortable="true" data-field="id">ID</th>
                 <th data-field="name">Item Name</th>
                 <th data-field="price">Item Price</th>
                 <th data-field="title">title</th>
               </tr>
-            </thead> 
-          </table>
-          
-          <script>
-            
-          
-            $(function() {
-                var $table = $('#table');
-                var data = [
-      {
-        'id': 0,
-        'name': 'Item 0',
-        'price': '$0'
-      },
-      {
-        'id': 1,
-        'name': 'Item 1',
-        'price': '$1'
-      },
-      {
-        'id': 2,
-        'name': 'Item 2',
-        'price': '$2'
-      },
-      {
-        'id': 3,
-        'name': 'Item 3',
-        'price': '$3'
-      },
-      {
-        'id': 4,
-        'name': 'Item 4',
-        'price': '$4'
-      },
-      {
-        'id': 5,
-        'name': 'Item 5',
-        'price': '$5'
-      }
-    ]
-    $table.bootstrapTable({data: data}); 
+            </thead>  -->
+  </table>
+
+  <script>
 
 
-                $('#table').bootstrapTable({
-                formatSearch: function () {
-                    return 'Search Item Price'
-                }
-                })
+    $(function () {
+      var $table = $('#table');
+      var data = [
+        {
+          'id': 0,
+          'name': 'Item 0',
+          'price': '$0'
+        },
+        {
+          'id': 1,
+          'name': 'Item 1',
+          'price': '$1'
+        },
+        {
+          'id': 2,
+          'name': 'Item 2',
+          'price': '$2'
+        },
+        {
+          'id': 3,
+          'name': 'Item 3',
+          'price': '$3'
+        },
+        {
+          'id': 4,
+          'name': 'Item 4',
+          'price': '$4'
+        },
+        {
+          'id': 5,
+          'name': 'Item 5',
+          'price': '$5'
+        }
+      ]
+      $table.bootstrapTable({ data: data });
 
-                $('#toolbar').find('select').change(function () {
-                    $table.bootstrapTable('destroy').bootstrapTable({
-                        exportDataType: $(this).val(),
-                        exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'pdf'],
-                        columns: [
-                        {
-                            field: 'state',
-                            checkbox: true,
-                            visible: $(this).val() === 'selected'
-                        },
-                        {
-                            field: 'id',
-                            title: 'ID'
-                        }, {
-                            field: 'name',
-                            title: 'Item Name'
-                        }, {
-                            field: 'price',
-                            title: 'Item Price'
-                        },{
-                            field: 'title',
-                            title: 'title'
-                        }
-                        ],
-                        data:[
-                        {
-                            'id': 1,
-                            'name': 'Item 1',
-                            'price': '$1'
-                        },
-                        {
-                            'id': 2,
-                            'name': 'Item 2',
-                            'price': '$2'
-                        },
-                        {
-                            'id': 3,
-                            'name': 'Item 3',
-                            'price': '$3'
-                        },
-                        {
-                            'id': 4,
-                            'name': 'Item 4',
-                            'price': '$4'
-                        },
-                        {
-                            'id': 5,
-                            'name': 'Item 5',
-                            'price': '$5'
-                        }
-                        ]
-                    })
-                    
-                    }).trigger('change');
-                    
-            });
-function customSearch(data, text) {
-    return data.filter(function (row) {
-      return row.price.indexOf(text) > -1
-    })
-  }
-  function detailFormatter(index, row) {
-    var html = []
-    $.each(row, function (key, value) {
-      html.push('<p><b>' + key + ':</b> ' + value + '</p>')
-    })
-    return html.join('')
-  }
-          </script>
+
+      $('#table').bootstrapTable({
+        formatSearch: function () {
+          return 'Search Item Name'
+        }
+      })
+
+      $('#toolbar').find('select').change(function () {
+        $table.bootstrapTable('destroy').bootstrapTable({
+          exportDataType: $(this).val(),
+          exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'pdf'],
+          columns: [
+            {
+              field: 'state',
+              checkbox: true,
+              visible: $(this).val() === 'selected'
+            },
+            {
+              field: 'id',
+              title: 'ID',
+              sortable: true
+            }, {
+              field: 'name',
+              title: 'Item Name',
+              sortable: true
+            }, {
+              field: 'price',
+              title: 'Item Price',
+              sortable: true
+            }, {
+              field: 'title',
+              title: 'title',
+              sortable: true
+            }
+          ],
+          data: data
+        })
+
+      }).trigger('change');
+
+      $('.toggle-all').parent().find('span').text("전체 선택");
       
-      
+    });
+    function customSearch(data, text) {
+      return data.filter(function (row) {
+        return row.name.indexOf(text) > -1
+      })
+    }
+    function detailFormatter(index, row) {
+      var html = []
+      $.each(row, function (key, value) {
+        html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+      })
+      return html.join('')
+    }
+  </script>
+
+
 </div>
 
 </html>
