@@ -11,4 +11,8 @@ public class ScheduleController {
     public String schedulePage(){
         return "schedule/schedule";
     }
+    @GetMapping("/schedule/tabletest")
+    public String testtest(){
+        return "schedule/tabletest";
+    }
 }
