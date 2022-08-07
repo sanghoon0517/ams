@@ -51,6 +51,7 @@ public class StudentServiceImpl implements StudentService{
 		return studentDao.getStudentListCount();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public StudentDto getStudentInfoByIdx(int st_idx) {
 		// TODO Auto-generated method stub

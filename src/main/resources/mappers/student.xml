@@ -53,7 +53,7 @@
 	<select id="getStdDate" resultType="String">
 		SELECT DATE_SUB(MAKEDATE(year(now()),1), INTERVAL 12 YEAR) AS STANDARD_DATE
 	</select>
-	<select id="getStudentByIdx" resultType="com.ams.student.model.dto.StudentDto">
+	<select id="getStudnetInfoByIdx" resultType="com.ams.student.model.dto.StudentDto">
 		SELECT * FROM a_member WHERE st_idx=#{st_idx}
 	</select>
 	
