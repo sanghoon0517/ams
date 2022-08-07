@@ -97,7 +97,7 @@ $(function(){
                 var age = year - resp.data[i].st_bth.substring(0,4)+1;
                 var option = $("<option value='"+resp.data[i].st_idx+"'>"+resp.data[i].st_nm+gender+" "+age+"살 "+resp.data[i].st_schl+" "+classnm +"</option>");
                 $("#searched-student").append(option);
-
+            }
 
         }).fail(function(error){
             $('#mask').hide();

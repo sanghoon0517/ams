@@ -23,11 +23,9 @@
 		font-size: 0.9em;
 	}
  }
-label{
-	padding-top: 5px;
-}
+
 </style>
-<script>
+<script th:inline="javascript">
 	$(function(){
 		
 		 //colorpicker 라이브러리 초기화
@@ -41,7 +39,7 @@ label{
 		let month = today.getMonth() + 1;  // 월
 		let date = today.getDate();  // 날짜
 		let day = today.getDay();  // 요일
-		alert(year +" : "+ month+" : "+date);
+		//alert(year +" : "+ month+" : "+date);
 		// $.ajax({
 		// 	type: "GET",
 		// 	url: getContextPath() + "/schedule,
@@ -52,6 +50,135 @@ label{
 		// }).fail(function (error) {
 		// 	alert("일정 정보 로드 실패");
 		// });   
+
+
+		// 종일 일정 스위치 클릭시 동작
+		$("#allDay").on('change', function () {
+			if ($(this).is(':checked')) {
+				$(this).attr('value', 'true');
+				$("#allDayText").text('종일 일정');
+				$('#c_st_tm').attr('disabled',true);
+				$('#c_ed_tm').attr('disabled',true);
+			}
+			else {
+				$(this).attr('value', 'false');
+				$("#allDayText").text('종일 일정 아님');
+				$('#c_st_tm').attr('disabled',false);
+				$('#c_ed_tm').attr('disabled',false);
+			}
+		});
+		// 종일 일정 스위치 클릭시 동작
+		$("#repeatDay").on('change', function () {
+			if ($(this).is(':checked')) {
+				$(this).attr('value', 'true');
+				$("#repeatDayText").text('반복 일정');
+			}
+			else {
+				$(this).attr('value', 'false');
+				$("#repeatDayText").text('반복 일정 아님');
+			}
+		});
+		// 클래스 선택시 클래스 정보 복사
+		$("#c_idx").on('change', function () {
+			var c_idx = $("option:selected", this).attr("value");
+			var selectedClass = [];
+			let allClass = [[${#lists.size(class)}]];
+    		[# th:each="class : ${class}"]
+				if([[${class.c_idx}]]==c_idx){
+					//일정제목
+					$("#c_nm").val([[${class.c_nm}]]);
+					//표시 컬러
+					$("#c_color").val([[${class.c_color}]]);
+					//담당 선생
+					$("select#t_idx option[value="+[[${class.t_idx}]]+"]").attr('selected',true);
+					// 일정 요일
+					var wkd = [[${class.c_wkd}]];
+					$(".wkd").attr("checked",false);
+					if(wkd.length!=0){
+						for(var j=0;j<wkd.length;j++){
+							var temp ="";
+							if(wkd[j]=='1'){
+								temp = 'sun';
+							}else if(wkd[j]=='2'){
+								temp = 'mon';
+							}else if(wkd[j]=='3'){
+								temp = 'tue';
+							}else if(wkd[j]=='4'){
+								temp = 'wed';
+							}else if(wkd[j]=='5'){
+								temp = 'thur';
+							}else if(wkd[j]=='6'){
+								temp = 'fri';
+							}else if(wkd[j]=='7'){
+								temp = 'sat';
+							}
+							$('#'+temp).attr("checked",true);
+						}
+					}
+		
+					
+					// 일정 시간 c_st_tm
+					$("#c_st_tm").val([[${class.c_st_tm}]]);
+					$("#c_ed_tm").val([[${class.c_ed_tm}]]);
+					// 수강중인 원생
+				}
+			[/]
+		});
+
+		//일정 등록
+		$('#schedule-register').click(function(){
+	// private int id;
+    // private int c_idx;
+    // private String title;
+    // private String color;
+    // private String start;
+    // private String end;
+    // // 반복일정 param
+    // private String startRecur;
+    // private String endRecur;
+    // private String startTime;
+    // private String endTime;
+    // private String groupId;
+    // private List<Integer> daysOfWeek; 
+    // private boolean allDay;
+
+			//반복 일정 여부에 따라
+			if($("#repeatDay").val()==true){
+				let data ={
+					title : "",
+					c_idx :"",
+					t_idx : "",
+					color : "",
+					startRecur: "",
+					endRecur: "",
+					daysOfWeek: "",
+					allDay: ""
+				}
+			}else{
+				let data ={
+					title : "",
+					c_idx :"",
+					t_idx :"",
+					color : "",
+					start : "",
+					end :"",
+					allDay : ""
+				}
+			}
+
+			$.ajax({
+                type: "POST",
+                url: getContextPath() + "/schedule",
+				data: JSON.stringify(data),
+                contentType: "application/json;charset=utf-8",
+                dataType: "json"
+            }).done(function (resp) {
+                alert("일정등록 완료");
+                location.href = getContextPath() + "/schedule";
+            }).fail(function (error) {
+                alert("일정등록 실패");
+            });   
+		});
 
 		function calendar_init(date_type){
 			let draggableEl = document.getElementById('mydraggable');
@@ -64,6 +191,7 @@ label{
 					text: '일정등록',
 					click: function() {
 						$('#register-schedule').modal('show');
+						
 					}
 					}
 				},
@@ -184,89 +312,92 @@ label{
 		<div class="modal-body">
 		  <div class="row">
 				<div class="col-sm-12 col-lg-12">
-					<label class="form-label" for="first_name"><strong>클래스 선택</strong><br /></label>
-					<select class="form-select form-control" id="c_wkd" aria-label="Default select example" name="c_wkd">
-						<option value="2">선택 안함</option>
-						<option value="2">월요일</option>
-						<option value="3">화요일</option>
-						<option value="4">수요일</option>
-						<option value="5">목요일</option>
-						<option value="6">금요일</option>
-						<option value="7">토요일</option>
-						<option value="1">일요일</option>
-					  </select>
+					<div class="mb-3">
+						<label class="form-label" for="c_idx"><strong>클래스 선택</strong><br /></label>
+						<select class="form-select form-control" id="c_idx" aria-label="Default select example" name="c_idx">
+							<option value="">선택 안함</option>
+							<th:block th:each="class : ${class}">
+								<option th:if="${class.c_idx != 0}" th:text="${class.c_nm}" th:value="${class.c_idx}"></option>
+							</th:block>
+						</select>
+					</div>
 				</div>
-				<div class="col-6 col-sm-6 col-lg-6">
-					<label class="form-label" for="username"><strong >일정 제목</strong></label><input id="c_nm" class="form-control" type="text" placeholder="클래스명" name="c_nm" />
+				<div class="col-6 col-sm-6 col-lg-6 mb-3">
+					<label class="form-label" for="username"><strong >일정 제목</strong></label><input id="c_nm" class="form-control" type="text" placeholder="일정 제목" name="c_nm" />
 				</div>
-				<div class="col-6 col-sm-6 col-lg-6">
-					<label class="form-label" for="first_name"><strong>클래스 표시 컬러</strong><br/></label>
-					<input id="first_name" class="form-control"  name="c_color" />
-				</div>
-				<div class="col-6 col-sm-6 col-lg-6">
+				<div class="col-6 col-sm-6 col-lg-6 mb-3">
 					<label class="form-label" for="first_name"><strong>담당 선생님</strong><br /></label>
-					<select class="form-select form-control" id="c_wkd" aria-label="Default select example" name="c_wkd">
-						<option value="2">선택 안함</option>
-						<option value="2">월요일</option>
-						<option value="3">화요일</option>
-						<option value="4">수요일</option>
-						<option value="5">목요일</option>
-						<option value="6">금요일</option>
-						<option value="7">토요일</option>
-						<option value="1">일요일</option>
+					<select class="form-select form-control" id="t_idx" aria-label="Default select example" name="t_idx">
+						<option value="">선택 안함</option>
+						<th:block th:each="teacher : ${teacher}">
+							<option th:text="${teacher.t_name}" th:value="${teacher.t_idx}"></option>
+						</th:block>
 					  </select>
 				</div>
-				<div class="col-6 col-sm-6 col-lg-6">
+
+
+				<div class="col-6 col-sm-6 col-lg-6 mb-3">
 					<label class="form-label" for="username"><strong >종일 일정 여부</strong></label>
 					<div class="form-check form-switch">
-						<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-						<label class="form-check-label" for="flexSwitchCheckDefault">종일 일정X</label>
+						<input class="form-check-input" type="checkbox" role="switch" value="false" id="allDay">
+						<label class="form-check-label" for="flexSwitchCheckDefault" id="allDayText">종일 일정 아님</label>
 					  </div>
 				</div>
-				<div class="col col-sm-12 col-lg-12">
+				<div class="col-6 col-sm-6 col-lg-6 mb-3">
+					<label class="form-label" for="username"><strong >반복 일정 여부</strong></label>
+					<div class="form-check form-switch">
+						<input class="form-check-input" type="checkbox" role="switch" value="false" id="repeatDay">
+						<label class="form-check-label" for="flexSwitchCheckDefault" id="repeatDayText">반복 일정 아님</label>
+					  </div>
+				</div>
+				<div class="col-6 col-sm-6 col-lg-6 mb-3">
+					<label for="exampleColorInput" class="form-label">일정 표시 컬러</label>
+					<input type="color" class="form-control form-control-color" id="c_color" value="#563d7c" title="일정 컬러" name="c_color">
+				</div>
+				<div class="col-6 col-sm-6 col-lg-6 mb-3">
 					<label class="form-label" for="username"><strong >일정 요일</strong></label><br>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+						<input class="form-check-input wkd" type="checkbox" id="mon" value="2">
 						<label class="form-check-label" for="inlineCheckbox1">월</label>
 					  </div>
 					  <div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+						<input class="form-check-input wkd" type="checkbox" id="tue" value="3">
 						<label class="form-check-label" for="inlineCheckbox2">화</label>
 					  </div>
 					  <div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-						<label class="form-check-label" for="inlineCheckbox2">화</label>
+						<input class="form-check-input wkd" type="checkbox" id="wed" value="4">
+						<label class="form-check-label" for="inlineCheckbox2">수</label>
 					  </div>
 					  <div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-						<label class="form-check-label" for="inlineCheckbox2">화</label>
+						<input class="form-check-input wkd" type="checkbox" id="thur" value="5">
+						<label class="form-check-label" for="inlineCheckbox2">목</label>
 					  </div>
 					  <div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-						<label class="form-check-label" for="inlineCheckbox2">화</label>
+						<input class="form-check-input wkd" type="checkbox" id="fri" value="6">
+						<label class="form-check-label" for="inlineCheckbox2">금</label>
 					  </div>
 					  <div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-						<label class="form-check-label" for="inlineCheckbox2">화</label>
+						<input class="form-check-input wkd" type="checkbox" id="sat" value="7">
+						<label class="form-check-label" for="inlineCheckbox2">토</label>
 					  </div>
 					  <div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-						<label class="form-check-label" for="inlineCheckbox2">화</label>
+						<input class="form-check-input wkd" type="checkbox" id="sun" value="1">
+						<label class="form-check-label" for="inlineCheckbox2">일</label>
 					  </div>
 				</div>
-				<div class="col-sm-6 col-lg-6">
-					<label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="c_ed_tm" class="form-control" type="date"  name="c_ed_tm" />
+				<div class="col-sm-6 col-lg-6 mb-3">
+					<label class="form-label" for="email"><strong>일정 시작 일</strong></label><input id="c_st_dt" class="form-control" type="date"  name="c_ed_tm" />
 				</div>
-				<div class="col-sm-6 col-lg-6">
-					<label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="c_ed_tm" class="form-control" type="date"  name="c_ed_tm" />
+				<div class="col-sm-6 col-lg-6 mb-3">
+					<label class="form-label" for="email"><strong>일정 종료 일</strong></label><input id="c_ed_dt" class="form-control" type="date"  name="c_ed_tm" />
 				</div>
-				<div class="col-sm-6 col-lg-6">
-					<label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="c_ed_tm" class="form-control" type="time"  name="c_ed_tm" />
+				<div class="col-sm-6 col-lg-6 mb-3">
+					<label class="form-label" for="email"><strong>일정 시작 시간</strong></label><input id="c_st_tm" class="form-control" type="time"  name="c_ed_tm" />
 				</div>
-				<div class="col-sm-6 col-lg-6">
-					<label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="c_ed_tm" class="form-control" type="time"  name="c_ed_tm" />
+				<div class="col-sm-6 col-lg-6 mb-3">
+					<label class="form-label" for="email"><strong>일정 종료 시간</strong></label><input id="c_ed_tm" class="form-control" type="time"  name="c_ed_tm" />
 				</div>
-				<div class="col-sm-12 col-lg-12">
+				<div class="col-sm-12 col-lg-12 mb-3">
 					<h5>수강중인 원생</h5>
 					<div class="row" id="c-student"></div>
 				</div>
@@ -276,7 +407,7 @@ label{
 		
 
 		<div class="modal-footer">
-		  <button type="button" class="btn btn-primary" id="class-update">클래스 수정</button>
+		  <button type="button" class="btn btn-primary" id="schedule-register">일정 수정</button>
 		  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
 		</div>
 	</div>

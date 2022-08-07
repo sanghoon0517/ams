@@ -29,10 +29,13 @@
             c_nm,
             c_idx,
             c_color,
-            c_cap,t_idx,
+            c_cap,
+            t_idx,
             c_detail,
             c_st_tm,
             c_ed_tm,
+            c_st_dt,
+            c_ed_dt,
             c_wkd 
         from a_class
     </select>

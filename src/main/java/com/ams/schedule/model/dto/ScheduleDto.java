@@ -9,11 +9,13 @@ import lombok.Data;
 @AllArgsConstructor
 public class ScheduleDto {
     private int id;
+    private int s_idx;
     private int c_idx;
     private String title;
     private String color;
     private String start;
     private String end;
+    private int t_idx;
     // 반복일정 param
     private String startRecur;
     private String endRecur;
