@@ -3,8 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script th:src="@{/js/colorpicker/spectrum.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/js/colorpicker/spectrum.min.css}"/>
 <link th:href='@{/fullcalendar/lib/main.css}' rel='stylesheet' />
 <script th:src='@{/fullcalendar/lib/main.js}'></script>
+
 <style>
 @media (max-width: 575.98px) {
 	#calendar{
@@ -20,10 +23,17 @@
 		font-size: 0.9em;
 	}
  }
-
+label{
+	padding-top: 5px;
+}
 </style>
 <script>
 	$(function(){
+		
+		 //colorpicker 라이브러리 초기화
+		$("#colorpicker").spectrum({
+        	color: "#d9d2e9"
+    	});
 		let data = {};
 		let today = new Date();   
 
@@ -53,7 +63,7 @@
 					myCustomButton: {
 					text: '일정등록',
 					click: function() {
-						alert('clicked the custom button!');
+						$('#register-schedule').modal('show');
 					}
 					}
 				},
@@ -164,43 +174,97 @@
   </div>
 </div>
    <!-- 모달창(클래스 상세) -->
-   <div class="modal" id="detail-class" tabindex="-1">
+   <div class="modal" id="register-schedule" tabindex="-1">
 	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 	  <div class="modal-content">
 		<div class="modal-header">
-		  <h5 class="modal-title">클래스 상세보기</h5>
+		  <h5 class="modal-title">일정 등록</h5>
 		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		</div>
 		<div class="modal-body">
 		  <div class="row">
-				<div class="col-sm-12 col-lg-6">
-					<h5>클래스명</h5>
-					<h6 id="c-title"></h6>
-				</div>
-				<div class="col-6 col-sm-6 col-lg-6">
-					<h5>클래스 표시 컬러</h5>
-					<h6 id="c-color"></h6>
-				</div>
-				<div class="col-6 col-sm-6 col-lg-6">
-					<h5>클래스 허용 인원</h5>
-					<h6 id="c-cap">10명</h6>
-				</div>
-				<div class="col-6 col-sm-6 col-lg-6">
-					<h5>담당 선생님</h5>
-					<h6 id="c-teacher">이영헌</h6>
-				</div>
-				<div class="col-6 col-sm-6 col-lg-6">
-					<h5>클래스 시간대</h5>
-					<h6 id="c-time">이영헌</h6>
-				</div>
-				<div class="col-6 col-sm-6 col-lg-6">
-					<h5>클래스 요일</h5>
-					<h6 id="c-wkd">이영헌</h6>
-				</div>
-	
 				<div class="col-sm-12 col-lg-12">
-					<h5>클래스 설명</h5>
-					<h6 id="c-detail"></h6>
+					<label class="form-label" for="first_name"><strong>클래스 선택</strong><br /></label>
+					<select class="form-select form-control" id="c_wkd" aria-label="Default select example" name="c_wkd">
+						<option value="2">선택 안함</option>
+						<option value="2">월요일</option>
+						<option value="3">화요일</option>
+						<option value="4">수요일</option>
+						<option value="5">목요일</option>
+						<option value="6">금요일</option>
+						<option value="7">토요일</option>
+						<option value="1">일요일</option>
+					  </select>
+				</div>
+				<div class="col-6 col-sm-6 col-lg-6">
+					<label class="form-label" for="username"><strong >일정 제목</strong></label><input id="c_nm" class="form-control" type="text" placeholder="클래스명" name="c_nm" />
+				</div>
+				<div class="col-6 col-sm-6 col-lg-6">
+					<label class="form-label" for="first_name"><strong>클래스 표시 컬러</strong><br/></label>
+					<input id="first_name" class="form-control"  name="c_color" />
+				</div>
+				<div class="col-6 col-sm-6 col-lg-6">
+					<label class="form-label" for="first_name"><strong>담당 선생님</strong><br /></label>
+					<select class="form-select form-control" id="c_wkd" aria-label="Default select example" name="c_wkd">
+						<option value="2">선택 안함</option>
+						<option value="2">월요일</option>
+						<option value="3">화요일</option>
+						<option value="4">수요일</option>
+						<option value="5">목요일</option>
+						<option value="6">금요일</option>
+						<option value="7">토요일</option>
+						<option value="1">일요일</option>
+					  </select>
+				</div>
+				<div class="col-6 col-sm-6 col-lg-6">
+					<label class="form-label" for="username"><strong >종일 일정 여부</strong></label>
+					<div class="form-check form-switch">
+						<input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+						<label class="form-check-label" for="flexSwitchCheckDefault">종일 일정X</label>
+					  </div>
+				</div>
+				<div class="col col-sm-12 col-lg-12">
+					<label class="form-label" for="username"><strong >일정 요일</strong></label><br>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+						<label class="form-check-label" for="inlineCheckbox1">월</label>
+					  </div>
+					  <div class="form-check form-check-inline">
+						<input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+						<label class="form-check-label" for="inlineCheckbox2">화</label>
+					  </div>
+					  <div class="form-check form-check-inline">
+						<input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+						<label class="form-check-label" for="inlineCheckbox2">화</label>
+					  </div>
+					  <div class="form-check form-check-inline">
+						<input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+						<label class="form-check-label" for="inlineCheckbox2">화</label>
+					  </div>
+					  <div class="form-check form-check-inline">
+						<input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+						<label class="form-check-label" for="inlineCheckbox2">화</label>
+					  </div>
+					  <div class="form-check form-check-inline">
+						<input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+						<label class="form-check-label" for="inlineCheckbox2">화</label>
+					  </div>
+					  <div class="form-check form-check-inline">
+						<input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+						<label class="form-check-label" for="inlineCheckbox2">화</label>
+					  </div>
+				</div>
+				<div class="col-sm-6 col-lg-6">
+					<label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="c_ed_tm" class="form-control" type="date"  name="c_ed_tm" />
+				</div>
+				<div class="col-sm-6 col-lg-6">
+					<label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="c_ed_tm" class="form-control" type="date"  name="c_ed_tm" />
+				</div>
+				<div class="col-sm-6 col-lg-6">
+					<label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="c_ed_tm" class="form-control" type="time"  name="c_ed_tm" />
+				</div>
+				<div class="col-sm-6 col-lg-6">
+					<label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="c_ed_tm" class="form-control" type="time"  name="c_ed_tm" />
 				</div>
 				<div class="col-sm-12 col-lg-12">
 					<h5>수강중인 원생</h5>

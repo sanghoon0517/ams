@@ -72,25 +72,31 @@ function findPostCode() {
 			<input type="hidden" id="st_adr" name="st_adr">
 			<div class="card-body">
 				<div class="row">
-					<div class="col">
+					<div class="col-12 col-sm-6 col-lg-6">
 						<div class="mb-3">
 							<label class="form-label" for="st_nm">
 								<strong>이름</strong>
 							</label>
 							<input class="form-control" type="text" id="st_nm" placeholder="이름" name="st_nm" >
 						</div>
+						</div>
+					<div class="col-12 col-sm-6 col-lg-6">
 						<div class="mb-3">
 							<label class="form-label" for="st_bth">
 								<strong>생년월일</strong>
 							</label>
 							<input id="st_bth" class="form-control" type="date" name="st_bth" th:value="${std_date}"/>
 						</div>
+					</div>
+					<div class="col-12 col-sm-6 col-lg-6">
 						<div class="mb-3">
 							<label class="form-label" for="st_en_dt">
 								<strong>입원일자</strong>
 							</label>
 							<input id="st_en_dt" class="form-control" type="date" name="st_en_dt" />
 						</div>
+					</div>
+					<div class="col-12 col-sm-6 col-lg-6">
 						<div class="mb-3">
 							<label class="form-label" for="st_pn">
 								<strong>원생 연락처</strong>
@@ -98,27 +104,31 @@ function findPostCode() {
 							<input class="form-control" type="tel" id="st_pn" placeholder="숫자만 입력 가능합니다." name="st_pn" maxlength=11>
 						</div>
 					</div>
-					<div class="col-xl-6">
+					<div class="col-12 col-sm-6 col-lg-6">
 						<div class="mb-3">
 							<label class="form-label" for="st_prt_nm"><strong>부모님 성함</strong></label><input class="form-control" id="st_prt_nm"
 								name="st_prt_nm">
 						</div>
+					</div>
+					<div class="col-12 col-sm-6 col-lg-6">
 						<div class="mb-3">
 							<label class="form-label" for="st_prt_pn">
 								<strong>부모님 연락처</strong>
 							</label>
 							<input class="form-control" type="tel" id="st_prt_pn" placeholder="숫자만 입력 가능합니다." name="st_prt_pn" maxlength=11>
 						</div>
+					</div>
+					<div class="col-12 col-sm-6 col-lg-6">
 						<div class="mb-3">
 							<label class="form-label" for="st_prt_rlt"><strong>학생과의 관계</strong><br></label>
 							<div class="row">
-								<div class="col">
+								<div class="col-6 col-sm-2 col-lg-2">
 									<div class="form-check">
 										<input class="form-check-input" type="radio" id="st_prt_rlt" name="st_prt_rlt" value="F"><label
 											class="form-check-label" for="st_prt_rlt">부</label>
 									</div>
 								</div>
-								<div class="col">
+								<div class="col-6 col-sm-3 col-lg-3">
 									<div class="form-check">
 										<input class="form-check-input" type="radio" id="st_prt_rlt" name="st_prt_rlt" value="M"><label
 											class="form-check-label" for="st_prt_rlt">모</label>
@@ -126,16 +136,18 @@ function findPostCode() {
 								</div>
 							</div>
 						</div>
+					</div>
+					<div class="col-12 col-sm-6 col-lg-6">
 						<div class="mb-3">
 							<label class="form-label" for="st_gen"><strong>학생성별</strong><br></label>
 							<div class="row">
-								<div class="col">
+								<div class="col-6 col-sm-3 col-lg-3">
 									<div class="form-check">
 										<input class="form-check-input" type="radio" id="st_gen" name="st_gen" value="M"><label
 											class="form-check-label" for="st_gen">남자</label>
 									</div>
 								</div>
-								<div class="col">
+								<div class="col-6 col-sm-3 col-lg-3">
 									<div class="form-check">
 										<input class="form-check-input" type="radio" id="st_gen" name="st_gen" value="F"><label
 											class="form-check-label" for="st_gen">여자</label>
@@ -144,20 +156,21 @@ function findPostCode() {
 							</div>
 						</div>
 					</div>
-				</div>
+					</div>
+				
 				<div class="row">
-					<div class="col">
+					<div class="col-12 col-sm-6 col-lg-6">
 						<div class="mb-3">
 							<label class="form-label" for="st_adr">
 								<strong>주소</strong>
 							</label>
 							<div class="row">
-								<div class="col mb-1">
-									<input class="form-control mr-3" type="text" id="st_adr_post" placeholder="우편번호" name="st_adr_post" onclick="findPostCode()"> 									
+								<div class="col-12 col-sm-12 col-lg-12">
+									<div class="mb-3">
+										<input class="form-control" type="text" id="st_adr_post" placeholder="우편번호" name="st_adr_post" onclick="findPostCode()"> 									
+									</div>
 								</div>
-								<div class="col">
-<!-- 									<button class="form-control btn btn-primary" id="find_address" type="button" onclick="findPostCode()">주소 찾기</button> -->
- 									<!--type을 button으로 해주어야 화면이 refresh되지 않음. form안에 있는 버튼인 경우 submit되어버리기 때문에 그것을 방지해주서야 한다. -->
+								<!-- <div class="col">
 								</div>
 								<div class="col">
 								</div>
@@ -165,34 +178,35 @@ function findPostCode() {
 								</div>
 							</div>
 							<div class="row">
-								<div class="col">
+								<div class="col-12 col-sm-12 col-lg-6">
 									<input class="form-control mb-1" type="text" id="st_adr_latest" placeholder="집주소(도로명)" name="st_adr_latest" onclick="findPostCode()">									
 								</div>
-								<div class="col">
+								<div class="col-12 col-sm-12 col-lg-6">
 									<input class="form-control mb-1" type="text" id="st_adr_old" placeholder="집주소(지번)" name="st_adr_old" onclick="findPostCode()">									
 								</div>
-							</div>
-							<div class="row">
-								<div class="col">
-									<input class="form-control" type="text" id="st_adr_dtl" placeholder="상세주소" name="st_adr_dtl">
+							</div> -->
+								<div class="col-12 col-sm-12 col-lg-12">
+									<div class="mb-3">
+										<input class="form-control" type="text" id="st_adr_dtl" placeholder="상세주소" name="st_adr_dtl">
+									</div>
 								</div>
-								<div class="col">
+								<!-- <div class="col-12 col-sm-12 col-lg-6">
 									<input class="form-control" type="text" id="st_adr_bname" name="st_adr_bname">
-								</div>
+								</div> -->
+						
 							</div>
 							
 						</div>
 					</div>
-					<div class="col">
+					<div class="col-12 col-sm-6 col-lg-6">
 						<div class="mb-3">
 							<label class="form-label" for="st_prt_em"><strong>이메일</strong><br></label><input
 								class="form-control" type="email" id="st_prt_em"
 								placeholder="sample@sample.com" name="st_prt_em">
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col">
+
+					<div class="col-12 col-sm-6 col-lg-6">
 						<div class="mb-3">
 							<label class="form-label" for="c_idx">
 								<strong>학생 수업</strong><br>
@@ -205,7 +219,7 @@ function findPostCode() {
 							</select>
 						</div>
 					</div>
-					<div class="col">
+					<div class="col-12 col-sm-6 col-lg-6">
 						<div class="mb-3">
 							<label class="form-label" for="st_schl">
 								<strong>학교/유치원</strong><br>
@@ -213,25 +227,27 @@ function findPostCode() {
 							<input type="text" class="form-control" id="st_schl" name="st_schl">
 						</div>
 					</div>
-					<div class="col"></div>
-					<div class="col"></div>
 				</div>
-				<div class="mb-3"></div>
 			</div>
 			<div class="card-body">
-				<div class="row">
-					<div class="col-md-6 col-xl-12">
+					<div class="col-12 col-sm-12 col-lg-12">
 						<div class="mb-3">
 							<label class="form-label" for="st_dtl"><strong>특이사항</strong><br></label>
 							<textarea class="form-control" id="st_dtl" rows="4" name="st_dtl"></textarea>
 						</div>
 						<div class="mb-3"></div>
 						<div class="mb-3">
-							<button class="btn btn-primary btn-sm" type="button" onclick="enroll()">저장</button>
+							<!-- <button class="btn btn-primary btn-sm" type="button" onclick="enroll()">저장</button> -->
 						</div>
 					</div>
-				</div>
 			</div>
+		</div>
+		<div class="row justify-content-end">
+			<div class="col col-sm-3 col-lg-2">
+				<button type="button" class="btn btn-primary" style="width: 100%;" onclick="enroll()">원생 등록</button>
+			</div>
+		</div>
+
 			</form>
 		</div>
 	</div>
