@@ -15,4 +15,25 @@ public interface TeacherSerivce{
 	 * @return 선생님 리스트 값
 	 */
 	public List<TeacherDto> listDao();
+	
+	/**
+	 * 선생님 한명 정보 불러오기
+	 * @param t_id
+	 * @return
+	 */
+	public TeacherDto selectOneDao(String t_id);
+
+	/**
+	 * 회원 가입 요청
+	 * @param dto
+	 */
+	public int insertDao(TeacherDto dto);
+
+	
+	/**
+	 * 아이디 유효성 검사
+	 * @param t_id
+	 * @return 계정 수 반환 1이상이면 이미 가입된 ID
+	 */
+	public int checkIdDao(String t_id);
 }

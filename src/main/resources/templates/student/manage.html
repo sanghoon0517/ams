@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/template}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<title>Table - Brand</title>
+<script type="text/javascript">
+$(document).ready(function(){
+	initInputDataBlocking();
+});
+function popupStudentDetail(st_idx){
+	console.log("st_idx : "+st_idx);
+	
+	$.ajax({
+		//기본이 GET이므로 생략
+		url:`studentList/${st_idx}`,
+		dataType: "json",
+	}).done(res=>{
+		console.log(res.data[0]);
+		console.log(res.data[1]);
+		initClassDataSetting(res.data[1]);
+		initDetailData(res.data[0]);
+	}).fail(error=>{
+		console.log("오류", "error");
+	});
+
+	
+	$("#studentDetail").modal('show');
+	console.log("modal index : "+$("#studentDetail tabindex"));
+}
+function initInputDataBlocking() {
+	//숫자 키코드(48~57까지)
+	let numKeyCodeList = [48,49,50,51,52,53,54,55,56,57];
+	
+	$("#st_pn, #st_prt_pn").keypress(function(e){
+		if(!numKeyCodeList.includes(e.keyCode)) {
+			return false;
+		}
+   });     
+	
+	//date 타입 날짜 입력 형식이 에러가 있어 키보드 입력 막음
+	$("input[type='date']").keypress((e)=>{
+		return false;
+	});
+
+}
+
+function initClassDataSetting(obj) {
+	
+}
+
+function initDetailData(obj) {
+	console.log(obj['st_idx']);
+	let formData = new FormData($("#st_form")[0]);
+	for(let key of formData.keys()) {
+		console.log("formdata key = "+key);
+		if(key == "st_bth" || key == "st_en_dt") {
+			let birth = obj[key];
+			birth = birth.substr(0,4)+"-"+birth.substr(4,2)+"-"+birth.substr(6,2);
+			obj[key] = birth;
+			console.log(obj[key]);
+		}
+		if(key == "st_prt_rlt" || key == "st_gen" ) {
+			console.log("[jsh] radio 값 들어옴");
+			$("input:radio[name="+key+"]:input[value="+obj[key]+"]").attr("checked", true);
+		}
+		$("#"+key).val(obj[key]);
+	}
+}
+</script>
+</head>
+<div class="container-fluid" layout:fragment="content">
+	<h3 class="text-dark mb-4">원생관리</h3>
+	<div class="card shadow">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-6 text-nowrap">
+					<div id="dataTable_length" class="dataTables_length"
+						aria-controls="dataTable">
+						<label class="form-label">filter1&nbsp;
+						<select class="d-inline-block form-select form-select-sm">
+								<option value="10" selected>10</option>
+								<option value="25">25</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+						</select>&nbsp;
+						</label>
+					</div>
+					<div id="dataTable_length-1" class="dataTables_length"
+						aria-controls="dataTable">
+						<label class="form-label">filter2&nbsp;
+							<select class="d-inline-block form-select form-select-sm">
+								<option value="10" selected>10</option>
+								<option value="25">25</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+						</select>&nbsp;
+						</label>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="text-md-end dataTables_filter" id="dataTable_filter">
+						<label class="form-label">
+							<input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search"></label>
+					</div>
+				</div>
+			</div>
+			<div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+				<table class="table my-0" id="dataTable">
+					<thead>
+						<tr>
+							<th>이름</th>
+							<th>학교/유치원</th>
+							<th>지역</th>
+							<th>나이</th>
+							<th>등록일자</th>
+							<th>남은 횟수</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="list : ${stdList}" th:id="${list.st_idx}" th:onclick="popupStudentDetail(this.id);">
+							<td><!-- <img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar1.jpeg"> --><span th:text="${list.st_nm}"></span></td>
+							<td><span th:text="${list.st_schl}"></span></td>
+							<td><span th:text="${list.st_adr}"></span></td>
+							<td><span th:text="${list.st_bth}"></span></td>
+							<td><span th:text="${list.st_en_dt}"></span></td>
+							<td><span th:text="${list.st_rm_c_cnt}"></span></td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td><strong>이름</strong></td>
+							<td><strong>학교/유치원</strong></td>
+							<td><strong>지역</strong></td>
+							<td><strong>나이</strong></td>
+							<td><strong>등록일자</strong></td>
+							<td><strong>남은 횟수</strong></td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<div class="row">
+				<div class="col-md align-self-center">
+					<p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite" th:text="'Showing '+${pagination.criteria.page}+' to '+${pagination.finalEndPage}+' of '+${pagination.totalCount}"></p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md">
+<!-- 					<nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers"> -->
+					<nav class="d-flex justify-content-center dataTables_paginate paging_simple_numbers">
+						<ul class="pagination">
+							<li  class="page-item" th:classappend="${pagination.prev} == false ? 'disabled'"><a class="page-link" aria-label="Previous" th:href="@{/studentList?page={page} (page=${pagination.startPage-1})}"><span aria-hidden="true">«</span></a></li>
+							<th:block th:with="start = ${pagination.startPage}, end=${pagination.endPage}">
+								<li th:classappend="${pagination.criteria.page} == ${pageButton} ? 'active'" class="page-item" th:with="start = ${pagination.startPage}, end =  ${pagination.endPage}" th:each="pageButton : ${#numbers.sequence(start,end)}"><a class="page-link" th:href="@{/studentList?page={page} (page=${pageButton})}" th:text=${pageButton}></a></li>
+							</th:block>
+							<li th:classappend="${pagination.next} == false ? 'disabled'" class="page-item"><a class="page-link" aria-label="Next" th:href="@{/studentList?page={page} (page=${pagination.endPage+1})}"><span aria-hidden="true">»</span></a></li>
+						</ul>
+					</nav>
+				</div>			
+			</div>
+		</div>
+	</div>
+	
+	<!-- Student Modal -->
+	<div class="modal" id="studentDetail" tabindex="-1">
+		<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        	<div class="modal-content">
+            	<div class="modal-header">
+              		<h5 class="modal-title">원생 정보</h5>
+              		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            	</div>
+	            <div class="modal-body">
+		            <div class="row  align-items-center">
+						<form id="st_form" name="st_form">
+						<input type="hidden" id="st_adr" name="st_adr">
+						<input type="hidden" id="st_prt_rlt" name="st_prt_rlt">
+						<input type="hidden" id="st_gen" name="st_gen">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<div class="mb-3">
+										<label class="form-label" for="st_nm">
+											<strong>이름</strong>
+										</label>
+										<input class="form-control" type="text" id="st_nm" placeholder="이름" name="st_nm" >
+									</div>
+									<div class="mb-3">
+										<label class="form-label" for="st_bth">
+											<strong>생년월일</strong>
+										</label>
+										<input id="st_bth" class="form-control" type="date" name="st_bth" th:value="${std_date}"/>
+									</div>
+									<div class="mb-3">
+										<label class="form-label" for="st_en_dt">
+											<strong>입원일자</strong>
+										</label>
+										<input id="st_en_dt" class="form-control" type="date" name="st_en_dt" />
+									</div>
+									<div class="mb-3">
+										<label class="form-label" for="st_pn">
+											<strong>원생 연락처</strong>
+										</label>
+										<input class="form-control" type="tel" id="st_pn" placeholder="숫자만 입력 가능합니다." name="st_pn" maxlength=11>
+									</div>
+								</div>
+								<div class="col-xl-6">
+									<div class="mb-3">
+										<label class="form-label" for="st_prt_nm"><strong>부모님 성함</strong></label><input class="form-control" id="st_prt_nm"
+											name="st_prt_nm">
+									</div>
+									<div class="mb-3">
+										<label class="form-label" for="st_prt_pn">
+											<strong>부모님 연락처</strong>
+										</label>
+										<input class="form-control" type="tel" id="st_prt_pn" placeholder="숫자만 입력 가능합니다." name="st_prt_pn" maxlength=11>
+									</div>
+									<div class="mb-3">
+										<label class="form-label" for="st_prt_rlt"><strong>학생과의 관계</strong><br></label>
+										<div class="row">
+											<div class="col">
+												<div class="form-check">
+													<input class="form-check-input" type="radio" id="st_prt_rlt" name="st_prt_rlt" value="F"><label
+														class="form-check-label" for="st_prt_rlt">부</label>
+												</div>
+											</div>
+											<div class="col">
+												<div class="form-check">
+													<input class="form-check-input" type="radio" id="st_prt_rlt" name="st_prt_rlt" value="M"><label
+														class="form-check-label" for="st_prt_rlt">모</label>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="mb-3">
+										<label class="form-label" for="st_gen"><strong>학생성별</strong><br></label>
+										<div class="row">
+											<div class="col">
+												<div class="form-check">
+													<input class="form-check-input" type="radio" id="st_gen" name="st_gen" value="M"><label
+														class="form-check-label" for="st_gen">남자</label>
+												</div>
+											</div>
+											<div class="col">
+												<div class="form-check">
+													<input class="form-check-input" type="radio" id="st_gen" name="st_gen" value="F"><label
+														class="form-check-label" for="st_gen">여자</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<div class="mb-3">
+										<label class="form-label" for="st_adr">
+											<strong>주소</strong>
+										</label>
+										<div class="row">
+											<div class="col mb-1">
+												<input class="form-control mr-3" type="text" id="st_adr_post" placeholder="우편번호" name="st_adr_post" onclick="findPostCode()"> 									
+											</div>
+											<div class="col">
+											</div>
+											<div class="col">
+											</div>
+											<div class="col">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col">
+												<input class="form-control mb-1" type="text" id="st_adr_latest" placeholder="집주소(도로명)" name="st_adr_latest" onclick="findPostCode()">									
+											</div>
+											<div class="col">
+												<input class="form-control mb-1" type="text" id="st_adr_old" placeholder="집주소(지번)" name="st_adr_old" onclick="findPostCode()">									
+											</div>
+										</div>
+										<div class="row">
+											<div class="col">
+												<input class="form-control" type="text" id="st_adr_dtl" placeholder="상세주소" name="st_adr_dtl">
+											</div>
+											<div class="col">
+												<input class="form-control" type="text" id="st_adr_bname" name="st_adr_bname">
+											</div>
+										</div>
+										
+									</div>
+								</div>
+								<div class="col">
+									<div class="mb-3">
+										<label class="form-label" for="st_prt_em"><strong>이메일</strong><br></label><input
+											class="form-control" type="email" id="st_prt_em"
+											placeholder="sample@sample.com" name="st_prt_em">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+									<div class="mb-3">
+										<label class="form-label" for="c_idx">
+											<strong>학생 수업</strong><br>
+										</label>
+										<select class="form-control" id="c_idx" name="c_idx"></select>
+									</div>
+								</div>
+								<div class="col">
+									<div class="mb-3">
+										<label class="form-label" for="st_schl">
+											<strong>학교/유치원</strong><br>
+										</label>
+										<input type="text" class="form-control" id="st_schl" name="st_schl">
+									</div>
+								</div>
+								<div class="col"></div>
+								<div class="col"></div>
+							</div>
+							<div class="mb-3"></div>
+						</div>
+						<div class="card-body">
+							<div class="row">
+								<div class="col-md-6 col-xl-12">
+									<div class="mb-3">
+										<label class="form-label" for="st_dtl"><strong>특이사항</strong><br></label>
+										<textarea class="form-control" id="st_dtl" rows="4" name="st_dtl"></textarea>
+									</div>
+									<div class="mb-3"></div>
+									<div class="mb-3">
+										<button class="btn btn-primary btn-sm" type="button" onclick="enroll()">저장</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						</form>		            
+					</div>
+	            </div>
+	            <div class="modal-footer">
+	              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+	              <button type="button" class="btn btn-primary" id="student-register" name="add">원생 등록</button>
+	            </div>
+        	</div>
+    	</div>
+	</div>
+</div>
+
+</html>

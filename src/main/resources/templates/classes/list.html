@@ -4,13 +4,101 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 <title>Table - Brand</title>
+<style>
+.p-5{
+	padding: 1em !important;
+}
 
+</style>
 <script type="text/javascript">
 $(function(){
 	$("#register").click(function(){
 		// contextpath 구하기
 		var contextPath = $('#register').attr('data-contextPath') ? $('#register').attr('data-contextPath') : '';
-		location.href = contextPath+"/class/register";
+		location.href = contextPath+"/class";
+	});
+
+	$('.view-class').click(function(){
+		loading();
+        $('#mask').show();
+		var classIdx = $(this).val();
+
+
+        $.ajax({
+            type: "GET", 
+            url: getContextPath()+"/class/"+classIdx,
+            contentType:"application/json;charset=utf-8",
+            dataType:"json" 
+        }).done(function(resp){
+			$('#mask').hide();
+			$('#c-student').empty();
+			$('#c-color').empty();
+			//클래스명
+			$('#c-title').text(resp.data.c_nm);
+
+			//클래스 컬러
+			$('#c-color').append('<i class="fa-solid fa-brush"></i>'+'  '+resp.data.c_color);
+			$('#c-color').css('color',resp.data.c_color);
+
+			//클래스 시간대
+			var c_st_tm = resp.data.c_st_tm;
+			var c_ed_tm = resp.data.c_ed_tm;
+			$('#c-time').text(c_st_tm+' ~ '+c_ed_tm);
+
+			//클래스 인원
+			var current_student_count = resp.data.current_student_count;
+			var c_cap = resp.data.c_cap;
+			var cap = current_student_count + ' / '+ c_cap +' 명';
+			$('#c-cap').text(cap);
+
+			//담당 선생님
+			$('#c-teacher').text(resp.data.t_name);
+
+			//클래스 요일
+			$('#c-wkd').text(resp.data.c_wkd);
+			//클래스 디테일
+			$('#c-detail').text(resp.data.c_detail);
+			//원생 리스트
+			//var defaultcolumn = $('<div class="col-sm-6 col-lg-4 add-student"  style="padding-bottom: 10px;">');
+			//var defaultbtn = $('<button type="button" class="btn btn-primary default-btn"><i class="fa-solid fa-plus"></i></button>');
+			//defaultcolumn.append(defaultbtn);
+			for(var i=0;i<resp.data.st_list.length;i++){
+				var column = $('<div class="col-sm-6 col-lg-4 add-student"  style="padding-bottom: 10px;">');
+				var gen = resp.data.st_list[i].st_gen=='M'?'남':'여';
+				var studentbtn = $('<button type="button" class="btn btn-info studentlists">'+
+					resp.data.st_list[i].st_nm+'('+gen+') '+ resp.data.st_list[i].st_bth +'살 '+resp.data.st_list[i].st_schl+'</button>');
+				column.append(studentbtn);
+				$('#c-student').append(column);			
+			}
+			//$('#c-student').append(defaultcolumn);
+			$('.studentlists').css({
+				'display': 'flex',
+				'justify-content': 'space-between',
+				'align-items': 'center',
+				'width': '100%',
+				'color':'white' 
+			});
+			$('.default-btn').css({
+				'display': 'flex',
+				'justify-content': 'center',
+				'align-items': 'center',
+				'width': '100%',
+				'color':'white' 
+			});
+
+			$('#class-update').attr('value',resp.data.c_idx);
+
+			$('#detail-class').modal('show');
+        }).fail(function(error){
+            alert("조회 실패");
+			$('#mask').hide();
+        });    
+
+	});
+
+
+	$('#class-update').click(function(){
+		location.href = getContextPath()+"/class/"+$('#class-update').val()+"/post";
 	});
 });
 
@@ -18,59 +106,99 @@ $(function(){
 </head>
 
 <div class="container-fluid" layout:fragment="content">
-	<h3 class="text-dark mb-4">클래스 관리</h3>
+	
 	<div class="row">
 		<div class="col">
-			<button class="btn btn-info" type="button" id="register" th:data-contextPath="${#httpServletRequest.getContextPath()}">클래스 등록</button>
+		<h3 class="text-dark mb-4">클래스 관리</h3>
+	</div>
+		<div class="col-auto">
+			
+			<button class="btn btn-info" type="button" id="register" style="color: white;" th:data-contextPath="${#httpServletRequest.getContextPath()}">클래스 등록</button>
 		</div>
 		<br/><br/>
 	</div>
 	<div class="row">
-		<div class="col">
-			<div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('https://i.pinimg.com/originals/58/18/92/581892a6b895a958afb3b6550c6ac778.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
-				<div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-					<h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">클래스명</h2>
-					<ul class="d-flex list-unstyled mt-auto">
-						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-children"></i>&nbsp;&nbsp;<small>인원</small></li>
-						<li class="d-flex align-items-center me-3"><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;<small>수업 요일</small></li>
-						<li class="d-flex align-items-center"><i class="fa-solid fa-clock"></i>&nbsp;&nbsp;<small>수업 시간대</small></li>
-					</ul>
-					<button class="btn btn-outline-light" type="button">클래스 수정</button>
+		<th:block th:each="class : ${classes}">
+			<th:block th:if="${class.c_idx != 0}">
+				<div class="col-sm-6 col-lg-4" style="padding: 20px;">
+					<!-- th:style="|background-color: ${class.c_color}|"  -->
+					<div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-position: center; background-repeat: no-repeat; background-size: cover;">
+						<div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1" th:style="|background-color: ${class.c_color}|">
+							<h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold" th:text="${class.c_nm}">클래스명</h2>
+							<ul class="d-flex list-unstyled mt-auto">
+								<li class="d-flex align-items-center me-3"><i class="fa-solid fa-children"></i>&nbsp;&nbsp;<small th:text="${class.current_student_count}+' / '+${class.c_cap}+'명'">인원</small></li>
+								<li class="d-flex align-items-center me-3"><i class="fa-solid fa-calendar-days"></i>&nbsp;&nbsp;<small th:text="${class.c_wkd}">수업 요일</small></li>
+								<li class="d-flex align-items-center"><i class="fa-solid fa-clock"></i>&nbsp;&nbsp;<small th:text="${class.c_st_tm} + ' ~ ' + ${class.c_ed_tm}">수업 시간대</small></li>
+							</ul>
+							<button class="btn btn-outline-light view-class"  th:value="${class.c_idx}" type="button">클래스 상세보기</button>
+						</div>
+					</div>
+					
 				</div>
-			</div>
-		</div>
+			</th:block>
 
-		<div class="col">
-			<div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-color: white;">
-				<div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-					<h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Much longer title that wraps to multiple lines</h2>
-					<ul class="d-flex list-unstyled mt-auto">
-						<li class="me-auto"><img src="https://github.com/twbs.png" alt="Bootstrap" width="32" height="32" class="rounded-circle border border-white"></li>
-						<li class="d-flex align-items-center me-3"><svg class="bi me-2" width="1em" height="1em">
-								<use xlink:href="#geo-fill"></use></svg> <small>Pakistan</small></li>
-						<li class="d-flex align-items-center"><svg class="bi me-2" width="1em" height="1em">
-								<use xlink:href="#calendar3"></use></svg> <small>4d</small></li>
-					</ul>
-				</div>
-			</div>
-		</div>
+	</th:block>
 
-		<div class="col">
-			<div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('unsplash-photo-3.jpg');">
-				<div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
-					<h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Another longer title belongs here</h2>
-					<ul class="d-flex list-unstyled mt-auto">
-						<li class="me-auto"><img src="https://github.com/twbs.png" alt="Bootstrap" width="32" height="32" class="rounded-circle border border-white"></li>
-						<li class="d-flex align-items-center me-3"><svg class="bi me-2" width="1em" height="1em">
-								<use xlink:href="#geo-fill"></use></svg> <small>California</small></li>
-						<li class="d-flex align-items-center"><svg class="bi me-2" width="1em" height="1em">
-								<use xlink:href="#calendar3"></use></svg> <small>5d</small></li>
-					</ul>
+	</div>
+
+   <!-- 모달창(클래스 상세) -->
+   <div class="modal" id="detail-class" tabindex="-1">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title">클래스 상세보기</h5>
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+		  <div class="row">
+				<div class="col-sm-12 col-lg-6">
+					<h5>클래스명</h5>
+					<h6 id="c-title"></h6>
+				</div>
+				<div class="col-6 col-sm-6 col-lg-6">
+					<h5>클래스 표시 컬러</h5>
+					<h6 id="c-color"></h6>
+				</div>
+				<div class="col-6 col-sm-6 col-lg-6">
+					<h5>클래스 허용 인원</h5>
+					<h6 id="c-cap">10명</h6>
+				</div>
+				<div class="col-6 col-sm-6 col-lg-6">
+					<h5>담당 선생님</h5>
+					<h6 id="c-teacher">이영헌</h6>
+				</div>
+				<div class="col-6 col-sm-6 col-lg-6">
+					<h5>클래스 시간대</h5>
+					<h6 id="c-time">이영헌</h6>
+				</div>
+				<div class="col-6 col-sm-6 col-lg-6">
+					<h5>클래스 요일</h5>
+					<h6 id="c-wkd">이영헌</h6>
+				</div>
+	
+				<div class="col-sm-12 col-lg-12">
+					<h5>클래스 설명</h5>
+					<h6 id="c-detail"></h6>
+				</div>
+				<div class="col-sm-12 col-lg-12">
+					<h5>수강중인 원생</h5>
+					<div class="row" id="c-student"></div>
 				</div>
 			</div>
+
+		</div>
+		
+
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-primary" id="class-update">클래스 수정</button>
+		  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
 		</div>
 	</div>
 </div>
+</div>
 
+
+	
+</div> <!-- end -->
 
 </html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Login - Brand</title>
+    <link rel="stylesheet" th:href="@{/assets/bootstrap/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.6.0/dist/jquery.min.js}"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" th:href="@{/assets/fonts/fontawesome-all.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/Bootstrap-Calendar.css}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+</head>
+<style>
+label{
+    font-size: small;
+
+}
+
+</style>
+<script>
+    $(function(){
+        $('#teacherid').blur(function(){
+            function getContextPath() {
+                var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+                return location.href.substring( hostIndex, location.href.indexOf("/", hostIndex + 1) );
+		    };
+            let data={
+                t_id: $('#teacherid').val(),
+            };
+            if(data.t_id.length < 5){
+                $( '#teacherid' ).removeClass( 'is-invalid' );
+                $( '#teacherid' ).removeClass( 'is-valid' );
+                $('#idValidateFail').attr('style', "display:none;");
+                $('#idValidateOk').attr('style', "display:none;");
+                return alert("id는 5자 이상만 가능합니다");
+            }
+            $.ajax({
+                type: "POST", //요청 method 타입
+                url: getContextPath()+"/auth/signup/check", //요청보낼 url
+                data: JSON.stringify(data), //보내는 data => json으로 넘기기
+                contentType:"application/json;charset=utf-8", //마임타입 지정
+                dataType:"json"
+            }).done(function(resp){
+                    $( '#teacherid' ).removeClass( 'is-invalid' );
+                    $( '#teacherid' ).addClass( 'is-valid' );
+                    $('#idValidateOk').attr('style', "display:inline;");
+                    $('#idValidateFail').attr('style', "display:none;");
+            }).fail(function(error){
+                    $( '#teacherid' ).removeClass( 'is-valid' );
+                    $( '#teacherid' ).addClass( 'is-invalid' );
+                    $('#idValidateOk').attr('style', "display:none;");
+                    $('#idValidateFail').attr('style', "display:inline;");
+            });
+        });
+
+
+        $('#signup').click(function(){
+            function getContextPath() {
+                var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+                return location.href.substring( hostIndex, location.href.indexOf("/", hostIndex + 1) );
+		    };
+            let data={
+                t_id: $('#teacherid').val(),
+                t_pwd: $('#teacherpwd').val(),
+                t_name: $('#teachername').val(),
+                t_pn: $('#teacherpn').val(),
+                t_email: $('#email1').val()+'@'+$('#email2').val()
+		    };
+
+            $.ajax({
+                //회원가입 수행 요청
+                type: "POST", //요청 method 타입
+                url: getContextPath()+"/auth/signup", //요청보낼 url
+                data: JSON.stringify(data), //보내는 data => json으로 넘기기
+                contentType:"application/json;charset=utf-8", //마임타입 지정
+                dataType:"json" // 응답 데이터 타입 지정 ( default는 버퍼로 전송되기때문에 string을 전송됨), 만일 json이 넘어오면 자바스크립트 object로 변경해준다.
+            }).done(function(resp){
+				alert("회원가입 완료");
+				location.href=getContextPath()+"/login"; // 성공시 반환 위치
+            }).fail(function(error){
+                alert("로그인 실패");
+                alert(JSON.stringify(error));
+            }); 
+        });
+    });
+</script>
+<body class="bg-gradient-primary" style="font-family: 'Jua', sans-serif;">
+    <div class="container">
+        <div class="card shadow-lg o-hidden border-0 my-5">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-flex">
+                        <div class="flex-grow-1 bg-register-image" style="background-image: url(&quot;assets/img/dogs/image2.jpeg&quot;);"></div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h4 class="text-dark mb-4">AMS 회원등록</h4>
+                            </div>
+                            <form class="user">
+                                <div class="row mb-3">
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control form-control-user" type="text" id="teachername" placeholder="이름" name="t_name">
+                                        <label for="teachername">&nbsp;&nbsp;&nbsp;이름</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control form-control-user" type="text" id="teacherid" placeholder="아이디" name="t_id">
+                                        <label for="teacherid">&nbsp;&nbsp;&nbsp;아이디</label>
+                                        <span class="text-left valid-feedback" style="display: none;" id="idValidateOk">&nbsp;&nbsp;사용가능한 아이디입니다.</span>
+                                        <span class="text-left invalid-feedback" style="display: none;" id="idValidateFail">&nbsp;&nbsp;중복된 아이디입니다.</span>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control form-control-user" type="password" id="teacherpwd" placeholder="비밀번호" name="t_pwd">
+                                        <label for="teacherpwd">&nbsp;&nbsp;&nbsp;비밀번호</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control form-control-user" type="tel" id="teacherpn" aria-describedby="emailHelp" placeholder="휴대폰번호" name="t_pn">
+                                        <label for="teacherpn">&nbsp;&nbsp;&nbsp;휴대폰번호</label>
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control form-control-user" id="email1" placeholder="이메일" aria-label="Username">
+                                        <span class="input-group-text form-control-user">@</span>
+                                        <input type="text" class="form-control form-control-user" id="email2" placeholder="도메인" aria-label="Server">
+                                    </div>
+                                </div>
+                               <button class="btn btn-primary d-block btn-user w-100" id="signup" type="button">회&nbsp;원&nbsp;등&nbsp;록</button>
+                                <hr>
+                            </form>
+                            <div class="text-center"><a class="small" href="forgot-password.html">Forgot Password?</a></div>
+                            <div class="text-center"><a class="small" th:href="@{/login}">로그인 화면 이동</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script  th:src="@{/assets/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{/assets/js/bs-init.js}"></script>
+    <script th:src="@{/assets/js/theme.js}"></script>
+</body>
+
+
+</html>

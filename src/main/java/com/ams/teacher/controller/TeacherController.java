@@ -20,6 +20,9 @@ public class TeacherController {
 	@RequestMapping("/dbtest")
 	public String dbtest(Model model) {
 		List<TeacherDto> list = service.listDao();
+		System.out.println("######################################");
+		TeacherDto dto = service.selectOneDao("test");
+		System.out.println(dto.toString());
 		model.addAttribute("list", list);
 		return "test";
 	}

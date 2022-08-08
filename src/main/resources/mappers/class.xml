@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ams.classes.model.dao.ClassDao">
+
+    <insert id="insertClass" parameterType="com.ams.classes.model.dto.ClassDto">
+		insert into a_class(c_nm,c_color,c_cap,t_idx,c_detail,c_st_tm,c_ed_tm,c_wkd)
+		values(#{c_nm},#{c_color},#{c_cap},#{t_idx},#{c_detail},#{c_st_tm},#{c_ed_tm},#{c_wkd})
+	</insert>
+
+    <update id="updateStClass" parameterType="com.ams.classes.model.dto.ClassDto">
+        update a_member
+        set c_idx = 
+            (
+                select c_idx 
+                from a_class 
+                where c_nm=#{c_nm} 
+                and c_color=#{c_color} 
+                and c_detail=#{c_detail}
+                and c_st_tm = #{c_st_tm}
+            )
+        where st_idx IN
+        <foreach collection="st_idx" item="arr" open="(" close=")" separator=",">
+        #{arr}
+        </foreach>
+    </update>
+
+    <select id="getAllClasses" resultType="com.ams.classes.model.dto.ClassDto">
+        select 
+            c_nm,
+            c_idx,
+            c_color,
+            c_cap,
+            t_idx,
+            c_detail,
+            c_st_tm,
+            c_ed_tm,
+            c_st_dt,
+            c_ed_dt,
+            c_wkd 
+        from a_class
+    </select>
+
+    <select id="countStClass" parameterType="Integer" resultType="Integer">
+        select count(*) as totalStudent from a_member where c_idx = #{c_idx}
+    </select>
+    
+    <select id="getAllSchl" resultType="com.ams.student.model.dto.StudentDto">
+       select DISTINCT st_schl from a_member
+    </select>    
+
+    <select id="getStudent" parameterType="com.ams.classes.model.dto.ClassDto" resultType="com.ams.student.model.dto.StudentDto">
+        select 
+            a.st_idx, 
+            a.st_nm , 
+            a.st_bth, 
+            a.st_gen, 
+            a.st_pn, 
+            a.st_schl, 
+            a.c_idx, 
+            (select c_nm from a_class where c_idx = a.c_idx) as c_nm
+        from a_member a
+        <where>
+            <if test="st_nm != null and st_nm != '' ">
+                AND st_nm = #{st_nm}
+            </if>
+            <if test="st_schl != null and st_schl != '' ">
+                AND st_schl = #{st_schl}
+            </if>
+         
+            <if test="age_min != null and age_max !=null">
+               <![CDATA[
+                AND convert(LEFT(st_bth,4), signed) <= #{age_min}
+               ]]> 
+            </if>
+            <if test="age_max !=null">
+               <![CDATA[
+                AND convert(LEFT(st_bth,4), signed) >= #{age_max}
+               ]]> 
+            </if>
+        </where>
+    </select>
+
+    <select id="getClassStudent" parameterType="Integer" resultType="com.ams.student.model.dto.StudentDto">
+        SELECT c.st_nm, c.st_schl,  c.st_bth, c.st_gen, c.st_idx
+        FROM a_class a , a_member c 
+        WHERE a.c_idx = c.c_idx 
+        AND a.c_idx = #{c_idx}
+    </select>
+
+
+    <select id="getClass" parameterType="Integer" resultType="com.ams.classes.model.dto.ClassDto">
+        SELECT a.c_nm, a.c_color, a.c_cap, a.t_idx, a.c_detail, a.c_st_tm, a.c_ed_tm, a.c_wkd, a.c_idx
+        FROM a_class a
+        WHERE a.c_idx = #{c_idx}
+    </select>
+    <select id="getTeachername" parameterType="Integer" resultType="String">
+        SELECT a.t_name
+        FROM a_teacher a, a_class c
+        WHERE a.t_idx = c.t_idx
+        AND c.c_idx = #{c_idx}
+    </select>
+    <update id="updateClass" parameterType="com.ams.classes.model.dto.ClassDto">
+        UPDATE a_class
+        SET 
+            c_nm = #{c_nm},
+            c_color = #{c_color},
+            t_idx = #{t_idx},
+            c_cap = #{c_cap},
+            c_detail =#{c_detail},
+            c_st_tm = #{c_st_tm},
+            c_ed_tm = #{c_ed_tm},
+            c_wkd = #{c_wkd}
+        WHERE 
+            c_idx = #{c_idx}
+    </update>
+
+    <delete id="deleteClass" parameterType="Integer">
+        DELETE FROM a_class WHERE c_idx = #{c_idx}
+    </delete>
+    <update id="resetStClass" parameterType="Integer">
+        UPDATE a_member
+        SET
+            c_idx = '0'
+        WHERE c_idx = #{c_idx}    
+    </update>
+</mapper>

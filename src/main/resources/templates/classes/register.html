@@ -4,52 +4,218 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 <title>Table - Brand</title>
+<script>
 
-</head>
-<script type="text/javascript">
+</script>
+<script th:src="@{/js/colorpicker/spectrum.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/js/colorpicker/spectrum.min.css}"/>
+
+<style type="text/css">
+.tooltip{
+    font-family: 'Jua', sans-serif;
+}
+
+/* 학생 리스트 스타일 반영 */
+.studentlists{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    color:white; 
+}
+</style>
+<script>
+    function deletebtn(value){
+        var student=$('button[value='+value+']').text();
+        if(confirm(student+"을 해당 클래스에서 삭제하시겠습니까?")){
+            $('button[value='+value+']').parent('div').remove();
+            $("select#selected-student option[value="+value+"]").remove();
+        }
+    }
 $(function(){
-	$("#register").click(function(){
-		location.href="";
-	});
-	
+    function getContextPath() {
+        var hostIndex = location.href.indexOf( location.host ) + location.host.length;
+        return location.href.substring( hostIndex, location.href.indexOf("/", hostIndex + 1) );
+    };
+    //colorpicker 라이브러리 초기화
+    $("#colorpicker").spectrum({
+        color: "#d9d2e9"
+    });
+    // tooltip 사용시 로딩
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    
+    $('#endtime').blur(function(){
+        var test = $('#endtime').val();
+        var test1 = $('#starttime').val();
+        var h2= test1.split(':');
+        var h = test.split(':');
+        //alert(parseInt(h[0])-parseInt(h2[0]));
+    });
+    
+    // 원생 조회 버튼 기능
+    $('#searchbtn').click(function(){
+        $('#searchstudent').modal('show');
+        
+    });
+
+    //조회-원생 정보 조회 버튼 클릭시
+    //원생 이름, 나이, 학교조회 기능 
+    $('#searchstudentbtn').click(function(){
+        loading();
+        $('#mask').show();
+        let data ={
+            st_nm: $('#studentname').val(),
+            st_schl: $('#studentschl option:selected').val()=="" ? null:$('#studentschl option:selected').val(),
+            age_min: $('#studentagefrom option:selected').val()=="" ? null:$('#studentagefrom option:selected').val(),
+            age_max: $('#studentageto option:selected').val()=="" ? null:$('#studentageto option:selected').val(),
+        }
+        $.ajax({
+            type: "POST", 
+            url: getContextPath()+"/class/studentlist",
+            data: JSON.stringify(data),
+            contentType:"application/json;charset=utf-8",
+            dataType:"json" 
+        }).done(function(resp){
+            //기존의 조회된 내역 제거
+            $('#mask').hide();
+            let today = new Date(); 
+            let year = today.getFullYear();
+            $('#searched-student').empty();
+            for(var i=0; i<resp.data.length; i++){
+                var gender = resp.data[i].st_gen=='M'? '(남)':'(여)';
+                var classnm = resp.data[i].c_nm !=null ? '['+resp.data[i].c_nm+']' : "";
+                var age = year - resp.data[i].st_bth.substring(0,4)+1;
+                var option = $("<option value='"+resp.data[i].st_idx+"'>"+resp.data[i].st_nm+gender+" "+age+"살 "+resp.data[i].st_schl+" "+classnm +"</option>");
+                $("#searched-student").append(option);
+            }
+
+
+        }).fail(function(error){
+            $('#mask').hide();
+            alert("조회 실패");
+        });     
+    });
+    
+
+
+
+    // 선택한 학생을 확정란으로 옮기기 
+    $('#searched-student').mouseup(function(){
+        var selectVal = $("#searched-student option:selected").val();
+        var selectText =  $("#searched-student option:selected").text();
+        //$("#multiple option:selected").attr("disabled",true);
+        //$("#multiple option:selected").css("background-color","darkslategray");
+        $("select#searched-student option[value="+selectVal+"]").remove();
+        var option = $("<option value='"+selectVal+"'>"+selectText+"</option>");
+
+        //이미 선택된 학생인지 확인
+        var len = $("#selected-student").children().length;
+        for(var i=0;i<len;i++){
+            var st_idx = $("#selected-student").children().eq(i).val();
+            if(selectVal ==st_idx){
+                return alert("이미 선택된 학생입니다.");
+            }
+        }
+        $("#selected-student").append(option);
+        $("select#searched-student option[value="+"undefined"+"]").remove();
+        $("select#selected-student option[value="+"undefined"+"]").remove();
+    });
+
+    //선택된 학생들 취소 옮기기
+    $('#selected-student').mouseup(function(){
+        var selectVal = $("#selected-student option:selected").val();
+        var selectText =  $("#selected-student option:selected").text();
+        //$("#multiple option:selected").attr("disabled",true);
+        //$("#multiple option:selected").css("background-color","darkslategray");
+        $("select#selected-student option[value="+selectVal+"]").remove();
+        $('button[value='+selectVal+']').parent('div').remove();
+        var option = $("<option value='"+selectVal+"'>"+selectText+"</option>");
+        $("#searched-student").append(option);
+        $("select#searched-student option[value="+"undefined"+"]").remove();
+        $("select#selected-student option[value="+"undefined"+"]").remove();
+    });
+
+
+    //조회에서 선택된 학생들 확정 등록
+    $(document).on("click","button[name='add']",function(){
+        for(var i=0;i<$("#selected-student").children().length;i++){
+            var info = $("#selected-student").children().eq(i).text();
+            var column = $('<div class="col-sm-4 col-lg-3 add-student"  style="padding-bottom: 10px;">');
+            var studentbtn = $('<button type="button" class="btn btn-info studentlists" onclick="deletebtn('+$("#selected-student").children().eq(i).val()+')" value='+$("#selected-student").children().eq(i).val()+'>'+info+'<i class="fa-solid fa-xmark"></i></button>');
+            column.append(studentbtn);
+            $('#student-div').append(column);
+        }
+        $('#searchstudent').modal('hide');
+    });
+    // $('#student-register').click(function(){
+    //  for(var i=0;i<$("#selected-student").children().length;i++){
+    //      var info = $("#selected-student").children().eq(i).text();
+    //      var column = $('<div class="col-sm-4 col-lg-3 add-student"  style="padding-bottom: 10px;">');
+    //      var studentbtn = $('<button type="button" class="btn btn-info studentlists" value='+$("#selected-student").children().eq(i).val()+'>'+info+'<i class="fa-solid fa-xmark"></i></button>');
+    //      column.append(studentbtn);
+    //      $('#student-div').append(column);
+    //  }
+    //  $('#searchstudent').modal('hide');
+        
+    // });
+
+
+    
+
+    $("#submit").click(function(){
+        alert("유효성검사 필요!");
+        var len = $("#selected-student").children().length;
+        let student = [];
+        for(var i =0;i<len ; i++){
+            var st_idx = $("#selected-student").children().eq(i).val();
+            student.push(st_idx);
+        }
+        alert(student);
+        let data = {
+            c_nm: $('#c_nm').val(),
+            c_color: $('#colorpicker').val(),
+            c_cap: $('#c_cap').val(),
+            t_idx: $('select#t_idx option:selected').val(),
+            c_detail: $('#c_detail').val(),
+            c_st_tm: $('#c_st_tm').val(),
+            c_ed_tm: $('#c_ed_tm').val(),
+            c_wkd: $('select#c_wkd option:selected').val(),
+            st_idx: student
+        }
+        
+            
+        $.ajax({
+            type: "POST", 
+            url: getContextPath()+"/class",
+            data: JSON.stringify(data),
+            contentType:"application/json;charset=utf-8",
+            dataType:"json" 
+        }).done(function(resp){
+            alert("클래스 등록 완료");
+            location.href = getContextPath()+"/class/all";
+        }).fail(function(error){
+            alert("클래스 등록 실패");
+        });         
+    });
+
+
 });
 
 </script>
 
+</head>
+
 <div class="container-fluid" layout:fragment="content">
-	<h3 class="text-dark mb-4">클래스 등록</h3>
-    <div class="row mb-3">
-        <div class="col-lg-8 col-xl-12">
-            <div class="row mb-3 d-none">
-                <div class="col">
-                    <div class="card text-white bg-primary shadow">
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col">
-                                    <p class="m-0">Peformance</p>
-                                    <p class="m-0"><strong>65.2%</strong></p>
-                                </div>
-                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
-                            </div>
-                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i> 5% since last month</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card text-white bg-success shadow">
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col">
-                                    <p class="m-0">Peformance</p>
-                                    <p class="m-0"><strong>65.2%</strong></p>
-                                </div>
-                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
-                            </div>
-                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i> 5% since last month</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+
+
+    <h3 class="text-dark mb-4">클래스 등록</h3>
+    <div class="row">
+        <div class="col">
             <div class="row">
                 <div class="col">
                     <div class="card shadow mb-3">
@@ -57,28 +223,46 @@ $(function(){
                             <p class="text-primary m-0 fw-bold">클래스 상세</p>
                         </div>
                         <div class="card-body">
-                            <form>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="mb-3"><label class="form-label" for="username"><strong>클래스명</strong></label><input id="username" class="form-control" type="text" placeholder="user.name" name="username" /></div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="mb-3"><label class="form-label" for="email"><strong>클래스 설명</strong></label><input id="email" class="form-control" type="email" placeholder="user@example.com" name="email" /></div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="username"><strong >클래스명</strong></label><input id="c_nm" class="form-control" type="text" placeholder="클래스명" name="c_nm" />
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="mb-3"><label class="form-label" for="first_name"><strong>클래스 허용 인원</strong><br /></label><input id="first_name" class="form-control" type="text" placeholder="John" name="first_name" /></div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="first_name"><strong data-bs-toggle="tooltip" data-bs-placement="right" title="클래스 / 캘린더 목록 컬러">클래스 표시 컬러</strong><br/></label><input id="colorpicker" class="form-control"  name="c_color" />
                                     </div>
-                                    <div class="col">
-                                        <div class="mb-3"><label class="form-label" for="last_name"><strong>담당 선생님</strong><br /></label><input id="last_name" class="form-control" type="text" placeholder="Doe" name="last_name" /></div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="first_name"><strong>클래스 허용 인원</strong><br /></label><input id="c_cap" class="form-control" type="number" placeholder="0" name="c_cap" />
                                     </div>
                                 </div>
-                                <div class="mb-3"></div>
-                            </form>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="last_name"><strong>담당 선생님</strong><br /></label> <select class="form-select form-control" id="t_idx" aria-label="Default select example" name="t_idx">
+                                            <th:block th:each="teacher : ${list}">
+                                                <option th:text="${teacher.t_name}" th:value="${teacher.t_idx}">Open this select menu</option>
+                                            </th:block>
+                                        </select>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="mb-3">
+                                    <label class="form-label" for="c_detail"><strong>클래스 설명</strong></label>
+                                    <textarea class="form-control" id="c_detail" rows="4" name="c_detail"></textarea>
+                                </div>
+                            </div>
+                            <div class="mb-3"></div>
                         </div>
                     </div>
-                    <div class="card shadow"></div>
                 </div>
             </div>
         </div>
@@ -89,28 +273,39 @@ $(function(){
                 <p class="text-primary m-0 fw-bold">클래스 시간대</p>
             </div>
             <div class="card-body">
-                <form>
-                    <div class="row">
-                        <div class="col">
-                            <div class="mb-3"><label class="form-label" for="username"><strong>클래스 시작 시간</strong><br /></label><input id="username-1" class="form-control" placeholder="user.name" name="username" /></div>
-                        </div>
-                        <div class="col">
-                            <div class="mb-3"><label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="email-1" class="form-control" type="email" placeholder="user@example.com" name="email" /></div>
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-3">
+                            <label class="form-label" for="username"><strong>클래스 시작 시간</strong><br /></label><input id="c_st_tm" class="form-control" type="time"  name="c_st_tm" />
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-xl-6">
-                            <div class="mb-3"><label class="form-label" for="first_name"><strong>클래스 요일</strong><br /></label><input id="first_name-1" class="form-control" type="text" placeholder="John" name="first_name" /></div>
-                        </div>
-                        <div class="col-xl-6">
-                            <div class="mb-3"><label class="form-label" for="first_name"><strong>클래스 요일</strong><br /></label><input id="first_name-2" class="form-control" type="text" placeholder="John" name="first_name" /></div>
+                    <div class="col">
+                        <div class="mb-3">
+                            <label class="form-label" for="email"><strong>클래스 종료 시간</strong></label><input id="c_ed_tm" class="form-control" type="time"  name="c_ed_tm" />
                         </div>
                     </div>
-                    <div class="mb-3"></div>
-                </form>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-3">
+                            <label class="form-label" for="first_name"><strong>클래스 요일</strong><br /></label>
+                            <select class="form-select form-control" id="c_wkd" aria-label="Default select example" name="c_wkd">
+                                <option value="2">월요일</option>
+                                <option value="3">화요일</option>
+                                <option value="4">수요일</option>
+                                <option value="5">목요일</option>
+                                <option value="6">금요일</option>
+                                <option value="7">토요일</option>
+                                <option value="1">일요일</option>
+                              </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                    </div>
+                </div>
+                <div class="mb-3"></div>
             </div>
         </div>
-        <div class="card shadow"></div>
     </div>
     <div class="col">
         <div class="card shadow mb-3">
@@ -118,30 +313,111 @@ $(function(){
                 <p class="text-primary m-0 fw-bold">클래스 원생 등록</p>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col"><button class="btn btn-primary" type="button" style="width: 100%;border-radius: 30px;"><i class="fas fa-plus"></i></button></div>
-                </div>
-                <div class="row">
+                <div class="row" style="padding-bottom: 10px;">
                     <div class="col">
-                        <div class="card">
-                            <div class="card-body" style="padding-bottom: 40px;padding-top: 20px;margin-bottom: -2px;height: 100px;">
-                                <h4 class="card-title">이영헌</h4>
-                                <h5 class="card-title">이영헌</h5>
-                            </div>
-                        </div>
+                        <label class="form-label" for="username"><strong>원생 리스트</strong> 
+                            &nbsp;&nbsp;&nbsp;
+                            <button type="button" id="searchbtn" class="btn btn-primary" style="color: white;">원생조회&nbsp;<i class="fa-solid fa-magnifying-glass"></i></button><br /></label>
                     </div>
-                    <div class="col"></div>
-                    <div class="col"></div>
-                    <div class="col"></div>
                 </div>
-                <form>
-                    <div class="mb-3"></div>
-                </form>
+                <div class="row" style="padding-bottom: 10px;" id="student-div">
+
+                </div>
+                <br/><br/><br/>
+            </div>
+            
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-sm-12 col-lg-12">
+            <button type="button" id="submit" class="btn btn-primary" style="width: 100%;">클래스 등록</button>
+        </div>
+    </div>
+    <!-- 모달창(원생조회) -->
+    <div class="modal" id="searchstudent" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">원생조회</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <!-- 조건1 이름 -->
+                <div class="col-sm-6 col-lg-3">
+                    <div class="input-group input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">이름</span>
+                        <input type="text" class="form-control" id="studentname" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                      </div>    
+                </div>
+                <!-- 조건2 학교 -->
+                <div class="col-sm-6 col-lg-3">
+                    <div class="input-group input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">학교</span>
+                    <select class="form-select" id="studentschl" aria-label="Default select example">
+                        <option value="">[학교 선택]</option>
+                        <th:block th:each="student : ${list3}">
+                                <option th:if="${not #strings.isEmpty(student.st_schl)}" th:text="${student.st_schl}" th:value="${student.st_schl}">학교</option>
+                        </th:block>
+                    </select>
+                    </div>
+                </div>
+                <!-- 조건3 나이 -->
+                <div class="col-sm-6 col-lg-5">
+                    <div class="input-group input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">나이</span>
+                    <select class="form-select" id="studentagefrom" aria-label="Default select example">
+                        <option value="">[선택]</option>
+                        <th:block th:each="num : ${#numbers.sequence(min,max)}">
+                                <option th:text="${num}+'살'" th:value="${num}">학교</option>
+                        </th:block>
+                    </select>
+                    <span class="input-group-text" id="inputGroup-sizing-sm">to</span>
+                    <select class="form-select" id="studentageto" aria-label="Default select example">
+                        <option value="">[선택]</option>
+                        <th:block th:each="num : ${#numbers.sequence(min,max)}">
+                                <option th:text="${num}+'살'" th:value="${num}">학교</option>
+                        </th:block>
+                    </select>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-lg-1">
+                    <button type="button" id="searchstudentbtn" class="btn btn-info" style="color: white;">조회</button>
+                </div>
+
+                </div>
+                
+                <div class="row  align-items-center">
+                    
+                    <div class="col-sm-12 col-lg-6">
+                        <h6>조회된 원생 리스트</h6>
+                    <select class="form-select form-control" id="searched-student" th:size="${#lists.size(list2)}" aria-label="select example" style="height: 300px;">
+                        <!-- <th:block th:each="student : ${list2}">
+                            <option th:text="${student.st_nm}+'('+${#strings.toString(student.st_gen) == 'M'?'남':'여'}+') ' + ${student.st_bth} +'살'" th:value="${student.st_idx}">Open this select menu</option>
+                        </th:block> -->
+                      </select>
+                      </select>
+                    </div>
+    
+                    <div class="col-sm-12 col-lg-6">
+                        <h6>등록할 원생 리스트</h6>
+                        <select class="form-select form-control" id="selected-student" th:size="${#lists.size(list2)}" aria-label="select example" style="height: 300px;">
+
+                          </select>
+                    </div>
+                </div>
+
+            </div>
+            
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+              <button type="button" class="btn btn-primary" id="student-register" name="add">원생 등록</button>
             </div>
         </div>
-        <div class="card shadow"></div>
     </div>
 </div>
 
+</div> <!-- end line -->
 
 </html>

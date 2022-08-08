@@ -7,7 +7,7 @@
 			</Pattern>
 		</encoder>
 	</appender>
-	<logger name="com.ams" level="info"/>
+	<logger name="com.ams" level="debug"/>
 	
 	<!-- sql 로거 설정 -->
 	<logger name="jdbc" level="OFF"/>
@@ -18,7 +18,7 @@
 	<logger name="jdbc.connection" level="OFF"/>
 	
 	
-	<root>
+	<root level="info">
 		<appender-ref ref="console"/>
 	</root>
 </configuration>

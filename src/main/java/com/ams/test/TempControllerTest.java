@@ -11,21 +11,18 @@ public class TempControllerTest {
 	public String mainPage() {
 		return "common/main";
 	}
-	@GetMapping("/login")
-	public String login() {
-		return "common/login";
-	}
+
 	@GetMapping("/test")
 	public String temp() {
 		return "test";
 	}
-	@GetMapping("/studentEnroll")
-	public String enroll(){
-		return "student/enroll";
-	}
-	@GetMapping("/studentList")
-	public String enrollList(){
-		return "student/article";
-	}
+//	@GetMapping("/studentEnroll")
+//	public String enroll(){
+//		return "student/enroll";
+//	}
+//	@GetMapping("/studentList")
+//	public String enrollList(){
+//		return "student/article";
+//	}
 
 }
