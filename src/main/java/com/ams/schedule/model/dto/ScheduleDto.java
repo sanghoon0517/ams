@@ -1,13 +1,21 @@
 package com.ams.schedule.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
-@Data
-@AllArgsConstructor
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.google.gson.Gson;
+
+import lombok.Getter;
+import lombok.Setter;
+
+
+@Getter @Setter
+@JsonInclude(Include.NON_NULL)
 public class ScheduleDto {
+    private boolean repeat;
     private int id;
     private int s_idx;
     private int c_idx;
@@ -22,7 +30,13 @@ public class ScheduleDto {
     private String startTime;
     private String endTime;
     private String groupId;
-    private List<Integer> daysOfWeek; 
+    private List<Integer> daysOfWeek = new ArrayList<>();; 
     private boolean allDay;
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
+    }
+
+
     
 }
