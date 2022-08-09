@@ -51,6 +51,22 @@ public class StudentController {
 		return "student/manage";
 	}
 	
+	@GetMapping("/advanced-student-list")
+	public String studentList(PaginationCriteriaDto criteria, StudentDto vo, Model model){
+		
+		int studentTotalCnt = studentService.getStudentListCount();
+		
+		PaginationDto pagination = new PaginationDto();
+		pagination.setCriteria(criteria);
+		pagination.setTotalCount(studentTotalCnt);
+		System.out.println("[jsh] pagination : "+pagination.toString());
+		
+		List<StudentDto> resultList = studentService.getStudentListPaging(criteria);
+		model.addAttribute("stdList", resultList);
+		model.addAttribute("pagination", pagination);
+		return "student/manage";
+	}
+	
 	@PostMapping("student/enroll")
 	public String enrollStudent(StudentDto vo, Model model) {
 		int result = studentService.enrollStudent(vo);
