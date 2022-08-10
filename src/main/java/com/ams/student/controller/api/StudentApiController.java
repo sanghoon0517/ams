@@ -37,6 +37,12 @@ public class StudentApiController {
 			return new ResponseEntity<>(new ResponseDto<String>(result, "학생 등록 실패", null), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+//	@PostMapping("studentList/advanced-table")
+//	public ResponseEntity<?> getStudentListAdvanced() {
+//		List<StudentDto> resultList = studentService.getStudentList();
+//		return new ResponseEntity<>(new ResponseDto<Object>(1, "OK", resultList), HttpStatus.OK);
+//	}
 
 	@GetMapping("/studentList/{st_idx}")
 	public ResponseEntity<?> getStudentDetail(@PathVariable int st_idx) {

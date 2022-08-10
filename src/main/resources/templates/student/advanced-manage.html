@@ -16,8 +16,9 @@
 
 <!-- datedropper init -->
 
-<script>
-$(function(){
+<script th:inline="javascript">
+let tableData = [[${stdList}]];
+$(document).ready(function(){
 	$('#date-input').dateDropper({
 		format: 'Y-m-d',
 		lang: 'ko',

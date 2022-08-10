@@ -51,20 +51,24 @@ public class StudentController {
 		return "student/manage";
 	}
 	
-	@GetMapping("/advanced-student-list")
-	public String studentList(PaginationCriteriaDto criteria, StudentDto vo, Model model){
+	@GetMapping("/studentList/advanced")
+	public String studentListAdvanced(PaginationCriteriaDto criteria, StudentDto vo, Model model){
 		
-		int studentTotalCnt = studentService.getStudentListCount();
+//		int studentTotalCnt = studentService.getStudentListCount();
+//		
+//		PaginationDto pagination = new PaginationDto();
+//		pagination.setCriteria(criteria);
+//		pagination.setTotalCount(studentTotalCnt);
+//		System.out.println("[jsh] pagination : "+pagination.toString());
+//		
+//		List<StudentDto> resultList = studentService.getStudentListPaging(criteria);
+//		model.addAttribute("stdList", resultList);
+//		model.addAttribute("pagination", pagination);
 		
-		PaginationDto pagination = new PaginationDto();
-		pagination.setCriteria(criteria);
-		pagination.setTotalCount(studentTotalCnt);
-		System.out.println("[jsh] pagination : "+pagination.toString());
-		
-		List<StudentDto> resultList = studentService.getStudentListPaging(criteria);
+		List<StudentDto> resultList = studentService.getStudentList();
 		model.addAttribute("stdList", resultList);
-		model.addAttribute("pagination", pagination);
-		return "student/manage";
+		
+		return "student/advanced-manage";
 	}
 	
 	@PostMapping("student/enroll")
