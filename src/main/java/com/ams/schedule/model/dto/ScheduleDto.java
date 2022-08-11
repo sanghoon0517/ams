@@ -30,7 +30,7 @@ public class ScheduleDto {
     private String startTime;
     private String endTime;
     private String groupId;
-    private List<Integer> daysOfWeek = new ArrayList<>();; 
+    private List<String> daysOfWeek = new ArrayList<>();; 
     private boolean allDay;
     @Override
     public String toString() {

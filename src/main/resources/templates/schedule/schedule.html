@@ -245,37 +245,59 @@
 						calendar.unselect();
 				}
 			},
-				 events: [
-					    {
-						  id : '10',
-					      title  : 'event1',
-					      start  : '2022-07-01',
-						  color	 : '#141FF7' // 컬러 코드로도 저장 가능
-					    },
-					    {
-					      title  : 'event2',
-					      start  : '2022-07-09T12:30:00',
-					      end	 : '2022-07-19T15:30:00',
-						  color	 : 'purple'
-					 
-					    },
-					    {
-					      title  : 'event3',
-					      start  : '2022-07-29T12:30:00',
-					      allDay : true // 하루 종일 여부
-					    },
-						{
-							groupId: 'blueEvents', // 동일하게 움직이게 설정(구간 반복)
-							title  : '반복이벤트 설정',
-							daysOfWeek: [ '3' ], // these recurrent events move separately
-							startRecur  : '2022-08-09',
-					      	endRecur : '2022-08-29',
-							startTime: '09:00:00',
-      						endTime: '11:30:00',
-							color: 'red',
-							//allDay : false // 하루 종일 여부
+
+			eventSources: [{
+				events: 
+				function(info, successCallback, failureCallback) {
+					console.log(info);
+					console.log(successCallback);
+					$.ajax({
+						url: '/ams/schedule/all',
+						type: 'GET',
+						dataType: 'json',
+						data: {
+							start : info.startStr,
+							end : info.endStr
+						},
+						success: function(data) {
+							console.log(data.data);
+							successCallback(data.data);
 						}
-					  ]
+					});
+				}
+			}]
+				 //events: [schedules]
+				//  [
+				// 	    {
+				// 		  id : '10',
+				// 	      title  : 'event1',
+				// 	      start  : '2022-07-01',
+				// 		  color	 : '#141FF7' // 컬러 코드로도 저장 가능
+				// 	    },
+				// 	    {
+				// 	      title  : 'event2',
+				// 	      start  : '2022-07-09T12:30:00',
+				// 	      end	 : '2022-07-19T15:30:00',
+				// 		  color	 : 'purple'
+					 
+				// 	    },
+				// 	    {
+				// 	      title  : 'event3',
+				// 	      start  : '2022-07-29T12:30:00',
+				// 	      allDay : true // 하루 종일 여부
+				// 	    },
+				// 		{
+				// 			groupId: 'blueEvents', // 동일하게 움직이게 설정(구간 반복)
+				// 			title  : '반복이벤트 설정',
+				// 			daysOfWeek: [ '3' ], // these recurrent events move separately
+				// 			startRecur  : '2022-08-09',
+				// 	      	endRecur : '2022-08-29',
+				// 			startTime: '09:00:00',
+      			// 			endTime: '11:30:00',
+				// 			color: 'red',
+				// 			//allDay : false // 하루 종일 여부
+				// 		},
+				//  ]
 				
 			});
 			calendar.render();
