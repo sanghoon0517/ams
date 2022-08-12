@@ -31,6 +31,10 @@ $(document).ready(function(){
 		minutesSteps: 10
 	});
 	new atc(document.querySelector('#myButton123'));
+	
+	
+	
+	
 });
 </script> 
 </head>
@@ -76,39 +80,39 @@ $(document).ready(function(){
 
     $(function () {
       var $table = $('#table');
-      var data = [
-        {
-          'id': 0,
-          'name': 'Item 0',
-          'price': '$0'
-        },
-        {
-          'id': 1,
-          'name': 'Item 1',
-          'price': '$1'
-        },
-        {
-          'id': 2,
-          'name': 'Item 2',
-          'price': '$2'
-        },
-        {
-          'id': 3,
-          'name': 'Item 3',
-          'price': '$3'
-        },
-        {
-          'id': 4,
-          'name': 'Item 4',
-          'price': '$4'
-        },
-        {
-          'id': 5,
-          'name': 'Item 5',
-          'price': '$5'
-        }
-      ]
-      $table.bootstrapTable({ data: data });
+//       [
+//         {
+//           'id': 0,
+//           'name': 'Item 0',
+//           'price': '$0'
+//         },
+//         {
+//           'id': 1,
+//           'name': 'Item 1',
+//           'price': '$1'
+//         },
+//         {
+//           'id': 2,
+//           'name': 'Item 2',
+//           'price': '$2'
+//         },
+//         {
+//           'id': 3,
+//           'name': 'Item 3',
+//           'price': '$3'
+//         },
+//         {
+//           'id': 4,
+//           'name': 'Item 4',
+//           'price': '$4'
+//         },
+//         {
+//           'id': 5,
+//           'name': 'Item 5',
+//           'price': '$5'
+//         }
+//       ]
+      $table.bootstrapTable({ data: tableData });
 
 
       $('#table').bootstrapTable({
@@ -121,6 +125,30 @@ $(document).ready(function(){
         $table.bootstrapTable('destroy').bootstrapTable({
           exportDataType: $(this).val(),
           exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'pdf'],
+//           columns: [
+//             {
+//               field: 'state',
+//               checkbox: true,
+//               visible: $(this).val() === 'selected'
+//             },
+//             {
+//               field: 'id',
+//               title: 'ID',
+//               sortable: true
+//             }, {
+//               field: 'name',
+//               title: 'Item Name',
+//               sortable: true
+//             }, {
+//               field: 'price',
+//               title: 'Item Price',
+//               sortable: true
+//             }, {
+//               field: 'title',
+//               title: 'title',
+//               sortable: true
+//             }
+//           ],
           columns: [
             {
               field: 'state',
@@ -128,24 +156,92 @@ $(document).ready(function(){
               visible: $(this).val() === 'selected'
             },
             {
-              field: 'id',
-              title: 'ID',
+              field: 'c_idx',
+              title: '클래스번호',
               sortable: true
-            }, {
-              field: 'name',
+            }, 
+            {
+              field: 'c_nm',
               title: 'Item Name',
               sortable: true
-            }, {
-              field: 'price',
+            }, 
+            {
+              field: 'st_idx',
               title: 'Item Price',
               sortable: true
-            }, {
-              field: 'title',
+            }, 
+            {
+              field: 'st_nm',
+              title: 'ID',
+              sortable: true
+            }, 
+            {
+              field: 'st_pn',
+              title: 'Item Name',
+              sortable: true
+            }, 
+            {
+              field: 'st_prt_nm',
+              title: 'Item Price',
+              sortable: true
+            }, 
+            {
+              field: 'st_prt_pn',
+              title: 'ID',
+              sortable: true
+            }, 
+            {
+              field: 'st_prt_rlt',
+              title: 'Item Name',
+              sortable: true
+            }, 
+            {
+              field: 'st_schl',
+              title: 'Item Price',
+              sortable: true
+            }, 
+            {
+              field: 'st_bth',
+              title: 'ID',
+              sortable: true
+            }, 
+            {
+              field: 'st_dis_dt',
+              title: 'Item Name',
+              sortable: true
+            }, 
+            {
+              field: 'st_dtl',
+              title: 'Item Price',
+              sortable: true
+            }, 
+            {
+              field: 'st_en_dt',
+              title: 'ID',
+              sortable: true
+            }, 
+            {
+              field: 'st_gen',
+              title: 'Item Name',
+              sortable: true
+            }, 
+            {
+              field: 'st_prt_em',
+              title: 'Item Price',
+              sortable: true
+            }, 
+            {
+              field: 'st_adr',
+              title: 'Item Price',
+              sortable: true
+            }, 
+            {
+              field: 'st_rm_c_cnt',
               title: 'title',
               sortable: true
             }
           ],
-          data: data
+          data: tableData
         })
 
       }).trigger('change');
