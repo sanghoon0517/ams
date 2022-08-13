@@ -1,6 +1,8 @@
 package com.ams.student.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,7 +54,7 @@ public class StudentController {
 	}
 	
 	@GetMapping("/studentList/advanced")
-	public String studentListAdvanced(PaginationCriteriaDto criteria, StudentDto vo, Model model){
+	public String studentListAdvanced(/*PaginationCriteriaDto criteria, StudentDto vo, Model model*/){
 		
 //		int studentTotalCnt = studentService.getStudentListCount();
 //		
@@ -65,8 +67,14 @@ public class StudentController {
 //		model.addAttribute("stdList", resultList);
 //		model.addAttribute("pagination", pagination);
 		
-		List<StudentDto> resultList = studentService.getStudentList();
-		model.addAttribute("stdList", resultList);
+//		List<StudentDto> resultList = studentService.getStudentList();
+//		
+//		Map<String, Object> resultMap = new HashMap<>();
+//		resultMap.put("total", studentTotalCnt);
+//		resultMap.put("totalNotFiltered", studentTotalCnt);
+//		resultMap.put("rows", resultList);
+//		
+//		model.addAttribute("stdList", resultMap);
 		
 		return "student/advanced-manage";
 	}

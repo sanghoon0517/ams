@@ -9,15 +9,15 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
   <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/tableExport.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF/jspdf.min.js"></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.10.21/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js"></script>
   <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
   <script src="https://unpkg.com/bootstrap-table@1.20.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
+  
 
 <!-- datedropper init -->
 
 <script th:inline="javascript">
-let tableData = [[${stdList}]];
+// let tableData = [[${stdList}]];
 $(document).ready(function(){
 	$('#date-input').dateDropper({
 		format: 'Y-m-d',
@@ -32,9 +32,6 @@ $(document).ready(function(){
 	});
 	new atc(document.querySelector('#myButton123'));
 	
-	
-	
-	
 });
 </script> 
 </head>
@@ -45,8 +42,6 @@ $(document).ready(function(){
 		<input id="date-input" type="text">
 		<input id="myPicker" type="text">
 		<a id="myButton123">Add to calendar</a>
-
-
 	</div>
 </div>
 
@@ -59,11 +54,33 @@ $(document).ready(function(){
     </select>
   </div>
 
-  <table id="table" data-click-to-select="true" data-pagination="true" data-show-columns="true"
-    data-show-columns-toggle-all="true" data-search="true" data-custom-search="customSearch" data-detail-view="true"
-    data-detail-formatter="detailFormatter" data-show-refresh="true" data-show-export="true" data-toolbar="#toolbar"
-    data-show-toggle="true">
-    <!-- data-url="https://examples.wenzhixin.net.cn/examples/bootstrap_table/data"   -->
+  <table id="table" 
+    	 data-toolbar="#toolbar"
+    	 data-search="true" 
+    	 data-toggle="table"
+    	 data-show-refresh="true" 
+    	 data-show-toggle="true"
+  		 data-click-to-select="true"
+  		 data-show-fullscreen="true"
+  		 data-show-columns="true"
+    	 data-show-columns-toggle-all="true" 
+    	 data-detail-view="true"
+    	 data-show-export="true"
+    	 data-detail-formatter="detailFormatter" 
+    	 data-minimum-count-columns="1"
+    	 data-show-pagination-switch="true"
+  		 data-id-field="id"
+  		 data-page-list="[10, 25, 50, 100, all]"
+  		 data-show-footer="true"
+    	 data-custom-search="customSearch" 
+    	 data-response-handler="responseHandler"
+  		 data-url="/ams/studentList/advanced/api"
+  		 data-query-params="queryParams"
+    	 data-side-pagination="server"
+    	 data-server-sort="false"
+  		 data-pagination="true" 
+  >
+<!--   		 data-url="https://examples.wenzhixin.net.cn/examples/bootstrap_table/data" -->
     <!-- <thead>
               <tr>
                 <th data-field="state" data-checkbox="true"></th>
@@ -77,84 +94,40 @@ $(document).ready(function(){
 
   <script>
 
-
-    $(function () {
+//     $(function () {
       var $table = $('#table');
-//       [
-//         {
-//           'id': 0,
-//           'name': 'Item 0',
-//           'price': '$0'
-//         },
-//         {
-//           'id': 1,
-//           'name': 'Item 1',
-//           'price': '$1'
-//         },
-//         {
-//           'id': 2,
-//           'name': 'Item 2',
-//           'price': '$2'
-//         },
-//         {
-//           'id': 3,
-//           'name': 'Item 3',
-//           'price': '$3'
-//         },
-//         {
-//           'id': 4,
-//           'name': 'Item 4',
-//           'price': '$4'
-//         },
-//         {
-//           'id': 5,
-//           'name': 'Item 5',
-//           'price': '$5'
-//         }
-//       ]
-      $table.bootstrapTable({ data: tableData });
-
-
+//       $table.bootstrapTable({ data: tableData });
       $('#table').bootstrapTable({
         formatSearch: function () {
           return 'Search Item Name'
         }
       })
-
+      
       $('#toolbar').find('select').change(function () {
         $table.bootstrapTable('destroy').bootstrapTable({
           exportDataType: $(this).val(),
           exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'pdf'],
-//           columns: [
-//             {
-//               field: 'state',
-//               checkbox: true,
-//               visible: $(this).val() === 'selected'
-//             },
-//             {
-//               field: 'id',
-//               title: 'ID',
-//               sortable: true
-//             }, {
-//               field: 'name',
-//               title: 'Item Name',
-//               sortable: true
-//             }, {
-//               field: 'price',
-//               title: 'Item Price',
-//               sortable: true
-//             }, {
-//               field: 'title',
-//               title: 'title',
-//               sortable: true
-//             }
-//           ],
           columns: [
             {
               field: 'state',
               checkbox: true,
               visible: $(this).val() === 'selected'
             },
+//             {
+//               field: 'id',
+//               title: 'ID',
+//               sortable: true
+//             }, 
+//             {
+//               field: 'name',
+//               title: '이름',
+//               sortable: true
+//             }, 
+//             {
+//               field: 'price',
+//               title: '가격',
+//               sortable: true
+//             }, 
             {
               field: 'c_idx',
               title: '클래스번호',
@@ -162,93 +135,93 @@ $(document).ready(function(){
             }, 
             {
               field: 'c_nm',
-              title: 'Item Name',
+              title: '클래스이름',
               sortable: true
             }, 
             {
               field: 'st_idx',
-              title: 'Item Price',
+              title: '학생번호',
               sortable: true
             }, 
             {
               field: 'st_nm',
-              title: 'ID',
+              title: '학생이름',
               sortable: true
             }, 
             {
               field: 'st_pn',
-              title: 'Item Name',
+              title: '학생핸드폰번호',
               sortable: true
             }, 
             {
               field: 'st_prt_nm',
-              title: 'Item Price',
+              title: '학생부모님명',
               sortable: true
             }, 
             {
               field: 'st_prt_pn',
-              title: 'ID',
+              title: '학생부모님핸드폰번호',
               sortable: true
             }, 
             {
               field: 'st_prt_rlt',
-              title: 'Item Name',
+              title: '학생부모님관계',
               sortable: true
             }, 
             {
               field: 'st_schl',
-              title: 'Item Price',
+              title: '학생학교',
               sortable: true
             }, 
             {
               field: 'st_bth',
-              title: 'ID',
+              title: '학생생년월일',
               sortable: true
             }, 
             {
               field: 'st_dis_dt',
-              title: 'Item Name',
+              title: '학생퇴원일자',
               sortable: true
             }, 
             {
               field: 'st_dtl',
-              title: 'Item Price',
+              title: '학생세부사항',
               sortable: true
             }, 
             {
               field: 'st_en_dt',
-              title: 'ID',
+              title: '학생등록일자',
               sortable: true
             }, 
             {
               field: 'st_gen',
-              title: 'Item Name',
+              title: '학생성별',
               sortable: true
             }, 
             {
               field: 'st_prt_em',
-              title: 'Item Price',
+              title: '학생부모님이메일',
               sortable: true
             }, 
             {
               field: 'st_adr',
-              title: 'Item Price',
+              title: '학생주소',
               sortable: true
             }, 
             {
               field: 'st_rm_c_cnt',
-              title: 'title',
+              title: '학생남은횟수',
               sortable: true
             }
           ],
-          data: tableData
+//           data: tableData
         })
-
+        
       }).trigger('change');
-
+		
       $('.toggle-all').parent().find('span').text("전체 선택");
       
-    });
+//     });
     function customSearch(data, text) {
       return data.filter(function (row) {
         return row.name.indexOf(text) > -1
@@ -261,6 +234,24 @@ $(document).ready(function(){
       })
       return html.join('')
     }
+//     function responseHandler(res) {
+//         $.each(res.rows, function (i, row) {
+//           row.state = $.inArray(row.id, selections) !== -1
+//         })
+//         return res
+//     }
+    function queryParams(params) {
+        delete params.sort
+        delete params.order
+        return params
+      }
+
+      function responseHandler(res) {
+        if ($('#table').bootstrapTable('getOptions').sortOrder === 'desc') {
+          res.rows = res.rows.reverse()
+        }
+        return res
+      }
   </script>
 
 

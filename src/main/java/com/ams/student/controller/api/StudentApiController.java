@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ams.classes.model.dto.ClassDto;
 import com.ams.classes.service.ClassService;
+import com.ams.common.model.dto.BootstrapTableDto;
+import com.ams.common.model.dto.PaginationCriteriaDto;
+import com.ams.common.model.dto.PaginationDto;
 import com.ams.common.model.dto.ResponseDto;
 import com.ams.student.model.dto.StudentDto;
 import com.ams.student.service.StudentService;
@@ -43,6 +46,21 @@ public class StudentApiController {
 //		List<StudentDto> resultList = studentService.getStudentList();
 //		return new ResponseEntity<>(new ResponseDto<Object>(1, "OK", resultList), HttpStatus.OK);
 //	}
+	
+	@GetMapping("/studentList/advanced/api")
+	public BootstrapTableDto<?> studentListAdvanced(){
+		
+		int studentTotalCnt = studentService.getStudentListCount();
+		
+		List<StudentDto> resultList = studentService.getStudentList();
+		
+		BootstrapTableDto<List<StudentDto>> retData = new BootstrapTableDto<List<StudentDto>>();
+		retData.setTotal(studentTotalCnt);
+		retData.setTotalNotFiltered(studentTotalCnt);
+		retData.setRows(resultList);
+		
+		return retData;
+	}
 
 	@GetMapping("/studentList/{st_idx}")
 	public ResponseEntity<?> getStudentDetail(@PathVariable int st_idx) {
