@@ -57,6 +57,7 @@ $(document).ready(function(){
   <table id="table" 
     	 data-toolbar="#toolbar"
     	 data-search="true" 
+    	 data-search-on-enter-key="true"
     	 data-toggle="table"
     	 data-show-refresh="true" 
     	 data-show-toggle="true"
@@ -94,7 +95,7 @@ $(document).ready(function(){
 
   <script>
 
-//     $(function () {
+    $(function () {
       var $table = $('#table');
 //       $table.bootstrapTable({ data: tableData });
       $('#table').bootstrapTable({
@@ -113,21 +114,6 @@ $(document).ready(function(){
               checkbox: true,
               visible: $(this).val() === 'selected'
             },
-//             {
-//               field: 'id',
-//               title: 'ID',
-//               sortable: true
-//             }, 
-//             {
-//               field: 'name',
-//               title: '이름',
-//               sortable: true
-//             }, 
-//             {
-//               field: 'price',
-//               title: '가격',
-//               sortable: true
-//             }, 
             {
               field: 'c_idx',
               title: '클래스번호',
@@ -221,7 +207,7 @@ $(document).ready(function(){
 		
       $('.toggle-all').parent().find('span').text("전체 선택");
       
-//     });
+    });
     function customSearch(data, text) {
       return data.filter(function (row) {
         return row.name.indexOf(text) > -1
@@ -234,24 +220,20 @@ $(document).ready(function(){
       })
       return html.join('')
     }
-//     function responseHandler(res) {
-//         $.each(res.rows, function (i, row) {
-//           row.state = $.inArray(row.id, selections) !== -1
-//         })
-//         return res
-//     }
     function queryParams(params) {
+    	console.log("params : "+Object.keys(params));
         delete params.sort
         delete params.order
+        delete params.search
         return params
       }
 
-      function responseHandler(res) {
-        if ($('#table').bootstrapTable('getOptions').sortOrder === 'desc') {
-          res.rows = res.rows.reverse()
-        }
-        return res
+    function responseHandler(res) {
+      if ($('#table').bootstrapTable('getOptions').sortOrder === 'desc') {
+        res.rows = res.rows.reverse()
       }
+      return res
+    }
   </script>
 
 

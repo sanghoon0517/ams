@@ -2,9 +2,11 @@ package com.ams.student.controller.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,15 +51,26 @@ public class StudentApiController {
 //	}
 	
 	@GetMapping("/studentList/advanced/api")
-	public BootstrapTableDto<?> studentListAdvanced(@RequestParam int offset,@RequestParam int limit){
+	public BootstrapTableDto<?> studentListAdvanced(@RequestParam(required=false) String offset,@RequestParam(required=false) String limit){
+		
+//		System.out.println("[jsh] search값 : "+search);
+		System.out.println("[jsh] offset값 : "+Optional.ofNullable(offset));
+		System.out.println("[jsh] limit값 : "+Optional.ofNullable(limit)); //아니 왜 씨발 또 안나오고 지랄인데 씨발년아
 		
 		PaginationCriteriaDto pageObj = new PaginationCriteriaDto();
-		pageObj.setPage(offset);
-		pageObj.setPerPageNum(limit);
+		if(offset != null && limit != null) {
+			pageObj.setPage(Integer.parseInt(offset));
+			pageObj.setPerPageNum(Integer.parseInt(limit));			
+		}
 		
 		int studentTotalCnt = studentService.getStudentListCount();
 		
-		List<StudentDto> resultList = studentService.getStudentListPaging(pageObj);
+		List<StudentDto> resultList = null;
+		if(offset == null && limit == null) {
+			resultList = studentService.getStudentList();
+		} else {
+			resultList = studentService.getStudentListPaging(pageObj);
+		}
 		
 		BootstrapTableDto<List<StudentDto>> retData = new BootstrapTableDto<List<StudentDto>>();
 		retData.setTotal(studentTotalCnt);
