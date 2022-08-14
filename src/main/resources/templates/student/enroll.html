@@ -48,7 +48,7 @@ function findPostCode() {
             let postNum    = data.zonecode //우편번호 5자리
             
             st_adr_post.value 	= "("+postNum+") ";
-            st_adr_post.value   += latestAddr;
+            st_adr_post.value   += latestAddr+","; //구분자 추가
 //             st_adr_post.value 	+= jibun;
 //             st_adr_post.value 	+= bname;
             
@@ -171,32 +171,12 @@ function findPostCode() {
 										<input class="form-control" type="text" id="st_adr_post" placeholder="우편번호" name="st_adr_post" onclick="findPostCode()"> 									
 									</div>
 								</div>
-								<!-- <div class="col">
-								</div>
-								<div class="col">
-								</div>
-								<div class="col">
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-12 col-sm-12 col-lg-6">
-									<input class="form-control mb-1" type="text" id="st_adr_latest" placeholder="집주소(도로명)" name="st_adr_latest" onclick="findPostCode()">									
-								</div>
-								<div class="col-12 col-sm-12 col-lg-6">
-									<input class="form-control mb-1" type="text" id="st_adr_old" placeholder="집주소(지번)" name="st_adr_old" onclick="findPostCode()">									
-								</div>
-							</div> -->
 								<div class="col-12 col-sm-12 col-lg-12">
 									<div class="mb-3">
 										<input class="form-control" type="text" id="st_adr_dtl" placeholder="상세주소" name="st_adr_dtl">
 									</div>
 								</div>
-								<!-- <div class="col-12 col-sm-12 col-lg-6">
-									<input class="form-control" type="text" id="st_adr_bname" name="st_adr_bname">
-								</div> -->
-						
 							</div>
-							
 						</div>
 					</div>
 					<div class="col-12 col-sm-6 col-lg-6">

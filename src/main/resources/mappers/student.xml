@@ -44,7 +44,7 @@
 	<select id="getStudentListPaging" parameterType="com.ams.common.model.dto.PaginationCriteriaDto" resultType="com.ams.student.model.dto.StudentDto">
 		SELECT * FROM a_member
 		ORDER BY st_idx DESC
-		LIMIT #{pageStart}, #{perPageNum}			
+		LIMIT #{page}, #{perPageNum}			
 	</select>
 	<select id="getStudentListCount" resultType="int">
 		SELECT COUNT(*) FROM a_member

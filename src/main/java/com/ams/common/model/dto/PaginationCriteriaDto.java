@@ -11,7 +11,7 @@ public class PaginationCriteriaDto {
 	
 	public PaginationCriteriaDto() {
 		//페이지 기준값 생성 10페이지가 기본
-		this.page = 1;
+		this.page = 0;
 		this.perPageNum = 10;
 	}
 	
@@ -26,7 +26,7 @@ public class PaginationCriteriaDto {
 	
 	public void setPage(int page) {
 		if(page <=0) {
-			this.page = 1;
+			this.page = 0;
 		} else {
 			this.page = page;
 		}
