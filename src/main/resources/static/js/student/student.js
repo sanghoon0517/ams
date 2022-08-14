@@ -1,13 +1,13 @@
 function enroll() {
 	
-	if(c_idx.value === "") {
+/*	if(c_idx.value === "") {
 		alert("특정 수업을 선택해주세요.");
 		return false;
 	} else if(c_idx.value !== "4") {
 		alert("현재 준비중인 수업입니다.");
 		return false;
 	}
-	
+*/	
 	//상세주소 주소에 합쳐서 보내기
 	if(st_adr_dtl.value != null || st_adr_dtl.value != "") {
 		st_adr.value += " "+st_adr_dtl.value;

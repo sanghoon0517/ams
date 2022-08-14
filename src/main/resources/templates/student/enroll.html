@@ -47,12 +47,13 @@ function findPostCode() {
             let jibun 	   = data.jibunAddress //지번: 서울 은평구 역촌동 40-30
             let postNum    = data.zonecode //우편번호 5자리
             
-            st_adr_post.value 	= postNum;
-            st_adr_latest.value = latestAddr;
-            st_adr_old.value 	= jibun;
-            st_adr_bname.value 	= bname;
+            st_adr_post.value 	= "("+postNum+") ";
+            st_adr_post.value   += latestAddr;
+//             st_adr_post.value 	+= jibun;
+//             st_adr_post.value 	+= bname;
             
-            st_adr.value = "("+postNum+") "+latestAddr;
+//             st_adr.value = "("+postNum+") "+latestAddr;
+            st_adr.value = st_adr_post.value;
         }
     }).open();
 }
@@ -69,7 +70,7 @@ function findPostCode() {
 				<p class="text-primary m-0 fw-bold">원생 정보</p>
 			</div>
 			<form id="st_form" name="st_form">
-			<input type="hidden" id="st_adr" name="st_adr">
+			<input type="hidden" id="st_adr" name="st_adr"/>
 			<div class="card-body">
 				<div class="row">
 					<div class="col-12 col-sm-6 col-lg-6">
@@ -241,13 +242,11 @@ function findPostCode() {
 						</div>
 					</div>
 			</div>
-		</div>
-		<div class="row justify-content-end">
-			<div class="col col-sm-3 col-lg-2">
-				<button type="button" class="btn btn-primary" style="width: 100%;" onclick="enroll()">원생 등록</button>
+			<div class="row justify-content-end">
+				<div class="col col-sm-3 col-lg-2">
+					<button type="button" class="btn btn-primary" style="width: 100%;" onclick="enroll()">원생 등록</button>
+				</div>
 			</div>
-		</div>
-
 			</form>
 		</div>
 	</div>

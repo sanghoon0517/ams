@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ams.classes.model.dto.ClassDto;
@@ -48,11 +49,15 @@ public class StudentApiController {
 //	}
 	
 	@GetMapping("/studentList/advanced/api")
-	public BootstrapTableDto<?> studentListAdvanced(){
+	public BootstrapTableDto<?> studentListAdvanced(@RequestParam int offset,@RequestParam int limit){
+		
+		PaginationCriteriaDto pageObj = new PaginationCriteriaDto();
+		pageObj.setPage(offset);
+		pageObj.setPerPageNum(limit);
 		
 		int studentTotalCnt = studentService.getStudentListCount();
 		
-		List<StudentDto> resultList = studentService.getStudentList();
+		List<StudentDto> resultList = studentService.getStudentListPaging(pageObj);
 		
 		BootstrapTableDto<List<StudentDto>> retData = new BootstrapTableDto<List<StudentDto>>();
 		retData.setTotal(studentTotalCnt);
