@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter @Setter
 @JsonInclude(Include.NON_NULL)
 public class ScheduleDto {
-    private boolean repeat;
+    private boolean routine;
     private int id;
     private int s_idx;
     private int c_idx;

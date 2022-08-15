@@ -26,290 +26,445 @@
 
 </style>
 <script th:inline="javascript">
-	$(function(){
-		
-		 //colorpicker 라이브러리 초기화
-		$("#colorpicker").spectrum({
-        	color: "#d9d2e9"
-    	});
-		// 요일선택 비활성화
-		for(var k=0;k<$(".wkd").length;k++){
-			$(".wkd").eq(k).attr("disabled",true);
-			$(".wkd").eq(k).attr("checked",false);
-		}
-		let data = {};
-		let today = new Date();   
+function resetForm(){
+    $("#c_st_dt").val(null);
+    $("#c_ed_dt").val(null);
+    $("#c_st_tm").val(null);
+    $("#c_ed_tm").val(null);
+    $('#allDay').prop('checked', false);
+    $('#repeatDay').prop('checked', false);
+    for (var k = 0; k < $(".wkd").length; k++) {
+        $(".wkd").eq(k).attr("disabled", true);
+        $(".wkd").eq(k).attr("checked", false);
+    }
+    $("#c_nm").val(null);
+    $("#c_color").val('#000000');
+    $("select#t_idx option:first").prop('selected','selected');
+    $("select#c_idx option:first").prop('selected','selected');
+}
+$(function(){
+    
+     //colorpicker 라이브러리 초기화
+    $("#colorpicker").spectrum({
+        color: "#d9d2e9"
+    });
+    // 요일선택 비활성화
+    for(var k=0;k<$(".wkd").length;k++){
+        $(".wkd").eq(k).attr("disabled",true);
+        $(".wkd").eq(k).attr("checked",false);
+    }
+    let data = {};
+    let today = new Date();   
 
-		let year = today.getFullYear(); // 년도
-		let month = today.getMonth() + 1;  // 월
-		let date = today.getDate();  // 날짜
-		let day = today.getDay();  // 요일
+    let year = today.getFullYear(); // 년도
+    let month = today.getMonth() + 1;  // 월
+    let date = today.getDate();  // 날짜
+    let day = today.getDay();  // 요일
 
-		// 종일 일정 스위치 클릭시 동작
-		$("#allDay").on('change', function () {
-			if ($(this).is(':checked')) {
-				$(this).attr('value', 'true');
-				$("#allDayText").text('종일 일정');
-				$('#c_st_tm').attr('disabled',true);
-				$('#c_ed_tm').attr('disabled',true);
-				$('#c_st_tm').val(null);
-				$('#c_ed_tm').val(null);
-			}
-			else {
-				$(this).attr('value', 'false');
-				$("#allDayText").text('종일 일정 아님');
-				$('#c_st_tm').attr('disabled',false);
-				$('#c_ed_tm').attr('disabled',false);
-			}
-		});
-		// 반복 일정 스위치 클릭시 동작
-		$("#repeatDay").on('change', function () {
-			if ($(this).is(':checked')) {
-				$(this).attr('value', 'true');
-				$("#repeatDayText").text('반복 일정');
-				for(var k=0;k<$(".wkd").length;k++){
-					$(".wkd").eq(k).attr("disabled",false);
-				}
-			}
-			else {
-				$(this).attr('value', 'false');
-				$("#repeatDayText").text('반복 일정 아님');
-				for(var k=0;k<$(".wkd").length;k++){
-					$(".wkd").eq(k).attr("disabled",true);
-					$(".wkd").eq(k).attr("checked",false);
-				}
-			}
-		});
-		// 클래스 선택시 클래스 정보 복사
-		$("#c_idx").on('change', function () {
-			var c_idx = $("option:selected", this).attr("value");
-			var selectedClass = [];
-			let allClass = [[${#lists.size(class)}]];
-    		[# th:each="class : ${class}"]
-				if([[${class.c_idx}]]==c_idx){
-					//일정제목
-					$("#c_nm").val([[${class.c_nm}]]);
-					//표시 컬러
-					$("#c_color").val([[${class.c_color}]]);
-					//담당 선생
-					$("select#t_idx option[value="+[[${class.t_idx}]]+"]").attr('selected',true);
-					// 일정 요일
-					var wkd = [[${class.c_wkd}]];
-					$(".wkd").attr("checked",false);
-					if($("#repeatDay").is(":checked")){
-							if(wkd.length!=0){
-								for(var j=0;j<wkd.length;j++){
-									var temp ="";
-									if(wkd[j]=='1'){
-										temp = 'sun';
-									}else if(wkd[j]=='2'){
-										temp = 'mon';
-									}else if(wkd[j]=='3'){
-										temp = 'tue';
-									}else if(wkd[j]=='4'){
-										temp = 'wed';
-									}else if(wkd[j]=='5'){
-										temp = 'thur';
-									}else if(wkd[j]=='6'){
-										temp = 'fri';
-									}else if(wkd[j]=='7'){
-										temp = 'sat';
-									}
-									$('#'+temp).attr("checked",true);
-								}
-							}
-					}
-					
-					// 일정 시간 c_st_tm
+    // 종일 일정 스위치 클릭시 동작
+    $("#allDay").on('change', function () {
+        if ($(this).is(':checked')) {
+            $(this).attr('value', 'true');
+            $("#allDayText").text('종일 일정');
+            $('#c_st_tm').attr('disabled',true);
+            $('#c_ed_tm').attr('disabled',true);
+            $('#c_st_tm').val(null);
+            $('#c_ed_tm').val(null);
+        }
+        else {
+            $(this).attr('value', 'false');
+            $("#allDayText").text('종일 일정 아님');
+            $('#c_st_tm').attr('disabled',false);
+            $('#c_ed_tm').attr('disabled',false);
+        }
+    });
+    // 반복 일정 스위치 클릭시 동작
+    $("#repeatDay").on('change', function () {
+        if ($(this).is(':checked')) {
+            $(this).attr('value', 'true');
+            $("#repeatDayText").text('반복 일정');
+            for(var k=0;k<$(".wkd").length;k++){
+                $(".wkd").eq(k).attr("disabled",false);
+            }
+        }
+        else {
+            $(this).attr('value', 'false');
+            $("#repeatDayText").text('반복 일정 아님');
+            for(var k=0;k<$(".wkd").length;k++){
+                $(".wkd").eq(k).attr("disabled",true);
+                $(".wkd").eq(k).attr("checked",false);
+            }
+        }
+    });
+    // 클래스 선택시 클래스 정보 복사
+    $("#c_idx").on('change', function () {
+        var c_idx = $("option:selected", this).attr("value");
+        var selectedClass = [];
+        let allClass = [[${#lists.size(class)}]];
+        [# th:each="class : ${class}"]
+            if([[${class.c_idx}]]==c_idx){
+                //일정제목
+                $("#c_nm").val([[${class.c_nm}]]);
+                //표시 컬러
+                $("#c_color").val([[${class.c_color}]]);
+                //담당 선생
+                $("select#t_idx option[value="+[[${class.t_idx}]]+"]").attr('selected',true);
+                // 일정 요일
+                var wkd = [[${class.c_wkd}]];
+                $(".wkd").attr("checked",false);
+                if($("#repeatDay").is(":checked")){
+                        if(wkd.length!=0){
+                            for(var j=0;j<wkd.length;j++){
+                                var temp ="";
+                                if(wkd[j]=='0'){
+                                    temp = 'sun';
+                                }else if(wkd[j]=='1'){
+                                    temp = 'mon';
+                                }else if(wkd[j]=='2'){
+                                    temp = 'tue';
+                                }else if(wkd[j]=='3'){
+                                    temp = 'wed';
+                                }else if(wkd[j]=='4'){
+                                    temp = 'thur';
+                                }else if(wkd[j]=='5'){
+                                    temp = 'fri';
+                                }else if(wkd[j]=='6'){
+                                    temp = 'sat';
+                                }
+                                $('#'+temp).attr("checked",true);
+                            }
+                        }
+                }
+                
+                // 일정 시간 c_st_tm
+				if(!$('#allDay').is(':checked')){
 					$("#c_st_tm").val([[${class.c_st_tm}]]);
-					$("#c_ed_tm").val([[${class.c_ed_tm}]]);
-					// 수강중인 원생
+               		$("#c_ed_tm").val([[${class.c_ed_tm}]]);
 				}
-			[/]
-		});
-
-		//일정 등록
-		$('#schedule-register').click(function(){
-	// private int id;
-    // private int c_idx;
-    // private String title;
-    // private String color;
-    // private String start;
-    // private String end;
-    // // 반복일정 param
-    // private String startRecur;
-    // private String endRecur;
-    // private String startTime;
-    // private String endTime;
-    // private String groupId;
-    // private List<Integer> daysOfWeek; 
-    // private boolean allDay;
-			//반복 일정 여부에 따라
-			var data ={};
-			if($("#repeatDay").val()=='true'){
-				var weekdays = [];
-				for(var k=0;k<$(".wkd").length;k++){
-					if($(".wkd").eq(k).is(":checked")){
-						weekdays.push($(".wkd").eq(k).val());
-					}
-				}
-				data ={
-					repeat: true,
-					title : $("#c_nm").val(),
-					c_idx : $('select#c_idx option:selected').val(),
-					t_idx : $('select#t_idx option:selected').val(),
-					color : $("#c_color").val(),
-					startRecur: $("#c_st_dt").val(),
-					endRecur: $("#c_ed_dt").val(),
-					startTime: $("#allDay").val() == 'true' ? null : $("#c_st_tm").val(),
-					endTime: $("#allDay").val() == 'true' ?  null : $("#c_ed_tm").val(),
-					daysOfWeek: weekdays,
-					allDay: $("#allDay").val()
-				}
-			}else{
-				data ={
-					repeat: false,
-					title : $("#c_nm").val(),
-					c_idx : $('select#c_idx option:selected').val(),
-					t_idx : $('select#t_idx option:selected').val(),
-					color : $("#c_color").val(),
-					start : $("#allDay").val() == 'true' ?  $("#c_st_dt").val() : $("#c_st_dt").val()+"T"+$("#c_st_tm").val(),
-					end   : $("#allDay").val() == 'true' ?  $("#c_ed_dt").val() : $("#c_ed_dt").val()+"T"+$("#c_ed_tm").val(),
-					allDay : $("#allDay").val()
-				}
-			}
-
-			$.ajax({
-                type: "POST",
-                url: getContextPath() + "/schedule",
-				data: JSON.stringify(data),
-                contentType: "application/json;charset=utf-8",
-                dataType: "json"
-            }).done(function (resp) {
-                alert("일정등록 완료");
-                //location.href = getContextPath() + "/schedule";
-            }).fail(function (error) {
-                alert("일정등록 실패");
-            });   
-		});
-
-		function calendar_init(date_type){
-			let draggableEl = document.getElementById('mydraggable');
-			var calendarEl = document.getElementById('calendar');
-			var calendar = new FullCalendar.Calendar(calendarEl, {
-				initialView : date_type,
-				locale: 'ko', // 한국어 설정
-				customButtons: {
-					myCustomButton: {
-					text: '일정등록',
-					click: function() {
-						$('#register-schedule').modal('show');
-						
-					}
-					}
-				},
-				headerToolbar: {
-					right: 'prev,next today myCustomButton',
-					left: 'title',
-					center: 'dayGridMonth,timeGridWeek,timeGridDay'
-				},
-				dayMaxEvents: true, // 일정개수 이상의 이벤트시 팝오버 생김
-				selectable: true, 
-				editable: true,
-				droppable: true,  // 드래그 가능
-				expandRows: true, 
-				drop: function(arg) {
+                // 수강중인 원생
 				
-					alert("hi")
-				},
-				eventClick: function(info) { //이벤트 클릭시 이벤트 정보 출력 이벤트
-			        var eventObj = info.event;		
-			        alert('Clicked ' + eventObj.start + eventObj.end + eventObj.title + eventObj.id);
-			        $('#myModal').modal('show'); 
-			 	},
-				eventChange: function(obj){ // 드래그 수정시 발생 이벤트
-					alert(obj.event.title);
-					alert(obj.event.start);
-					
-				},
-			 	select: function(arg) { // 칸 클릭시 발생하는 추가 이벤트
-					var title = prompt('Event Title:');
-					console.log("hi");
-					if (title) {
-						calendar.addEvent({
-							title: title,
-							start: arg.start,
-							end: arg.end,
-							allDay: arg.allDay
-						});
-						calendar.unselect();
-				}
-			},
+            }
+        [/]
+    });
 
-			eventSources: [{
-				events: 
-				function(info, successCallback, failureCallback) {
-					console.log(info);
-					console.log(successCallback);
-					$.ajax({
-						url: '/ams/schedule/all',
-						type: 'GET',
-						dataType: 'json',
-						data: {
-							start : info.startStr,
-							end : info.endStr
-						},
-						success: function(data) {
-							console.log(data.data);
-							successCallback(data.data);
+    //일정 등록
+    $('#schedule-register').click(function(){
+        //반복 일정 여부에 따라
+        var data ={};
+        if($("#repeatDay").val()=='true'){
+            var weekdays = [];
+            for(var k=0;k<$(".wkd").length;k++){
+                if($(".wkd").eq(k).is(":checked")){
+                    weekdays.push($(".wkd").eq(k).val());
+                }
+            }
+            data ={
+                s_idx : $('#s_idx').val(),
+                routine: true,
+                title : $("#c_nm").val(),
+                c_idx : $('select#c_idx option:selected').val(),
+                t_idx : $('select#t_idx option:selected').val(),
+                color : $("#c_color").val(),
+                startRecur: $("#c_st_dt").val(),
+                endRecur: $("#c_ed_dt").val(),
+                startTime: $("#allDay").val() == 'true' ? null : $("#c_st_tm").val(),
+                endTime: $("#allDay").val() == 'true' ?  null : $("#c_ed_tm").val(),
+                daysOfWeek: weekdays,
+                allDay: $("#allDay").val()
+            }
+        }else{
+            data ={
+                s_idx : $('#s_idx').val(),
+                routine: false,
+                title : $("#c_nm").val(),
+                c_idx : $('select#c_idx option:selected').val(),
+                t_idx : $('select#t_idx option:selected').val(),
+                color : $("#c_color").val(),
+                start : $("#allDay").val() == 'true' ?  $("#c_st_dt").val() : $("#c_st_dt").val()+"T"+$("#c_st_tm").val(),
+                end   : $("#allDay").val() == 'true' ?  $("#c_ed_dt").val() : $("#c_ed_dt").val()+"T"+$("#c_ed_tm").val(),
+                allDay : $("#allDay").val()
+            }
+        }
+        
+        $.ajax({
+            type: "POST",
+            url: getContextPath() + "/schedule",
+            data: JSON.stringify(data),
+            contentType: "application/json;charset=utf-8",
+            dataType: "json"
+        }).done(function (resp) {
+            alert("일정등록 완료");
+            location.href = getContextPath() + "/schedule";
+        }).fail(function (error) {
+            alert("일정등록 실패");
+        });   
+    });
+
+    function calendar_init(date_type){
+        let draggableEl = document.getElementById('mydraggable');
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView : date_type,
+            locale: 'ko', // 한국어 설정
+            customButtons: {
+                myCustomButton: {
+                text: '일정등록',
+                click: function() {
+					resetForm();
+					$('#register-title').text('일정 등록');
+					$('#schedule-register').css("display","block");
+					$('#schedule-update').css("display","none");
+                    $('#register-schedule').modal('show');
+                    
+                }
+                }
+            },
+            headerToolbar: {
+                right: 'prev,next today myCustomButton',
+                left: 'title',
+                center: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            dayMaxEvents: true, // 일정개수 이상의 이벤트시 팝오버 생김
+            selectable: true, 
+            editable: true,
+            droppable: true,  // 드래그 가능
+            expandRows: true, 
+            drop: function(arg) {
+            
+                alert("hi")
+            },
+            eventClick: function(info) { //이벤트 클릭시 이벤트 정보 출력 이벤트
+                var eventObj = info.event;		
+				$('#register-title').text('일정 상세');
+				$('#schedule-register').css("display","none");
+				$('#schedule-update').css("display","block");
+                //alert('Clicked ' + eventObj.start + eventObj.end + eventObj.title + eventObj.id);
+                $.ajax({
+                    type: "GET",
+                    url: getContextPath() + "/schedule/"+eventObj.id+"/post",
+                    contentType: "application/json;charset=utf-8",
+                    dataType: "json"
+                }).done(function (resp) {
+                    //alert("일정 정보 로딩 완료");
+                    resetForm();
+                    console.log(resp.data);
+                    var schedule = resp.data;
+                    // 값들 모달에 이동
+                    //일정 번호
+                    $('#s_idx').val(schedule.s_idx);
+                    //클래스정보
+                    $("select#c_idx option[value="+schedule.c_idx+"]").prop('selected',true);
+                    //일정 제목
+                    $("#c_nm").val(schedule.title);
+                    //담당 선생님
+                    $("select#t_idx option[value="+schedule.t_idx+"]").prop('selected',true);
+                    //반복여부
+                    $("#repeatDay").prop("checked",schedule.routine);
+                    
+                    //종일여부
+                    $("#allDay").prop("checked",schedule.allDay);
+                    //컬러
+                    $("#c_color").val(schedule.color);
+                    //요일
+                    for (var i = 0; i < schedule.daysOfWeek.length; i++) {
+                        var wkd = schedule.daysOfWeek;
+                        var temp = "";
+                        if (wkd[i] == '0') {
+                            temp = 'sun';
+                        } else if (wkd[i] == '1') {
+                            temp = 'mon';
+                        } else if (wkd[i] == '2') {
+                            temp = 'tue';
+                        } else if (wkd[i] == '3') {
+                            temp = 'wed';
+                        } else if (wkd[i] == '4') {
+                            temp = 'thur';
+                        } else if (wkd[i] == '5') {
+                            temp = 'fri';
+                        } else if (wkd[i] == '6') {
+                            temp = 'sat';
+                        }
+                        $('#' + temp).attr("checked", true);
+                    }
+                    //일정 시작일
+                    if(schedule.routine==true){
+                        $('#repeatDay').attr('checked', true);
+						$('#repeatDay').val(true);
+                        $("#repeatDayText").text('반복 일정');
+                        for (var k = 0; k < $(".wkd").length; k++) {
+                            $(".wkd").eq(k).attr("disabled", false);
+                        }
+                    }else{
+                        $('#repeatDay').attr('checked', false);
+						$('#repeatDay').val(false);
+                        $("#repeatDayText").text('반복 일정 아님');
+                        for (var k = 0; k < $(".wkd").length; k++) {
+                            $(".wkd").eq(k).attr("disabled", true);
+                        }
+					}
+					if (schedule.allDay == true) {
+						$('#allDay').attr('value', true);
+						$("#allDayText").text('종일 일정');
+						if(schedule.routine==true){
+							$("#c_st_dt").val(schedule.startRecur);
+                        	$("#c_ed_dt").val(schedule.endRecur);
+
+						}else{
+							$("#c_st_dt").val(schedule.start);
+							$("#c_ed_dt").val(schedule.end);
 						}
-					});
-				}
-			}]
-				 //events: [schedules]
-				//  [
-				// 	    {
-				// 		  id : '10',
-				// 	      title  : 'event1',
-				// 	      start  : '2022-07-01',
-				// 		  color	 : '#141FF7' // 컬러 코드로도 저장 가능
-				// 	    },
-				// 	    {
-				// 	      title  : 'event2',
-				// 	      start  : '2022-07-09T12:30:00',
-				// 	      end	 : '2022-07-19T15:30:00',
-				// 		  color	 : 'purple'
-					 
-				// 	    },
-				// 	    {
-				// 	      title  : 'event3',
-				// 	      start  : '2022-07-29T12:30:00',
-				// 	      allDay : true // 하루 종일 여부
-				// 	    },
-				// 		{
-				// 			groupId: 'blueEvents', // 동일하게 움직이게 설정(구간 반복)
-				// 			title  : '반복이벤트 설정',
-				// 			daysOfWeek: [ '3' ], // these recurrent events move separately
-				// 			startRecur  : '2022-08-09',
-				// 	      	endRecur : '2022-08-29',
-				// 			startTime: '09:00:00',
-      			// 			endTime: '11:30:00',
-				// 			color: 'red',
-				// 			//allDay : false // 하루 종일 여부
-				// 		},
-				//  ]
-				
-			});
-			calendar.render();
-		}
-		//페이지 로딩시 월간일정 init
-		calendar_init('dayGridMonth');
+						$('#c_st_tm').val(null);
+						$('#c_ed_tm').val(null);
+						$('#c_st_tm').attr('disabled', true);
+						$('#c_ed_tm').attr('disabled', true);
+					} else {
+						$('#allDay').attr('value', false);
+						$("#allDayText").text('종일 일정 아님');
+						if(schedule.routine==true){
+							$("#c_st_dt").val(schedule.startRecur);
+                        	$("#c_ed_dt").val(schedule.endRecur);
+							$("#c_st_tm").val(schedule.startTime);
+                            $("#c_ed_tm").val(schedule.endTime);
+						}else{
+							var st_dt = String(schedule.start).split('T');
+							var ed_dt = String(schedule.end).split('T');
+							$('#c_st_tm').attr('disabled', false);
+							$('#c_ed_tm').attr('disabled', false);
+							$("#c_st_dt").val(st_dt[0]);
+							$("#c_ed_dt").val(ed_dt[0]);
+							$("#c_st_tm").val(st_dt[1]);
+							$("#c_ed_tm").val(ed_dt[1]);
+						}
+					}
+                    $('#register-schedule').modal('show'); 
+                }).fail(function (error) {
+                });   
 
+             },
+            eventChange: function(obj){ // 드래그 수정시 발생 이벤트
+                alert(obj.event.title);
+                alert(obj.event.id);
+                alert(obj.event.start);
+                alert(obj.event.end);
+                alert(obj.event.daysOfWeek);
+                console.log(obj.oldEvent);
+                console.log(obj.event);
+                console.log(obj);
+                
+            },
+             select: function(arg) { // 칸 클릭시 발생하는 추가 이벤트
+                var title = prompt('Event Title:');
+                console.log("hi");
+                if (title) {
+                    calendar.addEvent({
+                        title: title,
+                        start: arg.start,
+                        end: arg.end,
+                        allDay: arg.allDay
+                    });
+                    calendar.unselect();
+            }
+        },
 
+        eventSources: [{
+            events: 
+                function(info, successCallback, failureCallback) {
+                    $.ajax({
+                        url: '/ams/schedule/all?start='+info.startStr+'&end='+info.endStr,
+                        type: 'GET',
+                        success: function(data) {
+                            console.log(data.data);
+                            for(var i=0;i<data.data.length;i++){
+                                    if(data.data[i].start == null){
+                                        delete data.data[i].start;
+                                        delete data.data[i].end;
+                                        if(data.data[i].endTime==null){
+                                            data.data[i].endRecur += 'T24:00:00'; 
+                                        }
+                                    }else{
+                                        delete data.data[i].startRecur;
+                                        delete data.data[i].endRecur;
+                                        delete data.data[i].startTime;
+                                        delete data.data[i].endTime;
+                                        delete data.data[i].groupId;
+                                        delete data.data[i].daysOfWeek;
+                                        if(data.data[i].end.length < 12){
+                                            data.data[i].end += 'T24:00:00'; 
+                                        }
+                                    }
+                            } 
+                            console.log(data.data);
+                            successCallback(data.data);
+                        }
+                    });
+                }
+        }]
+        
 
-		
+        });
+        calendar.render();
+    }
+    //페이지 로딩시 월간일정 init
+    calendar_init('dayGridMonth');
+
+	//원생 조회 
+	$('#searchbtn').click(function(){
+		$('#searchstudent').modal('show');
 	});
 
+
+	//스케줄 업데이트
+	$('#schedule-update').click(function(){
+		var data ={};
+        if($("#repeatDay").val()=='true'){
+            var weekdays = [];
+            for(var k=0;k<$(".wkd").length;k++){
+                if($(".wkd").eq(k).is(":checked")){
+                    weekdays.push($(".wkd").eq(k).val());
+                }
+            }
+            data ={
+                routine: $("#repeatDay").val(),
+                title : $("#c_nm").val(),
+                c_idx : $('select#c_idx option:selected').val(),
+                t_idx : $('select#t_idx option:selected').val(),
+                color : $("#c_color").val(),
+                startRecur: $("#c_st_dt").val(),
+                endRecur: $("#c_ed_dt").val(),
+                startTime: $("#allDay").val() == 'true' ? null : $("#c_st_tm").val(),
+                endTime: $("#allDay").val() == 'true' ?  null : $("#c_ed_tm").val(),
+                daysOfWeek: weekdays,
+                allDay: $("#allDay").val(),
+            }
+        }else{
+            data ={
+                routine: $("#repeatDay").val(),
+                title : $("#c_nm").val(),
+                c_idx : $('select#c_idx option:selected').val(),
+                t_idx : $('select#t_idx option:selected').val(),
+                color : $("#c_color").val(),
+                start : $("#allDay").val() == 'true' ?  $("#c_st_dt").val() : $("#c_st_dt").val()+"T"+$("#c_st_tm").val(),
+                end   : $("#allDay").val() == 'true' ?  $("#c_ed_dt").val() : $("#c_ed_dt").val()+"T"+$("#c_ed_tm").val(),
+                allDay : $("#allDay").val(),
+            }
+        }
+
+        $.ajax({
+            type: "PUT",
+            url: getContextPath() + "/schedule/"+$('#s_idx').val()+"/post",
+            data: JSON.stringify(data),
+            contentType: "application/json;charset=utf-8",
+            dataType: "json"
+        }).done(function (resp) {
+            alert("일정수정 완료");
+            location.href = getContextPath() + "/schedule";
+        }).fail(function (error) {
+            alert("일정수정 실패");
+        });   
+	});
+
+    
+});
 </script>
 </head>
 
@@ -319,35 +474,22 @@
 		<div id='calendar'>
 			<div class="fc-toolbar-chunk"></div>
 		</div>
-<div class="modal" id="myModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Modal body text goes here.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
-   <!-- 모달창(클래스 상세) -->
+
+
+   <!-- 일정 등록 모달창 -->
    <div class="modal" id="register-schedule" tabindex="-1">
 	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 	  <div class="modal-content">
 		<div class="modal-header">
-		  <h5 class="modal-title">일정 등록</h5>
+		  <h5 class="modal-title" id="register-title">일정 등록</h5>
 		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		</div>
 		<div class="modal-body">
 		  <div class="row">
 				<div class="col-sm-12 col-lg-12">
 					<div class="mb-3">
+						<input type="hidden" id="s_idx" name="s_idx">
+						<input type="hidden" id="groupId" name="groupId">
 						<label class="form-label" for="c_idx"><strong>클래스 선택</strong><br /></label>
 						<select class="form-select form-control" id="c_idx" aria-label="Default select example" name="c_idx">
 							<option value="">선택 안함</option>
@@ -392,31 +534,31 @@
 				<div class="col-6 col-sm-6 col-lg-6 mb-3">
 					<label class="form-label" for="username"><strong >일정 요일</strong></label><br>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input wkd" type="checkbox" id="mon" value="2">
+						<input class="form-check-input wkd" type="checkbox" id="mon" value="1">
 						<label class="form-check-label" for="inlineCheckbox1">월</label>
 					  </div>
 					  <div class="form-check form-check-inline">
-						<input class="form-check-input wkd" type="checkbox" id="tue" value="3">
+						<input class="form-check-input wkd" type="checkbox" id="tue" value="2">
 						<label class="form-check-label" for="inlineCheckbox2">화</label>
 					  </div>
 					  <div class="form-check form-check-inline">
-						<input class="form-check-input wkd" type="checkbox" id="wed" value="4">
+						<input class="form-check-input wkd" type="checkbox" id="wed" value="3">
 						<label class="form-check-label" for="inlineCheckbox2">수</label>
 					  </div>
 					  <div class="form-check form-check-inline">
-						<input class="form-check-input wkd" type="checkbox" id="thur" value="5">
+						<input class="form-check-input wkd" type="checkbox" id="thur" value="4">
 						<label class="form-check-label" for="inlineCheckbox2">목</label>
 					  </div>
 					  <div class="form-check form-check-inline">
-						<input class="form-check-input wkd" type="checkbox" id="fri" value="6">
+						<input class="form-check-input wkd" type="checkbox" id="fri" value="5">
 						<label class="form-check-label" for="inlineCheckbox2">금</label>
 					  </div>
 					  <div class="form-check form-check-inline">
-						<input class="form-check-input wkd" type="checkbox" id="sat" value="7">
+						<input class="form-check-input wkd" type="checkbox" id="sat" value="6">
 						<label class="form-check-label" for="inlineCheckbox2">토</label>
 					  </div>
 					  <div class="form-check form-check-inline">
-						<input class="form-check-input wkd" type="checkbox" id="sun" value="1">
+						<input class="form-check-input wkd" type="checkbox" id="sun" value="0">
 						<label class="form-check-label" for="inlineCheckbox2">일</label>
 					  </div>
 				</div>
@@ -433,8 +575,11 @@
 					<label class="form-label" for="email"><strong>일정 종료 시간</strong></label><input id="c_ed_tm" class="form-control" type="time"  name="c_ed_tm" />
 				</div>
 				<div class="col-sm-12 col-lg-12 mb-3">
-					<h5>수강중인 원생</h5>
-					<div class="row" id="c-student"></div>
+                    <div class="col">
+                        <label class="form-label" for="username"><strong>원생 리스트</strong> 
+                            &nbsp;&nbsp;&nbsp;
+                            <button type="button" id="searchbtn" class="btn btn-primary" style="color: white;">원생조회&nbsp;<i class="fa-solid fa-magnifying-glass"></i></button><br /></label>
+                    </div>
 				</div>
 			</div>
 
@@ -442,11 +587,99 @@
 		
 
 		<div class="modal-footer">
-		  <button type="button" class="btn btn-primary" id="schedule-register">일정 수정</button>
+		  <button type="button" class="btn btn-primary" id="schedule-register">일정 등록</button>
+		  <button type="button" class="btn btn-primary" id="schedule-update">일정 수정</button>
 		  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
 		</div>
 	</div>
 </div>
+</div>
+
+
+
+    <!-- 모달창(원생조회) -->
+    <div class="modal" id="searchstudent" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">원생조회</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <!-- 조건1 이름 -->
+                <div class="col-sm-6 col-lg-3">
+                    <div class="input-group input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">이름</span>
+                        <input type="text" class="form-control" id="studentname" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                      </div>    
+                </div>
+                <!-- 조건2 학교 -->
+                <div class="col-sm-6 col-lg-3">
+                    <div class="input-group input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">학교</span>
+                    <select class="form-select" id="studentschl" aria-label="Default select example">
+                        <option value="">[학교 선택]</option>
+                        <th:block th:each="student : ${list3}">
+                                <option th:if="${not #strings.isEmpty(student.st_schl)}" th:text="${student.st_schl}" th:value="${student.st_schl}">학교</option>
+                        </th:block>
+                    </select>
+                    </div>
+                </div>
+                <!-- 조건3 나이 -->
+                <div class="col-sm-6 col-lg-5">
+                    <div class="input-group input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">나이</span>
+                    <select class="form-select" id="studentagefrom" aria-label="Default select example">
+                        <option value="">[선택]</option>
+                        <th:block th:each="num : ${#numbers.sequence(min,max)}">
+                                <option th:text="${num}+'살'" th:value="${num}">학교</option>
+                        </th:block>
+                    </select>
+                    <span class="input-group-text" id="inputGroup-sizing-sm">to</span>
+                    <select class="form-select" id="studentageto" aria-label="Default select example">
+                        <option value="">[선택]</option>
+                        <th:block th:each="num : ${#numbers.sequence(min,max)}">
+                                <option th:text="${num}+'살'" th:value="${num}">학교</option>
+                        </th:block>
+                    </select>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-lg-1">
+                    <button type="button" id="searchstudentbtn" class="btn btn-info" style="color: white;">조회</button>
+                </div>
+
+                </div>
+                
+                <div class="row  align-items-center">
+                    
+                    <div class="col-sm-12 col-lg-6">
+                        <h6>조회된 원생 리스트</h6>
+                    <select class="form-select form-control" id="searched-student" th:size="${#lists.size(student)}" aria-label="select example" style="height: 300px;">
+                        <!-- <th:block th:each="student : ${list2}">
+                            <option th:text="${student.st_nm}+'('+${#strings.toString(student.st_gen) == 'M'?'남':'여'}+') ' + ${student.st_bth} +'살'" th:value="${student.st_idx}">Open this select menu</option>
+                        </th:block> -->
+                      </select>
+                      </select>
+                    </div>
+    
+                    <div class="col-sm-12 col-lg-6">
+                        <h6>등록할 원생 리스트</h6>
+                        <select class="form-select form-control" id="selected-student" th:size="${#lists.size(student)}" aria-label="select example" style="height: 300px;">
+
+                          </select>
+                    </div>
+                </div>
+
+            </div>
+            
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+              <button type="button" class="btn btn-primary" id="student-register" name="add">원생 등록</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 	</div><!-- end -->

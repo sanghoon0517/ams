@@ -18,4 +18,6 @@ public class RepeatScheduleDto {
     private String groupId;
     private List<String> daysOfWeek = new ArrayList<>(); 
     private boolean allDay;
+    private String start;
+    private String end;
 }

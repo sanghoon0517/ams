@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ams.schedule.model.dao.ScheduleDao;
 import com.ams.schedule.model.dto.ScheduleDto;
+import com.ams.schedule.model.dto.ScheduleParamDto;
 
 @Service
 @Transactional
@@ -18,20 +19,38 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     @Autowired
     private ScheduleDao dao;
+
     @Override
     public int registerSchedule(ScheduleDto dto) {
         // groupID
-        UUID uuidTemp = UUID.randomUUID();
-        String groupId = uuidTemp.toString();
-        dto.setGroupId(groupId);
-
+        if(dto.isRoutine()){
+            UUID uuidTemp = UUID.randomUUID();
+            String groupId = uuidTemp.toString();
+            dto.setGroupId(groupId);
+        }
         int result = dao.insertRepeatSchedule(dto);
         return result;
     }
+
+
     @Override
-    public List<ScheduleDto> getSchedule() {
-        List<ScheduleDto> list= dao.getSchedule();
+    public List<ScheduleDto> getSchedule(ScheduleParamDto dto) {
+        List<ScheduleDto> list= dao.getSchedule(dto);
         return list;
+    }
+
+
+    @Override
+    public ScheduleDto getOneSchedule(int s_idx) {
+        ScheduleDto dto = dao.getOneSchedule(s_idx);
+        return dto;
+    }
+
+
+    @Override
+    public int updateSchedule(ScheduleDto dto) {
+        int result = dao.updateSchedule(dto);
+        return result;
     }
     
 }

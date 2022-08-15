@@ -14,6 +14,7 @@
         <result property="endTime" column="endTime"/>
         <result property="groupId" column="groupId"/>
         <result property="allDay" column="allDay"/>
+        <result property="routine" column="routine"/>
         <result property="daysOfWeek" column="daysOfWeek" typeHandler="com.ams.schedule.model.dto.JsonDataTypeHandler"/>
 
     </resultMap>
@@ -30,7 +31,10 @@
             endTime,
             groupId,
             daysOfWeek,
-            allDay
+            allDay,
+            start,
+            end,
+            routine
         ) 
         VALUES(
             #{title},
@@ -43,10 +47,13 @@
             #{endTime},
             #{groupId},
             #{daysOfWeek,typeHandler=com.ams.schedule.model.dto.JsonDataTypeHandler},
-            #{allDay}
+            #{allDay},
+            #{start},
+            #{end},
+            #{routine}
         )
     </insert>
-    <select id="getSchedule" resultMap="ScheduleDto">
+    <select id="getSchedule" resultMap="ScheduleDto" parameterType="com.ams.schedule.model.dto.ScheduleParamDto">
         select
             s_idx, 
             title,
@@ -59,10 +66,57 @@
             endTime,
             groupId,
             daysOfWeek,
-            allDay
+            allDay,
+            start,
+            end
         from a_schedule
+        where 
+        <![CDATA[
+            (startRecur <= #{end} and endRecur >= #{start}) 
+            OR 
+            (start<= #{end} and end >= #{start})
+        ]]>
+    </select>
+    <select id="getOneSchedule" parameterType="Integer" resultMap="ScheduleDto">
+        select
+            s_idx, 
+            title,
+            c_idx,
+            t_idx,
+            color,
+            startRecur,
+            endRecur,
+            startTime,
+            endTime,
+            groupId,
+            daysOfWeek,
+            allDay,
+            start,
+            end,
+            routine
+        from a_schedule
+        where s_idx = #{s_idx}
     </select>
 
+    <update id="updateSchedule" parameterType="com.ams.schedule.model.dto.ScheduleDto">
+        update a_schedule
+        set 
+            title = #{title},
+            c_idx = #{c_idx},
+            t_idx = #{t_idx},
+            color = #{color},
+            startRecur = #{startRecur},
+            endRecur = #{endRecur},
+            startTime = #{startTime},
+            endTime = #{endTime},
+            daysOfWeek = #{daysOfWeek,typeHandler=com.ams.schedule.model.dto.JsonDataTypeHandler},
+            allDay = #{allDay},
+            start = #{start},
+            end = #{end},
+            routine = #{routine}
+        where 
+            s_idx = #{s_idx}
+    </update>
     <!-- <insert id="insertNonRepeatSchedule" parameterType="com.ams.schedule.model.dto.ScheduleDto">
 
     </insert> -->
