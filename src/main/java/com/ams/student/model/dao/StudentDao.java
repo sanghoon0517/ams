@@ -14,5 +14,6 @@ public interface StudentDao {
 	List<StudentDto> getStudentList();
 	List<StudentDto> getStudentListPaging(PaginationCriteriaDto pagingParam);
 	int getStudentListCount();
+	int getStudentListCountParam(String search);
 	StudentDto getStudnetInfoByIdx(int st_idx);
 }

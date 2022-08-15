@@ -51,15 +51,26 @@ public class StudentApiController {
 //	}
 	
 	@GetMapping("/studentList/advanced/api")
-	public BootstrapTableDto<?> studentListAdvanced(@RequestParam(required=false) String offset,@RequestParam(required=false) String limit){
+	public BootstrapTableDto<?> studentListAdvanced(@RequestParam(required=false) String search, @RequestParam(required=false) String offset,@RequestParam(required=false) String limit){
+		
+		System.out.println("[jsh] search값 : "+search);
+		System.out.println("[jsh] offset값 : "+offset);
+		System.out.println("[jsh] limit값 : "+limit);
 		
 		PaginationCriteriaDto pageObj = new PaginationCriteriaDto();
+		int studentTotalCnt = 0;
 		if(offset != null && limit != null) {
 			pageObj.setPage(Integer.parseInt(offset));
-			pageObj.setPerPageNum(Integer.parseInt(limit));			
+			pageObj.setPerPageNum(Integer.parseInt(limit));
+			if(!"".equals(search)) {
+				pageObj.setSearch(search);
+				studentTotalCnt = studentService.getStudentListCountParam(search);
+			} else {
+				studentTotalCnt = studentService.getStudentListCount();
+			}
+			
 		}
 		
-		int studentTotalCnt = studentService.getStudentListCount();
 		
 		List<StudentDto> resultList = null;
 		if(offset == null && limit == null) {

@@ -43,11 +43,21 @@
 	</select>
 	<select id="getStudentListPaging" parameterType="com.ams.common.model.dto.PaginationCriteriaDto" resultType="com.ams.student.model.dto.StudentDto">
 		SELECT * FROM a_member
+		<if test='search != null'>
+			WHERE
+			st_nm LIKE CONCAT('%',#{search},'%')
+		</if>
 		ORDER BY st_idx DESC
 		LIMIT #{page}, #{perPageNum}			
 	</select>
 	<select id="getStudentListCount" resultType="int">
 		SELECT COUNT(*) FROM a_member
+		ORDER BY st_idx DESC
+	</select>
+	<select id="getStudentListCountParam" parameterType="string" resultType="int">
+		SELECT COUNT(*) FROM a_member
+		WHERE
+		st_nm LIKE CONCAT('%',#{search},'%')
 		ORDER BY st_idx DESC
 	</select>
 	<select id="getStdDate" resultType="String">

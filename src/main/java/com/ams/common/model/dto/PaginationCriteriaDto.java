@@ -3,6 +3,7 @@ package com.ams.common.model.dto;
 public class PaginationCriteriaDto {
 	private int page;		//현재 페이지 번호
 	private int perPageNum; //페이지당 보여줄 게시글 개수 
+	private String search;
 	
 	public int getPageStart() {
 		//특정 페이지의 범위를 정하는 구간
@@ -46,10 +47,18 @@ public class PaginationCriteriaDto {
 			this.perPageNum = perPageNum;
 		}
 	}
+	
+	public String getSearch() {
+		return search;
+	}
+	
+	public void setSearch(String search) {
+		this.search = search;
+	}
 
 	@Override
 	public String toString() {
-		return "PaginationDto [page=" + page + ", perPageNum=" + perPageNum + "]";
+		return "PaginationDto [page=" + page + ", perPageNum=" + perPageNum + ", search=" + search + "]";
 	}
 	
 }

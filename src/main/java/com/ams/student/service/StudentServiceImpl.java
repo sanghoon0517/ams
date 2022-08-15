@@ -57,5 +57,11 @@ public class StudentServiceImpl implements StudentService{
 		// TODO Auto-generated method stub
 		return studentDao.getStudnetInfoByIdx(st_idx);
 	}
+
+	@Override
+	public int getStudentListCountParam(String search) {
+		// TODO Auto-generated method stub
+		return studentDao.getStudentListCountParam(search);
+	}
 	
 }

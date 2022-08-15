@@ -146,6 +146,9 @@ $(document).ready(function(){
       
       $('#toolbar').find('select').change(function () {
         $table.bootstrapTable('destroy').bootstrapTable({
+       	  formatSearch: function () {
+            return '원생이름 검색'
+          },
           exportDataType: $(this).val(),
           exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel', 'pdf'],
           columns: [
@@ -265,7 +268,7 @@ $(document).ready(function(){
     	console.log("params : "+Object.keys(params));
         delete params.sort
         delete params.order
-        delete params.search
+//         delete params.search
         return params
       }
 
