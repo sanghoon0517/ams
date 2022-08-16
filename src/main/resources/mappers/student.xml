@@ -42,7 +42,9 @@
 		ORDER BY st_idx DESC
 	</select>
 	<select id="getStudentListPaging" parameterType="com.ams.common.model.dto.PaginationCriteriaDto" resultType="com.ams.student.model.dto.StudentDto">
-		SELECT * FROM a_member
+		SELECT * FROM a_member m
+		LEFT OUTER JOIN a_class c
+		ON m.c_idx = c.c_idx
 		<if test='search != null'>
 			WHERE
 			st_nm LIKE CONCAT('%',#{search},'%')

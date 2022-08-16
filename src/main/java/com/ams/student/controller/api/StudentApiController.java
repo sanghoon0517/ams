@@ -44,18 +44,8 @@ public class StudentApiController {
 		}
 	}
 	
-//	@PostMapping("studentList/advanced-table")
-//	public ResponseEntity<?> getStudentListAdvanced() {
-//		List<StudentDto> resultList = studentService.getStudentList();
-//		return new ResponseEntity<>(new ResponseDto<Object>(1, "OK", resultList), HttpStatus.OK);
-//	}
-	
 	@GetMapping("/studentList/advanced/api")
 	public BootstrapTableDto<?> studentListAdvanced(@RequestParam(required=false) String search, @RequestParam(required=false) String offset,@RequestParam(required=false) String limit){
-		
-		System.out.println("[jsh] search값 : "+search);
-		System.out.println("[jsh] offset값 : "+offset);
-		System.out.println("[jsh] limit값 : "+limit);
 		
 		PaginationCriteriaDto pageObj = new PaginationCriteriaDto();
 		int studentTotalCnt = 0;
@@ -70,7 +60,6 @@ public class StudentApiController {
 			}
 			
 		}
-		
 		
 		List<StudentDto> resultList = null;
 		if(offset == null && limit == null) {

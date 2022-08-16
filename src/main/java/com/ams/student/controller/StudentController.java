@@ -54,7 +54,7 @@ public class StudentController {
 	}
 	
 	@GetMapping("/studentList/advanced")
-	public String studentListAdvanced(/*PaginationCriteriaDto criteria, StudentDto vo, Model model*/){
+	public String studentListAdvanced(/*PaginationCriteriaDto criteria, StudentDto vo,*/ Model model){
 		
 //		int studentTotalCnt = studentService.getStudentListCount();
 //		
@@ -75,6 +75,9 @@ public class StudentController {
 //		resultMap.put("rows", resultList);
 //		
 //		model.addAttribute("stdList", resultMap);
+		
+		List<ClassDto> classList  = classService.getAllClasses();
+		model.addAttribute("clsList", classList);
 		
 		return "student/advanced-manage";
 	}

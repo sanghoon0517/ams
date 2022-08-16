@@ -18,8 +18,9 @@
 
 <script th:inline="javascript">
 // let tableData = [[${stdList}]];
+let detail;
 $(document).ready(function(){
-	$('#date-input').dateDropper({
+	$('#st_bth, #st_en_dt').dateDropper({
 		format: 'Y-m-d',
 		lang: 'ko',
 		theme: 'bootstrap',
@@ -27,28 +28,25 @@ $(document).ready(function(){
 		expandedOnly: true,
 		expandable: true
 	});
-	$('#myPicker').timeDropper({
-		minutesSteps: 10
-	});
-	new atc(document.querySelector('#myButton123'));
+// 	$('#myPicker').timeDropper({
+// 		minutesSteps: 10
+// 	});
+// 	new atc(document.querySelector('#myButton123'));
 	
 	$('#table').on('click-row.bs.table', function (row, el, field) {
-		console.log("[jsh] row : "+Object.keys(row));
-		console.log("[jsh] el : "+Object.keys(el));
-		console.log("[jsh] field : "+Object.keys(field));
-		console.log("[jsh] st_idx : "+el.st_idx);
+		//row 데이터 : type,sender,timeStamp,jQuery360025989008260026614,isTrigger,namespace,rnamespace,result,target,delegateTarget,currentTarget,handleObj,data
+		//el 데이터 : st_idx,c_idx,c_nm,st_nm,st_bth,st_gen,st_pn,st_schl,st_en_dt,st_dis_dt,st_prt_nm,st_prt_rlt,st_prt_pn,st_prt_em,st_adr,st_dtl,st_rm_c_cnt
+		//field 데이터 : 0,length,prevObject
+		detail = el;
 		
 		let formData = new FormData($("#st_form")[0]);
 		for(let key of formData.keys()) {
-			console.log("formdata key = "+key);
 			if(key == "st_bth" || key == "st_en_dt") {
 				let birth = el[key];
 				birth = birth.substr(0,4)+"-"+birth.substr(4,2)+"-"+birth.substr(6,2);
 				el[key] = birth;
-				console.log(el[key]);
 			}
 			if(key == "st_prt_rlt" || key == "st_gen" ) {
-				console.log("[jsh] radio 값 들어옴");
 				$("input:radio[name="+key+"]:input[value="+el[key]+"]").attr("checked", true);
 			}
 			
@@ -77,13 +75,13 @@ $(document).ready(function(){
 </head>
 <div class="container-fluid" layout:fragment="content">
 
-<div class="row">
-	<div class="col">
-		<input id="date-input" type="text">
-		<input id="myPicker" type="text">
-		<a id="myButton123">Add to calendar</a>
-	</div>
-</div>
+<!-- <div class="row"> -->
+<!-- 	<div class="col"> -->
+<!-- 		<input id="date-input" type="text"> -->
+<!-- 		<input id="myPicker" type="text"> -->
+<!-- 		<a id="myButton123">Add to calendar</a> -->
+<!-- 	</div> -->
+<!-- </div> -->
 
 
   <div id="toolbar" class="select">
@@ -121,28 +119,12 @@ $(document).ready(function(){
     	 data-server-sort="false"
   		 data-pagination="true" 
   >
-<!--   		 data-url="https://examples.wenzhixin.net.cn/examples/bootstrap_table/data" -->
-    <!-- <thead>
-              <tr>
-                <th data-field="state" data-checkbox="true"></th>
-                <th data-sortable="true" data-field="id">ID</th>
-                <th data-field="name">Item Name</th>
-                <th data-field="price">Item Price</th>
-                <th data-field="title">title</th>
-              </tr>
-            </thead>  -->
   </table>
 
   <script>
 
     $(function () {
       var $table = $('#table');
-//       $table.bootstrapTable({ data: tableData });
-//       $('#table').bootstrapTable({
-//         formatSearch: function () {
-//           return 'Search Item Name'
-//         }
-//       })
       
       $('#toolbar').find('select').change(function () {
         $table.bootstrapTable('destroy').bootstrapTable({
@@ -160,7 +142,8 @@ $(document).ready(function(){
             {
               field: 'c_idx',
               title: '클래스번호',
-              sortable: true
+              sortable: true,
+              visible: false
             }, 
             {
               field: 'c_nm',
@@ -170,7 +153,8 @@ $(document).ready(function(){
             {
               field: 'st_idx',
               title: '학생번호',
-              sortable: true
+              sortable: true,
+              visible: false
             }, 
             {
               field: 'st_nm',
@@ -180,7 +164,8 @@ $(document).ready(function(){
             {
               field: 'st_pn',
               title: '학생핸드폰번호',
-              sortable: true
+              sortable: true,
+              visible: false
             }, 
             {
               field: 'st_prt_nm',
@@ -195,7 +180,8 @@ $(document).ready(function(){
             {
               field: 'st_prt_rlt',
               title: '학생부모님관계',
-              sortable: true
+              sortable: true,
+              visible: false
             }, 
             {
               field: 'st_schl',
@@ -208,18 +194,13 @@ $(document).ready(function(){
               sortable: true
             }, 
             {
-              field: 'st_dis_dt',
-              title: '학생퇴원일자',
-              sortable: true
-            }, 
-            {
-              field: 'st_dtl',
-              title: '학생세부사항',
-              sortable: true
-            }, 
-            {
               field: 'st_en_dt',
               title: '학생등록일자',
+              sortable: true
+            }, 
+            {
+              field: 'st_dis_dt',
+              title: '학생퇴원일자',
               sortable: true
             }, 
             {
@@ -230,11 +211,17 @@ $(document).ready(function(){
             {
               field: 'st_prt_em',
               title: '학생부모님이메일',
-              sortable: true
+              sortable: true,
+              visible: false
             }, 
             {
               field: 'st_adr',
               title: '학생주소',
+              sortable: true
+            }, 
+            {
+              field: 'st_dtl',
+              title: '학생세부사항',
               sortable: true
             }, 
             {
@@ -260,7 +247,24 @@ $(document).ready(function(){
     function detailFormatter(index, row) {
       var html = []
       $.each(row, function (key, value) {
-        html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+		if(key == "c_idx") key = "클래스번호";
+		else if(key == "c_nm") key = "클래스이름";
+		else if(key == "st_idx") key = "학생번호";
+		else if(key == "st_nm") key = "학생이름";
+		else if(key == "st_pn") key = "학생핸드폰번호";
+		else if(key == "st_prt_nm") key = "학생부모님명";
+		else if(key == "st_prt_pn") key = "학생부모님핸드폰번호";
+		else if(key == "st_prt_rlt") key = "학생부모님관계";
+		else if(key == "st_schl") key = "학생학교";
+		else if(key == "st_bth") key = "학생생년월일";
+		else if(key == "st_en_dt") key = "학생등록일자";
+		else if(key == "st_dis_dt") key = "학생퇴원일자";
+		else if(key == "st_gen") key = "학생성별";
+		else if(key == "st_prt_em") key = "학생부모님이메일";
+		else if(key == "st_adr")key = "학생주소";
+		else if(key == "st_dtl") key = "학생세부사항";
+		else if(key == "st_rm_c_cnt") key = "학생남은횟수";
+      	html.push('<p><b>' + key + ':</b> ' + value + '</p>')
       })
       return html.join('')
     }
@@ -310,7 +314,8 @@ $(document).ready(function(){
 										<label class="form-label" for="st_bth">
 											<strong>생년월일</strong>
 										</label>
-										<input id="st_bth" class="form-control" type="date" name="st_bth" th:value="${std_date}"/>
+<!-- 										<input id="st_bth" class="form-control" type="date" name="st_bth" th:value="${std_date}"/> -->
+										<input id="st_bth" class="form-control" type="text" name="st_bth" />
 									</div>
 								</div>
 								<div class="col-12 col-sm-6 col-lg-6">
@@ -318,7 +323,8 @@ $(document).ready(function(){
 										<label class="form-label" for="st_en_dt">
 											<strong>입원일자</strong>
 										</label>
-										<input id="st_en_dt" class="form-control" type="date" name="st_en_dt" />
+<!-- 										<input id="st_en_dt" class="form-control" type="date" name="st_en_dt" /> -->
+										<input id="st_en_dt" class="form-control" type="text" name="st_en_dt" />
 									</div>
 								</div>
 								<div class="col-12 col-sm-6 col-lg-6">
@@ -450,8 +456,8 @@ $(document).ready(function(){
 					</div>
 	            </div>
 	            <div class="modal-footer">
-	              <button type="button" id="modal-close" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-	              <button type="button" id="student-info-modify" name="add" class="btn btn-primary">원생 정보 수정</button>
+	              <button type="button" id="modal-close" name="modal-close" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+	              <button type="button" id="student-info-modify" name="student-info-modify" class="btn btn-primary">원생 정보 수정</button>
 	            </div>
         	</div>
     	</div>

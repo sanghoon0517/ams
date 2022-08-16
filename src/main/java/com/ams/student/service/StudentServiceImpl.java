@@ -39,12 +39,14 @@ public class StudentServiceImpl implements StudentService{
 		return studentDao.getStudentList();
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public List<StudentDto> getStudentListPaging(PaginationCriteriaDto pagingparam) {
 		// TODO Auto-generated method stub
 		return studentDao.getStudentListPaging(pagingparam);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public int getStudentListCount() {
 		// TODO Auto-generated method stub
@@ -58,6 +60,7 @@ public class StudentServiceImpl implements StudentService{
 		return studentDao.getStudnetInfoByIdx(st_idx);
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public int getStudentListCountParam(String search) {
 		// TODO Auto-generated method stub
