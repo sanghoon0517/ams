@@ -33,6 +33,10 @@ function resetForm(){
     $("#c_ed_tm").val(null);
     $('#allDay').prop('checked', false);
     $('#repeatDay').prop('checked', false);
+    $("#allDayText").text('종일 일정 아님');
+    $('#c_st_tm').prop('disabled',false);
+    $('#c_ed_tm').prop('disabled',false);
+    $("#repeatDayText").text('반복 일정 아님');
     for (var k = 0; k < $(".wkd").length; k++) {
         $(".wkd").eq(k).attr("disabled", true);
         $(".wkd").eq(k).attr("checked", false);
