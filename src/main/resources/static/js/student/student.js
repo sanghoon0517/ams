@@ -12,35 +12,41 @@ function enroll() {
 	if(st_adr_dtl.value != null || st_adr_dtl.value != "") {
 		st_adr.value += " "+st_adr_dtl.value;
 	}
-	let jsonArr = $("#st_form").serializeArray();
+
+	let json = formToJson("st_form");
+
+	$.ajax({
+		type: "POST",
+		url:`data/student/enroll`,
+		dataType: "json",
+        contentType:"application/json;charset=utf-8", //마임타입 지정
+		data: json 
+	}).done(res=>{
+		alert("등록되었습니다.");
+		location.href = `/ams/studentEnroll`; //임시채널이동
+		console.log(res);
+	}).fail(error=>{
+		alert("등록 처리 중 에러가 발생했습니다.");
+		console.log("오류", "error");
+	});
+}
+
+function formToJson(formId) {
+	let jsonArr = $("#"+formId).serializeArray();
+	let jsonObj;
 	
-	//console.log(jsonArr);
 	if(jsonArr) {
-		let jsonObj = new Object();
+		jsonObj = new Object();
 		$.each(jsonArr, (i)=>{
-			if(jsonArr[i].name == "st_bth" || jsonArr[i].name == "st_en_dt" || jsonArr[i].name == "st_pn" || jsonArr[i].name == "st_prt_pn") {
+			if(jsonArr[i].name == "st_bth" || jsonArr[i].name == "st_en_dt" || jsonArr[i].name == "st_dis_dt" || jsonArr[i].name == "st_pn" || jsonArr[i].name == "st_prt_pn") {
 				jsonObj[jsonArr[i].name] = chkNum(jsonArr[i].value);
 			} else {
 				jsonObj[jsonArr[i].name] = jsonArr[i].value;				
 			}
 		});
 		console.log("[jsh] jsonObj : "+JSON.stringify(jsonObj));
-		$.ajax({
-			type: "POST",
-			url:`data/student/enroll`,
-			dataType: "json",
-            contentType:"application/json;charset=utf-8", //마임타입 지정
-			data: JSON.stringify(jsonObj) 
-		}).done(res=>{
-			alert("등록되었습니다.");
-			location.href = `/ams/studentEnroll`; //임시채널이동
-			console.log(res);
-		}).fail(error=>{
-			alert("등록 처리 중 에러가 발생했습니다.");
-			console.log("오류", "error");
-		});
-
 	}
+	return JSON.stringify(jsonObj);
 }
 
 /*

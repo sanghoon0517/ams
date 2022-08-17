@@ -15,12 +15,13 @@
   
 
 <!-- datedropper init -->
-
+<script th:src='@{/js/student/student.js}'></script>
 <script th:inline="javascript">
 // let tableData = [[${stdList}]];
 let detail;
 $(document).ready(function(){
-	$('#st_bth, #st_en_dt').dateDropper({
+	console.log("[jsh] ready 바인딩 함수 호출");
+	$('#st_bth, #st_en_dt, #st_dis_dt').dateDropper({
 		format: 'Y-m-d',
 		lang: 'ko',
 		theme: 'bootstrap',
@@ -37,6 +38,7 @@ $(document).ready(function(){
       var $table = $('#table');
       
       $('#toolbar').find('select').change(function () {
+    	  console.log("[jsh] 페이지 change함수 호출");
         $table.bootstrapTable('destroy').bootstrapTable({
        	  formatSearch: function () {
             return '원생이름 검색'
@@ -116,7 +118,8 @@ $(document).ready(function(){
           {
             field: 'st_gen',
             title: '학생성별',
-            sortable: true
+            sortable: true,
+            visible: false
           }, 
           {
             field: 'st_prt_em',
@@ -149,17 +152,24 @@ $(document).ready(function(){
     $('.toggle-all').parent().find('span').text("전체 선택");
 	
 	$('#table').on('click-row.bs.table', function (row, el, field) {
+		console.log("[jsh] table row 클릭 함수 호출");
 		//row 데이터 : type,sender,timeStamp,jQuery360025989008260026614,isTrigger,namespace,rnamespace,result,target,delegateTarget,currentTarget,handleObj,data
 		//el 데이터 : st_idx,c_idx,c_nm,st_nm,st_bth,st_gen,st_pn,st_schl,st_en_dt,st_dis_dt,st_prt_nm,st_prt_rlt,st_prt_pn,st_prt_em,st_adr,st_dtl,st_rm_c_cnt
 		//field 데이터 : 0,length,prevObject
 		detail = el;
 		
 		let formData = new FormData($("#st_form")[0]);
+		let date;
 		for(let key of formData.keys()) {
-			if(key == "st_bth" || key == "st_en_dt") {
-				let birth = el[key];
-				birth = birth.substr(0,4)+"-"+birth.substr(4,2)+"-"+birth.substr(6,2);
-				el[key] = birth;
+			if(key == "st_bth" || key == "st_en_dt" || key == "st_dis_dt") {
+				if(el[key] == "") {
+					continue;
+				}
+				date = el[key];
+				if(date.indexOf("-") == -1) {
+					date = date.substr(0,4)+"-"+date.substr(4,2)+"-"+date.substr(6,2);					
+				}
+// 				el[key] = birth;
 			}
 			if(key == "st_prt_rlt" || key == "st_gen" ) {
 				$("input:radio[name="+key+"]:input[value="+el[key]+"]").attr("checked", true);
@@ -170,6 +180,8 @@ $(document).ready(function(){
 				$("#"+key).val(adr_list[0]);
 			} else if(key == "st_adr_dtl") {
 				$("#"+key).val(adr_list[1]);								
+			} else if(key == "st_bth" || key == "st_en_dt" ||  key == "st_dis_dt") {
+				$("#"+key).val(date);
 			} else {
 				$("#"+key).val(el[key]);
 			}
@@ -179,10 +191,11 @@ $(document).ready(function(){
 		$("#studentDetail").modal('show');
 	})
 	
-	$(".btn-close #modal-close").on('click', ()=>{
-	    $('#st_form').each(function() {
-	      this.reset();
-	    });
+	$(".btn-close, #modal-close").on('click', ()=>{
+		console.log("[jsh] 닫기 버튼 클릭");
+		$('form').each(function() {
+            this.reset();
+        });
 	});
 	
 });
@@ -193,9 +206,10 @@ function customSearch(data, text) {
     })
 }
 function detailFormatter(index, row) {
+	console.log("[jsh] 인덱스, 로")
     var html = []
     $.each(row, function (key, value) {
-	if(key == "c_idx") key = "클래스번호";
+		if(key == "c_idx") key = "클래스번호";
 		else if(key == "c_nm") key = "클래스이름";
 		else if(key == "st_idx") key = "학생번호";
 		else if(key == "st_nm") key = "학생이름";
@@ -225,10 +239,71 @@ function queryParams(params) {
 }
 
 function responseHandler(res) {
+	console.log("[jsh] responseHandler 호출")
   if ($('#table').bootstrapTable('getOptions').sortOrder === 'desc') {
     res.rows = res.rows.reverse()
   }
   return res
+}
+
+function modifyStudentInfo() {
+	console.log("[jsh] 수정버튼 클릭");
+	let formData = new FormData($("#st_form")[0]);
+	let jsonObj;
+	for(let pair of formData.entries()) {
+		console.log("[jsh] formData key-value들 : "+pair[0]+" : "+pair[1]);		
+	}
+// 	let jsonArr = $("form[name=st_form]").serializeArray();
+// 	console.log("[jsh] jsonArr : "+jsonArr);
+// 	if(jsonArr) {
+// 		jsonObj = new Object();
+// 		$.each(jsonArr, (i)=>{
+// 			if(jsonArr[i].name == "st_bth" || jsonArr[i].name == "st_en_dt" || jsonArr[i].name == "st_pn" || jsonArr[i].name == "st_prt_pn") {
+// 				jsonObj[jsonArr[i].name] = chkNum(jsonArr[i].value);
+// 			} else {
+// 				jsonObj[jsonArr[i].name] = jsonArr[i].value;				
+// 			}
+// 		});
+// 		console.log("[jsh] jsonObj : "+JSON.stringify(jsonObj));
+// 	}
+	let json = formToJson("st_form"); //student.js에 정의된 formToJson 메서드 이용
+	new Promise((resolve, reject) => {
+		$.ajax({
+			type:"POST",
+			url:`modify/check`,
+			dataType: "json",
+	        contentType:"application/json;charset=utf-8;", //마임타입 지정
+			data: json
+		}).done(res=>{
+			if(confirm("수정된 내용이 존재합니다. 수정하시겠습니까?")) {
+				resolve(json);
+			}
+			console.log("[jsh] 결과값 : "+res);
+		}).fail(error=>{
+			alert("수정된 내용이 존재하지 않습니다..");
+			reject(error);
+		});
+	}).then((resolvedData)=>{
+		console.log("[jsh] resolvedData : "+resolvedData);
+		let st_idx = JSON.parse(resolvedData).st_idx;
+		console.log("[jsh] st_idx : "+st_idx);
+		$.ajax({
+			type:"PUT",
+			url:`${st_idx}/update`,
+			dataType: "json",
+	        contentType:"application/json;charset=utf-8;", //마임타입 지정
+			data: resolvedData
+		}).done(res=>{
+			alert("수정되었습니다.");
+			console.log("[jsh] 결과값 : "+res);
+		}).fail(error=>{
+			alert("수정에 실패했습니다.");
+			return;
+		});
+		
+	}).catch((err)=>{
+		console.log("[jsh] 에러 : "+err);
+	});
 }
 </script> 
 </head>
@@ -285,99 +360,84 @@ function responseHandler(res) {
 	<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
        	<div class="modal-content">
            	<div class="modal-header">
-             		<h5 class="modal-title">원생 정보</h5>
-             		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	       		<h5 class="modal-title">원생 정보</h5>
+	       		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
            	</div>
             <div class="modal-body">
 	            <div class="row  align-items-center">
 					<form id="st_form" name="st_form">
+					<input type="hidden" id="st_idx" name="st_idx">
 					<input type="hidden" id="st_adr" name="st_adr">
 					<input type="hidden" id="st_prt_rlt" name="st_prt_rlt">
 					<input type="hidden" id="st_gen" name="st_gen">
+<!-- 					<input type="hidden" id="st_dis_dt" name="st_dis_dt"> -->
+<!-- 					<input type="hidden" id="st_rm_c_cnt" name="st_rm_c_cnt"> -->
 					<div class="card-body">
 						<div class="row">
-							<div class="col-12 col-sm-6 col-lg-6">
-								<div class="mb-3">
-									<label class="form-label" for="st_nm">
-										<strong>이름</strong>
-									</label>
-									<input class="form-control" type="text" id="st_nm" placeholder="이름" name="st_nm" >
-								</div>
-								</div>
-							<div class="col-12 col-sm-6 col-lg-6">
-								<div class="mb-3">
-									<label class="form-label" for="st_bth">
-										<strong>생년월일</strong>
-									</label>
-<!-- 										<input id="st_bth" class="form-control" type="date" name="st_bth" th:value="${std_date}"/> -->
-									<input id="st_bth" class="form-control" type="text" name="st_bth" />
-								</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="st_nm">
+									<strong>이름</strong>
+								</label>
+								<input class="form-control" type="text" id="st_nm" placeholder="이름" name="st_nm" >
 							</div>
-							<div class="col-12 col-sm-6 col-lg-6">
-								<div class="mb-3">
-									<label class="form-label" for="st_en_dt">
-										<strong>입원일자</strong>
-									</label>
-<!-- 										<input id="st_en_dt" class="form-control" type="date" name="st_en_dt" /> -->
-									<input id="st_en_dt" class="form-control" type="text" name="st_en_dt" />
-								</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="st_bth">
+									<strong>생년월일</strong>
+								</label>
+								<input id="st_bth" class="form-control" type="text" name="st_bth" />
 							</div>
-							<div class="col-12 col-sm-6 col-lg-6">
-								<div class="mb-3">
-									<label class="form-label" for="st_pn">
-										<strong>원생 연락처</strong>
-									</label>
-									<input class="form-control" type="tel" id="st_pn" placeholder="숫자만 입력 가능합니다." name="st_pn" maxlength=11>
-								</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="st_en_dt">
+									<strong>입원일자</strong>
+								</label>
+								<input id="st_en_dt" class="form-control" type="text" name="st_en_dt" />
 							</div>
-							<div class="col-12 col-sm-6 col-lg-6">
-								<div class="mb-3">
-									<label class="form-label" for="st_prt_nm"><strong>부모님 성함</strong></label><input class="form-control" id="st_prt_nm"
-										name="st_prt_nm">
-								</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="st_pn">
+									<strong>원생 연락처</strong>
+								</label>
+								<input class="form-control" type="tel" id="st_pn" placeholder="숫자만 입력 가능합니다." name="st_pn" maxlength=11>
 							</div>
-							<div class="col-12 col-sm-6 col-lg-6">
-								<div class="mb-3">
-									<label class="form-label" for="st_prt_pn">
-										<strong>부모님 연락처</strong>
-									</label>
-									<input class="form-control" type="tel" id="st_prt_pn" placeholder="숫자만 입력 가능합니다." name="st_prt_pn" maxlength=11>
-								</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="st_prt_nm"><strong>부모님 성함</strong></label><input class="form-control" id="st_prt_nm"
+									name="st_prt_nm">
 							</div>
-							<div class="col-12 col-sm-6 col-lg-6">
-								<div class="mb-3">
-									<label class="form-label" for="st_prt_rlt"><strong>학생과의 관계</strong><br></label>
-									<div class="row">
-										<div class="col-6 col-sm-2 col-lg-2">
-											<div class="form-check">
-												<input class="form-check-input" type="radio" id="st_prt_rlt" name="st_prt_rlt" value="F"><label
-													class="form-check-label" for="st_prt_rlt">부</label>
-											</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="st_prt_pn">
+									<strong>부모님 연락처</strong>
+								</label>
+								<input class="form-control" type="tel" id="st_prt_pn" placeholder="숫자만 입력 가능합니다." name="st_prt_pn" maxlength=11>
+							</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="st_prt_rlt"><strong>학생과의 관계</strong><br></label>
+								<div class="row">
+									<div class="col-6 col-sm-2 col-lg-2">
+										<div class="form-check">
+											<input class="form-check-input" type="radio" id="st_prt_rlt" name="st_prt_rlt" value="F"><label
+												class="form-check-label" for="st_prt_rlt">부</label>
 										</div>
-										<div class="col-6 col-sm-3 col-lg-3">
-											<div class="form-check">
-												<input class="form-check-input" type="radio" id="st_prt_rlt" name="st_prt_rlt" value="M"><label
-													class="form-check-label" for="st_prt_rlt">모</label>
-											</div>
+									</div>
+									<div class="col-6 col-sm-3 col-lg-3">
+										<div class="form-check">
+											<input class="form-check-input" type="radio" id="st_prt_rlt" name="st_prt_rlt" value="M"><label
+												class="form-check-label" for="st_prt_rlt">모</label>
 										</div>
 									</div>
 								</div>
 							</div>
-							<div class="col-12 col-sm-6 col-lg-6">
-								<div class="mb-3">
-									<label class="form-label" for="st_gen"><strong>학생성별</strong><br></label>
-									<div class="row">
-										<div class="col-6 col-sm-3 col-lg-3">
-											<div class="form-check">
-												<input class="form-check-input" type="radio" id="st_gen" name="st_gen" value="M"><label
-													class="form-check-label" for="st_gen">남자</label>
-											</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="st_gen"><strong>학생성별</strong><br></label>
+								<div class="row">
+									<div class="col-6 col-sm-3 col-lg-3">
+										<div class="form-check">
+											<input class="form-check-input" type="radio" id="st_gen" name="st_gen" value="M"><label
+												class="form-check-label" for="st_gen">남자</label>
 										</div>
-										<div class="col-6 col-sm-3 col-lg-3">
-											<div class="form-check">
-												<input class="form-check-input" type="radio" id="st_gen" name="st_gen" value="F"><label
-													class="form-check-label" for="st_gen">여자</label>
-											</div>
+									</div>
+									<div class="col-6 col-sm-3 col-lg-3">
+										<div class="form-check">
+											<input class="form-check-input" type="radio" id="st_gen" name="st_gen" value="F"><label
+												class="form-check-label" for="st_gen">여자</label>
 										</div>
 									</div>
 								</div>
@@ -385,66 +445,60 @@ function responseHandler(res) {
 							</div>
 						
 						<div class="row">
-							<div class="col-12 col-sm-6 col-lg-6">
-								<div class="mb-3">
-									<label class="form-label" for="st_adr">
-										<strong>주소</strong>
-									</label>
-									<div class="row">
-										<div class="col-12 col-sm-12 col-lg-12">
-											<div class="mb-3">
-												<input class="form-control" type="text" id="st_adr_post" placeholder="우편번호" name="st_adr_post" onclick="findPostCode()"> 									
-											</div>
-										</div>
-										<div class="col-12 col-sm-12 col-lg-12">
-											<div class="mb-3">
-												<input class="form-control" type="text" id="st_adr_dtl" placeholder="상세주소" name="st_adr_dtl">
-											</div>
-										</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="st_adr">
+									<strong>주소</strong>
+								</label>
+								<div class="row">
+									<div class="col-12 col-sm-12 col-lg-12 mb-3">
+										<input class="form-control" type="text" id="st_adr_post" placeholder="우편번호" name="st_adr_post" onclick="findPostCode()"> 									
+									</div>
+									<div class="col-12 col-sm-12 col-lg-12 mb-3">
+										<input class="form-control" type="text" id="st_adr_dtl" placeholder="상세주소" name="st_adr_dtl">
 									</div>
 								</div>
 							</div>
-							<div class="col-12 col-sm-6 col-lg-6">
-								<div class="mb-3">
-									<label class="form-label" for="st_prt_em"><strong>이메일</strong><br></label><input
-										class="form-control" type="email" id="st_prt_em"
-										placeholder="sample@sample.com" name="st_prt_em">
-								</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="st_prt_em"><strong>이메일</strong><br></label><input
+									class="form-control" type="email" id="st_prt_em"
+									placeholder="sample@sample.com" name="st_prt_em">
 							</div>
 		
-							<div class="col-12 col-sm-6 col-lg-6">
-								<div class="mb-3">
-									<label class="form-label" for="c_idx">
-										<strong>학생 수업</strong><br>
-									</label>
-									<select class="form-control" id="c_idx" name="c_idx">
-										<option value="">[수업 선택]</option>
-				                        <th:block th:each="class : ${clsList}">
-			                                <option th:text="${class.c_nm}" th:value="${class.c_idx}"></option>
-										</th:block>
-									</select>
-								</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="c_idx">
+									<strong>학생 수업</strong><br>
+								</label>
+								<select class="form-control" id="c_idx" name="c_idx">
+									<option value="">[수업 선택]</option>
+			                        <th:block th:each="class : ${clsList}">
+		                                <option th:text="${class.c_nm}" th:value="${class.c_idx}"></option>
+									</th:block>
+								</select>
 							</div>
-							<div class="col-12 col-sm-6 col-lg-6">
-								<div class="mb-3">
-									<label class="form-label" for="st_schl">
-										<strong>학교/유치원</strong><br>
-									</label>
-									<input type="text" class="form-control" id="st_schl" name="st_schl">
-								</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="st_schl">
+									<strong>학교/유치원</strong><br>
+								</label>
+								<input type="text" class="form-control" id="st_schl" name="st_schl">
+							</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="st_dis_dt">
+									<strong>퇴원 일자</strong><br>
+								</label>
+								<input type="text" class="form-control" id="st_dis_dt" name="st_dis_dt">
+							</div>
+							<div class="col-12 col-sm-6 col-lg-6 mb-3">
+								<label class="form-label" for="st_rm_c_cnt">
+									<strong>남은 횟수</strong><br>
+								</label>
+								<input type="text" class="form-control" id="st_rm_c_cnt" name="st_rm_c_cnt">
 							</div>
 						</div>
 					</div>
 					<div class="card-body">
-							<div class="col-12 col-sm-12 col-lg-12">
-								<div class="mb-3">
-									<label class="form-label" for="st_dtl"><strong>특이사항</strong><br></label>
-									<textarea class="form-control" id="st_dtl" rows="4" name="st_dtl"></textarea>
-								</div>
-								<div class="mb-3"></div>
-								<div class="mb-3">
-									<!-- <button class="btn btn-primary btn-sm" type="button" onclick="enroll()">저장</button> -->
-								</div>
+							<div class="col-12 col-sm-12 col-lg-12 mb-3">
+								<label class="form-label" for="st_dtl"><strong>특이사항</strong><br></label>
+								<textarea class="form-control" id="st_dtl" rows="4" name="st_dtl"></textarea>
 							</div>
 					</div>
 					</form>
@@ -452,7 +506,7 @@ function responseHandler(res) {
             </div>
             <div class="modal-footer">
               <button type="button" id="modal-close" name="modal-close" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-              <button type="button" id="student-info-modify" name="student-info-modify" class="btn btn-primary">원생 정보 수정</button>
+              <button type="button" id="student-info-modify" name="student-info-modify" class="btn btn-primary" onclick="modifyStudentInfo()">원생 정보 수정</button>
             </div>
        	</div>
    	</div>

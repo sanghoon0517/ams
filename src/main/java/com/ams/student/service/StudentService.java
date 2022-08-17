@@ -13,5 +13,7 @@ public interface StudentService {
 	public List<StudentDto> getStudentListPaging(PaginationCriteriaDto pagingParam);
 	public int getStudentListCount();
 	public int getStudentListCountParam(String search);
+	public int chkStudentInfoCount(StudentDto vo);
 	public StudentDto getStudentInfoByIdx(int st_idx);
+	int modifyStudentInfo(StudentDto vo);
 }

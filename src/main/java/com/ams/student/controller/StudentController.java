@@ -75,7 +75,7 @@ public class StudentController {
 //		resultMap.put("rows", resultList);
 //		
 //		model.addAttribute("stdList", resultMap);
-		
+		System.out.println("[jsh] 페이지 호출");
 		List<ClassDto> classList  = classService.getAllClasses();
 		model.addAttribute("clsList", classList);
 		

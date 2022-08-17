@@ -66,5 +66,18 @@ public class StudentServiceImpl implements StudentService{
 		// TODO Auto-generated method stub
 		return studentDao.getStudentListCountParam(search);
 	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public int chkStudentInfoCount(StudentDto vo) {
+		// TODO Auto-generated method stub
+		return studentDao.chkStudentInfoCount(vo);
+	}
+
+	@Override
+	public int modifyStudentInfo(StudentDto vo) {
+		// TODO Auto-generated method stub
+		return studentDao.modifyStudentInfo(vo);
+	}
 	
 }
