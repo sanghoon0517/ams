@@ -18,7 +18,7 @@
 <script th:src='@{/js/student/student.js}'></script>
 <script th:inline="javascript">
 // let tableData = [[${stdList}]];
-let detail;
+let $table; 
 $(document).ready(function(){
 	console.log("[jsh] ready 바인딩 함수 호출");
 	$('#st_bth, #st_en_dt, #st_dis_dt').dateDropper({
@@ -35,7 +35,7 @@ $(document).ready(function(){
 // 	new atc(document.querySelector('#myButton123'));
 
 
-      var $table = $('#table');
+      $table = $('#table');
       
       $('#toolbar').find('select').change(function () {
     	  console.log("[jsh] 페이지 change함수 호출");
@@ -156,7 +156,6 @@ $(document).ready(function(){
 		//row 데이터 : type,sender,timeStamp,jQuery360025989008260026614,isTrigger,namespace,rnamespace,result,target,delegateTarget,currentTarget,handleObj,data
 		//el 데이터 : st_idx,c_idx,c_nm,st_nm,st_bth,st_gen,st_pn,st_schl,st_en_dt,st_dis_dt,st_prt_nm,st_prt_rlt,st_prt_pn,st_prt_em,st_adr,st_dtl,st_rm_c_cnt
 		//field 데이터 : 0,length,prevObject
-		detail = el;
 		
 		let formData = new FormData($("#st_form")[0]);
 		let date;
@@ -253,19 +252,6 @@ function modifyStudentInfo() {
 	for(let pair of formData.entries()) {
 		console.log("[jsh] formData key-value들 : "+pair[0]+" : "+pair[1]);		
 	}
-// 	let jsonArr = $("form[name=st_form]").serializeArray();
-// 	console.log("[jsh] jsonArr : "+jsonArr);
-// 	if(jsonArr) {
-// 		jsonObj = new Object();
-// 		$.each(jsonArr, (i)=>{
-// 			if(jsonArr[i].name == "st_bth" || jsonArr[i].name == "st_en_dt" || jsonArr[i].name == "st_pn" || jsonArr[i].name == "st_prt_pn") {
-// 				jsonObj[jsonArr[i].name] = chkNum(jsonArr[i].value);
-// 			} else {
-// 				jsonObj[jsonArr[i].name] = jsonArr[i].value;				
-// 			}
-// 		});
-// 		console.log("[jsh] jsonObj : "+JSON.stringify(jsonObj));
-// 	}
 	let json = formToJson("st_form"); //student.js에 정의된 formToJson 메서드 이용
 	new Promise((resolve, reject) => {
 		$.ajax({
@@ -295,6 +281,8 @@ function modifyStudentInfo() {
 			data: resolvedData
 		}).done(res=>{
 			alert("수정되었습니다.");
+			$("#modal-close").trigger('click');
+			$table.bootstrapTable('refresh'); //테이블 refresh
 			console.log("[jsh] 결과값 : "+res);
 		}).fail(error=>{
 			alert("수정에 실패했습니다.");
