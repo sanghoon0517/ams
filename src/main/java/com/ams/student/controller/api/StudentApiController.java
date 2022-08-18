@@ -3,6 +3,8 @@ package com.ams.student.controller.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tomcat.util.json.JSONParser;
+import org.apache.tomcat.util.json.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import com.ams.common.model.dto.PaginationCriteriaDto;
 import com.ams.common.model.dto.ResponseDto;
 import com.ams.student.model.dto.StudentDto;
 import com.ams.student.service.StudentService;
+import com.google.gson.JsonObject;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,7 +45,16 @@ public class StudentApiController {
 	}
 	
 	@GetMapping("/studentList/advanced/api")
-	public BootstrapTableDto<?> studentListAdvanced(@RequestParam(required=false) String search, @RequestParam(required=false) String offset,@RequestParam(required=false) String limit){
+	public BootstrapTableDto<?> studentListAdvanced(
+			@RequestParam(required=false) String search, 
+			@RequestParam(required=false) String offset,
+			@RequestParam(required=false) String limit,
+			@RequestParam(required=false) String filter
+	)
+	{
+		System.out.println("[jsh] limit : "+limit);
+		System.out.println("[jsh] filter : "+filter);
+		System.out.println("[jsh] filter st_rm_c_cnt : "+filter);
 		System.out.println("[jsh] 컨트롤러 호출");
 		PaginationCriteriaDto pageObj = new PaginationCriteriaDto();
 		int studentTotalCnt = 0;
