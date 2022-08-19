@@ -69,7 +69,7 @@ public class ClassesController {
 		return "classes/register";
 	}
 	/**
-	 * 클래스 정보 리스트
+	 * 클래스 정보 리스트 test
 	 * @return
 	 */
 	@RequestMapping("/class/all")
