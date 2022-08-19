@@ -3,8 +3,9 @@ package com.ams.student.controller.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tomcat.util.json.JSONParser;
-import org.apache.tomcat.util.json.ParseException;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,13 +50,28 @@ public class StudentApiController {
 			@RequestParam(required=false) String search, 
 			@RequestParam(required=false) String offset,
 			@RequestParam(required=false) String limit,
-			@RequestParam(required=false) String filter
+			@RequestParam(required=false) String filter,
+			@RequestParam(required=false) String st_rm_c_cnt
 	)
 	{
 		System.out.println("[jsh] limit : "+limit);
 		System.out.println("[jsh] filter : "+filter);
 		System.out.println("[jsh] filter st_rm_c_cnt : "+filter);
+		System.out.println("[jsh] st_rm_c_cnt : "+st_rm_c_cnt);
 		System.out.println("[jsh] 컨트롤러 호출");
+		
+		if(filter != null) {
+			JSONParser parser = new JSONParser();
+			try {
+				JSONObject jsonobj = (JSONObject) parser.parse(filter);
+				System.out.println(jsonobj);
+				System.out.println("[jsh] json Object : "+jsonobj.get("st_rm_c_cnt"));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+		}
+		
 		PaginationCriteriaDto pageObj = new PaginationCriteriaDto();
 		int studentTotalCnt = 0;
 		if(offset != null && limit != null) {

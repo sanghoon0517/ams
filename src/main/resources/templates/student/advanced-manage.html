@@ -239,11 +239,15 @@ function queryParams(params) {
 	console.log("params : "+Object.keys(params));
 	if(typeof params.filter !== "undefined") {
 		console.log("filter : "+params.filter);
+// 		debugger;C
 		let a = JSON.parse(params.filter);
 		console.log("[jsh] filter 데이터 타입 : "+ typeof params.filter);
 		console.log("[jsh] filter cnt 데이터  : "+ a.st_rm_c_cnt);
+		params.st_rm_c_cnt = a.st_rm_c_cnt;
+		console.log("[jsh] filter cnt 데이터  : "+ params.st_rm_c_cnt);
+		
 	}
-	
+	console.log("params : "+Object.keys(params));
 	
     delete params.sort
     delete params.order
