@@ -218,6 +218,7 @@ $(function(){
 					$('#register-title').text('일정 등록');
 					$('#schedule-register').css("display","block");
 					$('#schedule-update').css("display","none");
+                    $('#schedule-delete').css("display","none");
                     $('#register-schedule').modal('show');
                     
                 }
@@ -230,8 +231,8 @@ $(function(){
             },
             dayMaxEvents: true, // 일정개수 이상의 이벤트시 팝오버 생김
             selectable: true, 
-            editable: true,
-            droppable: true,  // 드래그 가능
+            //editable: true,
+            //droppable: true,  // 드래그 가능
             expandRows: true, 
             drop: function(arg) {
             
@@ -242,6 +243,7 @@ $(function(){
 				$('#register-title').text('일정 상세');
 				$('#schedule-register').css("display","none");
 				$('#schedule-update').css("display","block");
+                $('#schedule-delete').css("display","block");
                 //alert('Clicked ' + eventObj.start + eventObj.end + eventObj.title + eventObj.id);
                 $.ajax({
                     type: "GET",
@@ -356,18 +358,40 @@ $(function(){
                 console.log(obj);
                 
             },
+            // 칸 클릭 및 빈칸 드레그
              select: function(arg) { // 칸 클릭시 발생하는 추가 이벤트
-                var title = prompt('Event Title:');
-                console.log("hi");
-                if (title) {
-                    calendar.addEvent({
-                        title: title,
-                        start: arg.start,
-                        end: arg.end,
-                        allDay: arg.allDay
-                    });
-                    calendar.unselect();
-            }
+                console.log(arg);
+                console.log(arg.view.type);
+                resetForm();
+                $('#register-title').text('일정 등록');
+				$('#schedule-register').css("display","block");
+				$('#schedule-update').css("display","none");
+                $('#schedule-delete').css("display","none");
+                var viewtype = arg.view.type;
+                var start = new Date(arg.start);
+                var starttime = String(start).split(' ');
+                var end = new Date(arg.end);
+                var endtime = String(end).split(' ');
+                if(viewtype == 'dayGridMonth'){ // month
+                    // 시작 시간 세팅
+                    $('#c_st_dt').val(arg.startStr);
+                    $('#c_st_tm').val(starttime[4].substring(0,5));
+                    // 종료 시간 세팅
+                    $('#c_ed_dt').val(arg.endStr);
+                    $('#c_ed_tm').val(endtime[4].substring(0,5));
+                }else{ // week, day
+                    // 시작 시간 세팅
+                    var startdate = arg.startStr.split('T');
+                    var enddate = arg.endStr.split('T');
+                    $('#c_st_dt').val(startdate[0]);
+                    $('#c_st_tm').val(starttime[4].substring(0,5));
+                    // 종료 시간 세팅
+                    $('#c_ed_dt').val(enddate[0]);
+                    $('#c_ed_tm').val(endtime[4].substring(0,5));
+                }
+
+                $('#register-schedule').modal('show'); 
+                calendar.unselect();
         },
 
         eventSources: [{
@@ -466,6 +490,24 @@ $(function(){
             alert("일정수정 실패");
         });   
 	});
+
+    //일정 삭제
+    $('#schedule-delete').click(function(){
+        if(confirm("<  " + $('#c_nm').val()+ "  > 일정을 삭제하시겠습니까?")){
+            $.ajax({
+                type: "DELETE",
+                url: getContextPath() + "/schedule/"+$('#s_idx').val()+"/post",
+                data: JSON.stringify(data),
+                contentType: "application/json;charset=utf-8",
+                dataType: "json"
+            }).done(function (resp) {
+                alert("일정삭제 완료");
+                location.href = getContextPath() + "/schedule";
+            }).fail(function (error) {
+                alert("일정삭제 실패");
+            });
+        }
+    });
 
     
 });
@@ -593,6 +635,7 @@ $(function(){
 		<div class="modal-footer">
 		  <button type="button" class="btn btn-primary" id="schedule-register">일정 등록</button>
 		  <button type="button" class="btn btn-primary" id="schedule-update">일정 수정</button>
+          <button type="button" class="btn btn-danger" id="schedule-delete">일정 삭제</button>
 		  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
 		</div>
 	</div>

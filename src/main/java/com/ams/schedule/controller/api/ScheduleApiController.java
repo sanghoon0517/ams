@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -112,11 +113,22 @@ public class ScheduleApiController {
         System.out.println(dto.toString());
         System.out.println(s_idx); 
         int code=1;
-		String msg= "";
-		String data = "";
+        String msg= "";
+        String data = "";
         dto.setS_idx(s_idx);
         int result = scheduleService.updateSchedule(dto);
         return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.OK);
     }
-    
+    //일정 수정
+    @DeleteMapping("/schedule/{s_idx}/post")
+    public ResponseEntity<?> deleteSchedule(@PathVariable int s_idx){
+        System.out.println("####################일정 삭제####################");
+        System.out.println(s_idx); 
+        int code=1;
+        String msg= "";
+        String data = "";
+        int result = scheduleService.deleteSchedule(s_idx);
+        return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.OK);
+    }
 }
+

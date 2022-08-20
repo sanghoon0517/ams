@@ -117,6 +117,12 @@
         where 
             s_idx = #{s_idx}
     </update>
+
+    <delete id="deleteSchedule" parameterType="Integer">
+        delete from a_schedule
+        where s_idx = #{s_idx}
+    </delete>
+
     <!-- <insert id="insertNonRepeatSchedule" parameterType="com.ams.schedule.model.dto.ScheduleDto">
 
     </insert> -->

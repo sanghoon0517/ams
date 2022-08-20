@@ -13,4 +13,5 @@ public interface ScheduleDao {
     public List<ScheduleDto> getSchedule(ScheduleParamDto dto);
     public ScheduleDto getOneSchedule(int s_idx);
     public int updateSchedule(ScheduleDto dto);
+    public int deleteSchedule(int s_idx);
 }
