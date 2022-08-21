@@ -198,8 +198,6 @@ $(function(){
             var st_idx = $("#selected-student").children().eq(i).val();
             students.push(String(st_idx));
         }
-        console.log("log start.....")
-        console.log(students);
         if($("#repeatDay").val()=='true'){
             var weekdays = [];
             for(var k=0;k<$(".wkd").length;k++){
@@ -286,6 +284,9 @@ $(function(){
                 alert("hi")
             },
             eventClick: function(info) { //이벤트 클릭시 이벤트 정보 출력 이벤트
+                resetForm();
+                loading();
+                $('#mask').show();
                 var eventObj = info.event;		
 				$('#register-title').text('일정 상세');
 				$('#schedule-register').css("display","none");
@@ -299,8 +300,6 @@ $(function(){
                     dataType: "json"
                 }).done(function (resp) {
                     //alert("일정 정보 로딩 완료");
-                    resetForm();
-                    console.log(resp.data);
                     var schedule = resp.data;
                     // 값들 모달에 이동
                     //일정 번호
@@ -407,6 +406,7 @@ $(function(){
                             $('#student-div').append(column);
                         }
                     }
+                    $('#mask').hide();
                     $('#register-schedule').modal('show'); 
                 }).fail(function (error) {
                 });   
