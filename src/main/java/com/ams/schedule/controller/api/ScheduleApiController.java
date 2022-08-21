@@ -2,12 +2,16 @@ package com.ams.schedule.controller.api;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ams.classes.service.ClassService;
 import com.ams.common.model.dto.ResponseDto;
 import com.ams.schedule.model.dto.RepeatScheduleDto;
 import com.ams.schedule.model.dto.ScheduleDto;
 import com.ams.schedule.model.dto.ScheduleParamDto;
 import com.ams.schedule.service.ScheduleService;
+import com.ams.student.model.dto.StudentDto;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +36,8 @@ public class ScheduleApiController {
     @Autowired
     private ScheduleService scheduleService;
 
+    @Autowired
+    private ClassService classService;
     //일정 등록
     @PostMapping(value="/schedule")
     public ResponseEntity<?> registerSchedule(@RequestBody ScheduleDto dto) {
@@ -39,7 +45,7 @@ public class ScheduleApiController {
 		String msg= "";
 		String data = "";
         System.out.println(dto.toString());
-        System.out.println("@@@@######@@@######@@@######@@@######@@@######@@@######@@@######@@@######");
+        System.out.println("####################일정 등록####################");
         if(dto.isRoutine()){
             // 반복일정 등록 기능
             int result = scheduleService.registerSchedule(dto);
@@ -69,7 +75,7 @@ public class ScheduleApiController {
     public ResponseEntity<?> getMethodName(@RequestParam String start,@RequestParam String end) {
         int code=1;
 		String msg= "";
-        System.out.println("########################################");
+        System.out.println("###################전체 일정 로딩#####################");
         ScheduleParamDto dto = new ScheduleParamDto(end.substring(0, 10), start.substring(0,10));
         List<ScheduleDto> list= scheduleService.getSchedule(dto);
         List<RepeatScheduleDto> repeat = new ArrayList<RepeatScheduleDto>();
@@ -99,7 +105,15 @@ public class ScheduleApiController {
         System.out.println("####################일정 조회####################");
         System.out.println(s_idx);
         ScheduleDto dto = scheduleService.getOneSchedule(s_idx);
-
+        System.out.println(dto.getStudents().toString());
+        //scheduled의 학생정보 가저오기
+        if(!dto.getStudents().isEmpty()){
+            List<StudentDto> list = scheduleService.getStudentSchedule(dto.getStudents());
+            for(StudentDto vo : list){
+                vo.setSt_bth(classService.getKoreanAge(vo.getSt_bth()));
+            }
+            dto.setStudentlist(list);
+        }
         int code=1;
 		String msg= "";
 		String data = "";
@@ -119,7 +133,7 @@ public class ScheduleApiController {
         int result = scheduleService.updateSchedule(dto);
         return new ResponseEntity<>(new ResponseDto<String>(code,msg,data), HttpStatus.OK);
     }
-    //일정 수정
+    //일정 삭제
     @DeleteMapping("/schedule/{s_idx}/post")
     public ResponseEntity<?> deleteSchedule(@PathVariable int s_idx){
         System.out.println("####################일정 삭제####################");

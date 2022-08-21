@@ -5,3 +5,11 @@
 .td-clock{
 	font-family:'Jua', sans-serif;
 }
+/* 학생 리스트 스타일 반영 */
+.studentlists{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    color:white; 
+}

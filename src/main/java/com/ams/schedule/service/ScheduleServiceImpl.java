@@ -1,5 +1,6 @@
 package com.ams.schedule.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ams.schedule.model.dao.ScheduleDao;
 import com.ams.schedule.model.dto.ScheduleDto;
 import com.ams.schedule.model.dto.ScheduleParamDto;
+import com.ams.student.model.dto.StudentDto;
 
 @Service
 @Transactional
@@ -23,11 +25,9 @@ public class ScheduleServiceImpl implements ScheduleService{
     @Override
     public int registerSchedule(ScheduleDto dto) {
         // groupID
-        if(dto.isRoutine()){
-            UUID uuidTemp = UUID.randomUUID();
-            String groupId = uuidTemp.toString();
-            dto.setGroupId(groupId);
-        }
+        UUID uuidTemp = UUID.randomUUID();
+        String groupId = uuidTemp.toString();
+        dto.setGroupId(groupId);
         int result = dao.insertRepeatSchedule(dto);
         return result;
     }
@@ -58,6 +58,13 @@ public class ScheduleServiceImpl implements ScheduleService{
     public int deleteSchedule(int s_idx) {
         int result = dao.deleteSchedule(s_idx);
         return result;
+    }
+
+
+    @Override
+    public List<StudentDto> getStudentSchedule(List<String> st_idx) {
+        List<StudentDto> dto = dao.getStudentSchedule(st_idx);
+        return dto;
     }
     
 }

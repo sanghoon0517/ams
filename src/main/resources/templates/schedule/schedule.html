@@ -26,6 +26,13 @@
 
 </style>
 <script th:inline="javascript">
+        function deletebtn(value) {
+            var student = $('button[value=' + value + ']').text();
+            if (confirm(student + "을 해당 클래스에서 삭제하시겠습니까?")) {
+                $('button[value=' + value + ']').parent('div').remove();
+                $("select#selected-student option[value=" + value + "]").remove();
+            }
+        }    
 function resetForm(){
     $("#c_st_dt").val(null);
     $("#c_ed_dt").val(null);
@@ -45,6 +52,9 @@ function resetForm(){
     $("#c_color").val('#000000');
     $("select#t_idx option:first").prop('selected','selected');
     $("select#c_idx option:first").prop('selected','selected');
+    $('#student-div').empty();
+    $('#searched-student').empty();
+    $('#selected-student').empty();
 }
 $(function(){
     
@@ -102,6 +112,9 @@ $(function(){
     });
     // 클래스 선택시 클래스 정보 복사
     $("#c_idx").on('change', function () {
+        $('#student-div').empty();
+        $('#searched-student').empty();
+        $('#selected-student').empty();
         var c_idx = $("option:selected", this).attr("value");
         var selectedClass = [];
         let allClass = [[${#lists.size(class)}]];
@@ -117,27 +130,27 @@ $(function(){
                 var wkd = [[${class.c_wkd}]];
                 $(".wkd").attr("checked",false);
                 if($("#repeatDay").is(":checked")){
-                        if(wkd.length!=0){
-                            for(var j=0;j<wkd.length;j++){
-                                var temp ="";
-                                if(wkd[j]=='0'){
-                                    temp = 'sun';
-                                }else if(wkd[j]=='1'){
-                                    temp = 'mon';
-                                }else if(wkd[j]=='2'){
-                                    temp = 'tue';
-                                }else if(wkd[j]=='3'){
-                                    temp = 'wed';
-                                }else if(wkd[j]=='4'){
-                                    temp = 'thur';
-                                }else if(wkd[j]=='5'){
-                                    temp = 'fri';
-                                }else if(wkd[j]=='6'){
-                                    temp = 'sat';
-                                }
-                                $('#'+temp).attr("checked",true);
+                    if (wkd.length != 0) {
+                        for (var j = 0; j < wkd.length; j++) {
+                            var temp = "";
+                            if (wkd[j] == '0') {
+                                temp = 'sun';
+                            } else if (wkd[j] == '1') {
+                                temp = 'mon';
+                            } else if (wkd[j] == '2') {
+                                temp = 'tue';
+                            } else if (wkd[j] == '3') {
+                                temp = 'wed';
+                            } else if (wkd[j] == '4') {
+                                temp = 'thur';
+                            } else if (wkd[j] == '5') {
+                                temp = 'fri';
+                            } else if (wkd[j] == '6') {
+                                temp = 'sat';
                             }
+                            $('#' + temp).attr("checked", true);
                         }
+                    }
                 }
                 
                 // 일정 시간 c_st_tm
@@ -146,7 +159,31 @@ $(function(){
                		$("#c_ed_tm").val([[${class.c_ed_tm}]]);
 				}
                 // 수강중인 원생
-				
+                $.ajax({
+                    type: "GET",
+                    url: getContextPath() + "/class/"+[[${class.c_idx}]],
+                    dataType: "json"
+                }).done(function (resp) {
+                    //alert("클래스 원생 조회 완료");
+                    console.log(resp.data.st_list);
+                    var student = resp.data.st_list;
+                    for(var i=0; i<student.length; i++){
+                        var gender = student[i].st_gen=='M'? '(남)':'(여)';
+                        var classnm = student[i].c_nm !=null ? '['+student[i].c_nm+']' : "";
+                        var age = student[i].st_bth;
+                        var option = $("<option value='"+student[i].st_idx+"'>"+student[i].st_nm+gender+" "+age+"살 "+student[i].st_schl+" "+classnm +"</option>");
+                        $("#selected-student").append(option);
+                    }
+                    for(var i=0;i<$("#selected-student").children().length;i++){
+                        var info = $("#selected-student").children().eq(i).text();
+                        var column = $('<div class="col-sm-4 col-lg-3 add-student"  style="padding-bottom: 10px;">');
+                        var studentbtn = $('<button type="button" class="btn btn-info studentlists" onclick="deletebtn('+$("#selected-student").children().eq(i).val()+')" value='+$("#selected-student").children().eq(i).val()+'>'+info+'<i class="fa-solid fa-xmark"></i></button>');
+                        column.append(studentbtn);
+                        $('#student-div').append(column);
+                    }
+                }).fail(function (error) {
+                    alert("클래스 원생 조회 실패");
+                });   
             }
         [/]
     });
@@ -155,6 +192,14 @@ $(function(){
     $('#schedule-register').click(function(){
         //반복 일정 여부에 따라
         var data ={};
+        var len = $("#selected-student").children().length;
+        var students = [];
+        for(var i =0;i<len ; i++){
+            var st_idx = $("#selected-student").children().eq(i).val();
+            students.push(String(st_idx));
+        }
+        console.log("log start.....")
+        console.log(students);
         if($("#repeatDay").val()=='true'){
             var weekdays = [];
             for(var k=0;k<$(".wkd").length;k++){
@@ -174,7 +219,8 @@ $(function(){
                 startTime: $("#allDay").val() == 'true' ? null : $("#c_st_tm").val(),
                 endTime: $("#allDay").val() == 'true' ?  null : $("#c_ed_tm").val(),
                 daysOfWeek: weekdays,
-                allDay: $("#allDay").val()
+                allDay: $("#allDay").val(),
+                students : students
             }
         }else{
             data ={
@@ -186,7 +232,8 @@ $(function(){
                 color : $("#c_color").val(),
                 start : $("#allDay").val() == 'true' ?  $("#c_st_dt").val() : $("#c_st_dt").val()+"T"+$("#c_st_tm").val(),
                 end   : $("#allDay").val() == 'true' ?  $("#c_ed_dt").val() : $("#c_ed_dt").val()+"T"+$("#c_ed_tm").val(),
-                allDay : $("#allDay").val()
+                allDay : $("#allDay").val(),
+                students : students
             }
         }
         
@@ -342,6 +389,24 @@ $(function(){
 							$("#c_ed_tm").val(ed_dt[1]);
 						}
 					}
+                    //원생정보 등록
+                    if(schedule.hasOwnProperty('studentlist')){
+                        var student = schedule.studentlist;
+                        for(var i=0; i<student.length; i++){
+                            var gender = student[i].st_gen=='M'? '(남)':'(여)';
+                            var classnm = student[i].c_nm !=null ? '['+student[i].c_nm+']' : "";
+                            var age = student[i].st_bth;
+                            var option = $("<option value='"+student[i].st_idx+"'>"+student[i].st_nm+gender+" "+age+"살 "+student[i].st_schl+" "+classnm +"</option>");
+                            $("#selected-student").append(option);
+                        }
+                        for(var i=0;i<$("#selected-student").children().length;i++){
+                            var info = $("#selected-student").children().eq(i).text();
+                            var column = $('<div class="col-sm-4 col-lg-3 add-student"  style="padding-bottom: 10px;">');
+                            var studentbtn = $('<button type="button" class="btn btn-info studentlists" onclick="deletebtn('+$("#selected-student").children().eq(i).val()+')" value='+$("#selected-student").children().eq(i).val()+'>'+info+'<i class="fa-solid fa-xmark"></i></button>');
+                            column.append(studentbtn);
+                            $('#student-div').append(column);
+                        }
+                    }
                     $('#register-schedule').modal('show'); 
                 }).fail(function (error) {
                 });   
@@ -389,7 +454,6 @@ $(function(){
                     $('#c_ed_dt').val(enddate[0]);
                     $('#c_ed_tm').val(endtime[4].substring(0,5));
                 }
-
                 $('#register-schedule').modal('show'); 
                 calendar.unselect();
         },
@@ -444,6 +508,12 @@ $(function(){
 	//스케줄 업데이트
 	$('#schedule-update').click(function(){
 		var data ={};
+        var len = $("#selected-student").children().length;
+        var students = [];
+        for(var i =0;i<len ; i++){
+            var st_idx = $("#selected-student").children().eq(i).val();
+            students.push(String(st_idx));
+        }
         if($("#repeatDay").val()=='true'){
             var weekdays = [];
             for(var k=0;k<$(".wkd").length;k++){
@@ -463,6 +533,7 @@ $(function(){
                 endTime: $("#allDay").val() == 'true' ?  null : $("#c_ed_tm").val(),
                 daysOfWeek: weekdays,
                 allDay: $("#allDay").val(),
+                students: students
             }
         }else{
             data ={
@@ -474,6 +545,7 @@ $(function(){
                 start : $("#allDay").val() == 'true' ?  $("#c_st_dt").val() : $("#c_st_dt").val()+"T"+$("#c_st_tm").val(),
                 end   : $("#allDay").val() == 'true' ?  $("#c_ed_dt").val() : $("#c_ed_dt").val()+"T"+$("#c_ed_tm").val(),
                 allDay : $("#allDay").val(),
+                students: students
             }
         }
 
@@ -509,6 +581,86 @@ $(function(){
         }
     });
 
+    //원생정보 조회
+    $('#searchstudentbtn').click(function(){
+        loading();
+        $('#mask').show();
+        let data ={
+            st_nm: $('#studentname').val(),
+            st_schl: $('#studentschl option:selected').val()=="" ? null:$('#studentschl option:selected').val(),
+            age_min: $('#studentagefrom option:selected').val()=="" ? null:$('#studentagefrom option:selected').val(),
+            age_max: $('#studentageto option:selected').val()=="" ? null:$('#studentageto option:selected').val(),
+        }
+        $.ajax({
+            type: "POST", 
+            url: getContextPath()+"/class/studentlist",
+            data: JSON.stringify(data),
+            contentType:"application/json;charset=utf-8",
+            dataType:"json" 
+        }).done(function(resp){
+            //기존의 조회된 내역 제거
+            $('#mask').hide();
+            let today = new Date(); 
+            let year = today.getFullYear();
+            $('#searched-student').empty();
+            for(var i=0; i<resp.data.length; i++){
+                var gender = resp.data[i].st_gen=='M'? '(남)':'(여)';
+                var classnm = resp.data[i].c_nm !=null ? '['+resp.data[i].c_nm+']' : "";
+                var age = year - resp.data[i].st_bth.substring(0,4)+1;
+                var option = $("<option value='"+resp.data[i].st_idx+"'>"+resp.data[i].st_nm+gender+" "+age+"살 "+resp.data[i].st_schl+" "+classnm +"</option>");
+                $("#searched-student").append(option);
+            }
+
+
+        }).fail(function(error){
+            $('#mask').hide();
+            alert("조회 실패");
+        });     
+    });
+    // 선택한 학생을 확정란으로 옮기기 
+    $('#searched-student').mouseup(function(){
+        var selectVal = $("#searched-student option:selected").val();
+        var selectText =  $("#searched-student option:selected").text();
+        $("select#searched-student option[value="+selectVal+"]").remove();
+        var option = $("<option value='"+selectVal+"'>"+selectText+"</option>");
+
+        //이미 선택된 학생인지 확인
+        var len = $("#selected-student").children().length;
+        for(var i=0;i<len;i++){
+            var st_idx = $("#selected-student").children().eq(i).val();
+            if(selectVal ==st_idx){
+                return alert("이미 선택된 학생입니다.");
+            }
+        }
+        $("#selected-student").append(option);
+        $("select#searched-student option[value="+"undefined"+"]").remove();
+        $("select#selected-student option[value="+"undefined"+"]").remove();
+    });
+
+    //선택된 학생들 취소 옮기기
+    $('#selected-student').mouseup(function(){
+        var selectVal = $("#selected-student option:selected").val();
+        var selectText =  $("#selected-student option:selected").text();
+        //$("#multiple option:selected").attr("disabled",true);
+        //$("#multiple option:selected").css("background-color","darkslategray");
+        $("select#selected-student option[value="+selectVal+"]").remove();
+        $('button[value='+selectVal+']').parent('div').remove();
+        var option = $("<option value='"+selectVal+"'>"+selectText+"</option>");
+        $("#searched-student").append(option);
+        $("select#searched-student option[value="+"undefined"+"]").remove();
+        $("select#selected-student option[value="+"undefined"+"]").remove();
+    });
+        //조회에서 선택된 학생들 확정 등록
+    $(document).on("click","button[name='add']",function(){
+        for(var i=0;i<$("#selected-student").children().length;i++){
+            var info = $("#selected-student").children().eq(i).text();
+            var column = $('<div class="col-sm-4 col-lg-3 add-student"  style="padding-bottom: 10px;">');
+            var studentbtn = $('<button type="button" class="btn btn-info studentlists" onclick="deletebtn('+$("#selected-student").children().eq(i).val()+')" value='+$("#selected-student").children().eq(i).val()+'>'+info+'<i class="fa-solid fa-xmark"></i></button>');
+            column.append(studentbtn);
+            $('#student-div').append(column);
+        }
+        $('#searchstudent').modal('hide');
+    });
     
 });
 </script>
@@ -625,6 +777,9 @@ $(function(){
                         <label class="form-label" for="username"><strong>원생 리스트</strong> 
                             &nbsp;&nbsp;&nbsp;
                             <button type="button" id="searchbtn" class="btn btn-primary" style="color: white;">원생조회&nbsp;<i class="fa-solid fa-magnifying-glass"></i></button><br /></label>
+                            <div class="row" style="padding-bottom: 10px;" id="student-div">
+
+                            </div>
                     </div>
 				</div>
 			</div>

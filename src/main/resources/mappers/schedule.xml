@@ -16,6 +16,7 @@
         <result property="allDay" column="allDay"/>
         <result property="routine" column="routine"/>
         <result property="daysOfWeek" column="daysOfWeek" typeHandler="com.ams.schedule.model.dto.JsonDataTypeHandler"/>
+        <result property="students" column="students" typeHandler="com.ams.schedule.model.dto.JsonDataTypeHandler"/>
 
     </resultMap>
     <insert id="insertRepeatSchedule" parameterType="com.ams.schedule.model.dto.ScheduleDto">
@@ -34,7 +35,8 @@
             allDay,
             start,
             end,
-            routine
+            routine,
+            students
         ) 
         VALUES(
             #{title},
@@ -50,7 +52,8 @@
             #{allDay},
             #{start},
             #{end},
-            #{routine}
+            #{routine},
+            #{students, typeHandler=com.ams.schedule.model.dto.JsonDataTypeHandler}
         )
     </insert>
     <select id="getSchedule" resultMap="ScheduleDto" parameterType="com.ams.schedule.model.dto.ScheduleParamDto">
@@ -68,7 +71,8 @@
             daysOfWeek,
             allDay,
             start,
-            end
+            end,
+            students
         from a_schedule
         where 
         <![CDATA[
@@ -93,7 +97,8 @@
             allDay,
             start,
             end,
-            routine
+            routine,
+            students
         from a_schedule
         where s_idx = #{s_idx}
     </select>
@@ -113,7 +118,8 @@
             allDay = #{allDay},
             start = #{start},
             end = #{end},
-            routine = #{routine}
+            routine = #{routine},
+            students = #{students,typeHandler=com.ams.schedule.model.dto.JsonDataTypeHandler}
         where 
             s_idx = #{s_idx}
     </update>
@@ -123,7 +129,13 @@
         where s_idx = #{s_idx}
     </delete>
 
-    <!-- <insert id="insertNonRepeatSchedule" parameterType="com.ams.schedule.model.dto.ScheduleDto">
+    <select id="getStudentSchedule" parameterType="java.util.List" resultType="com.ams.student.model.dto.StudentDto">
+        SELECT * from a_member
+        where st_idx IN (
+            <foreach collection="list" item="item" index="index" separator=",">
+            ${item}
+            </foreach>
+         )
+    </select>
 
-    </insert> -->
 </mapper>
