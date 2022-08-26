@@ -110,5 +110,9 @@
 		WHERE
 		st_idx			   = #{st_idx}
 	</update>
+	<delete id="deleteStudent" parameterType="int">
+		DELETE FROM a_member
+		WHERE st_idx = #{st_idx}
+	</delete>
 	
 </mapper>

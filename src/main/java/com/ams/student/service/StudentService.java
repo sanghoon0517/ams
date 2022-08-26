@@ -16,4 +16,5 @@ public interface StudentService {
 	public int chkStudentInfoCount(StudentDto vo);
 	public StudentDto getStudentInfoByIdx(int st_idx);
 	int modifyStudentInfo(StudentDto vo);
+	int deleteStudent(int st_idx);
 }

@@ -1,6 +1,7 @@
 package com.ams.student.controller.api;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.json.simple.JSONObject;
@@ -8,6 +9,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,29 +56,44 @@ public class StudentApiController {
 			@RequestParam(required=false) String st_rm_c_cnt
 	)
 	{
+		int intOffset = 0;
+		int intLimit = 0;
 		System.out.println("[jsh] limit : "+limit);
+		System.out.println("[jsh] offset : "+offset);
 		System.out.println("[jsh] filter : "+filter);
 		System.out.println("[jsh] filter st_rm_c_cnt : "+filter);
 		System.out.println("[jsh] st_rm_c_cnt : "+st_rm_c_cnt);
 		System.out.println("[jsh] 컨트롤러 호출");
-		
 		if(filter != null) {
 			JSONParser parser = new JSONParser();
 			try {
-				JSONObject jsonobj = (JSONObject) parser.parse(filter);
-				System.out.println(jsonobj);
-				System.out.println("[jsh] json Object : "+jsonobj.get("st_rm_c_cnt"));
+				JSONObject jsonObj = (JSONObject) parser.parse(filter);
+				System.out.println(jsonObj);
+				System.out.println("[jsh] json Object : "+jsonObj.get("st_rm_c_cnt"));
+				//여러 필터 한 번에 던지기
+				Iterator<String> iter = jsonObj.keySet().iterator();
+				while(iter.hasNext()) {
+					String key = iter.next();
+					String value = jsonObj.get(key).toString();
+					System.out.println("key : "+key+", value : "+value);
+				}
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}			
 		}
 		
-		PaginationCriteriaDto pageObj = new PaginationCriteriaDto();
-		int studentTotalCnt = 0;
 		if(offset != null && limit != null) {
-			pageObj.setPage(Integer.parseInt(offset));
-			pageObj.setPerPageNum(Integer.parseInt(limit));
+			intOffset = Integer.parseInt(offset);
+			intLimit = Integer.parseInt(limit);			
+		}
+		PaginationCriteriaDto pageObj = new PaginationCriteriaDto(intOffset,intLimit);
+		int studentTotalCnt = 0;
+//		if(offset != null && limit != null) {
+//			pageObj.setPage(Integer.parseInt(offset));
+//			pageObj.setPerPageNum(Integer.parseInt(limit));
+			pageObj.setPage(intOffset);
+			pageObj.setPerPageNum(intLimit);
 			if(!"".equals(search)) {
 				pageObj.setSearch(search);
 				studentTotalCnt = studentService.getStudentListCountParam(search);
@@ -84,7 +101,7 @@ public class StudentApiController {
 				studentTotalCnt = studentService.getStudentListCount();
 			}
 			
-		}
+//		}
 		
 		List<StudentDto> resultList = null;
 		if(offset == null && limit == null) {
@@ -128,6 +145,16 @@ public class StudentApiController {
 	@PutMapping("/studentList/{st_idx}/update")
 	public ResponseEntity<?> modifyStudentInfo(@PathVariable int st_idx, @RequestBody StudentDto vo) {
 		int success = studentService.modifyStudentInfo(vo);
+		if(success == 1) {
+			return new ResponseEntity<>(new ResponseDto<Object>(1, "OK", null), HttpStatus.OK);			
+		} else {
+			return new ResponseEntity<>(new ResponseDto<Object>(0, "FAIL", null), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@DeleteMapping("/studentList/{st_idx}/delete")
+	public ResponseEntity<?> deleteStudent(@PathVariable int st_idx) {
+		int success = studentService.deleteStudent(st_idx);
 		if(success == 1) {
 			return new ResponseEntity<>(new ResponseDto<Object>(1, "OK", null), HttpStatus.OK);			
 		} else {

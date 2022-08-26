@@ -118,6 +118,10 @@ $(document).ready(function(){
           {
             field: 'st_dis_dt',
             title: '학생퇴원일자',
+            events: window.operateEvents,
+            formatter: clickStudentEndDate,
+            clickToSelect: false,
+            align: 'center',
             sortable: true
           }, 
           {
@@ -159,6 +163,9 @@ $(document).ready(function(){
 	
 	$('#table').on('click-row.bs.table', function (row, el, field) {
 		console.log("[jsh] table row 클릭 함수 호출");
+		console.log("[jsh] el : "+el);
+		console.log("[jsh] el : "+el.st_dis_dt);
+		row.stopPropagation();
 		//row 데이터 : type,sender,timeStamp,jQuery360025989008260026614,isTrigger,namespace,rnamespace,result,target,delegateTarget,currentTarget,handleObj,data
 		//el 데이터 : st_idx,c_idx,c_nm,st_nm,st_bth,st_gen,st_pn,st_schl,st_en_dt,st_dis_dt,st_prt_nm,st_prt_rlt,st_prt_pn,st_prt_em,st_adr,st_dtl,st_rm_c_cnt
 		//field 데이터 : 0,length,prevObject
@@ -202,8 +209,37 @@ $(document).ready(function(){
             this.reset();
         });
 	});
+// 	$(".student-end-process").on(function(e, value, row, index) {
+// 		console.log("[jsh] 버튼 클릭");
+// 		e.cancelBubble = true;
+// 		alert('You click like action, row: ' + JSON.stringify(row))
+// 	});
 	
 });
+
+function clickStudentEndDate(value, row, index) {
+// 	console.log("[jsh] VALUE : "+Object.keys(value));
+// 	console.log("[jsh] row : "+Object.keys(row));
+// 	console.log("[jsh] st_dis_dt : "+row.st_dis_dt);
+	
+	if(row.st_dis_dt === "") {
+		return [
+		      '<button class="btn btn-primary fs-6 btn-sm student-end-process" title="student-end-process">',
+		      '퇴원 처리',
+		      '</button>  ',
+		    ].join('');
+		
+	} else {
+		return row.st_dis_dt;
+	}
+}
+
+window.operateEvents = {
+    'click .student-end-process': function (e, value, row, index) {
+    	e.stopPropagation();
+      alert('You click end process, row: ' + JSON.stringify(row))
+    }
+}
 
 function customSearch(data, text) {
     return data.filter(function (row) {
@@ -237,9 +273,9 @@ function detailFormatter(index, row) {
 }
 function queryParams(params) {
 	console.log("params : "+Object.keys(params));
+	console.log("params.limit : "+params.limit);
 	if(typeof params.filter !== "undefined") {
 		console.log("filter : "+params.filter);
-// 		debugger;C
 		let a = JSON.parse(params.filter);
 		console.log("[jsh] filter 데이터 타입 : "+ typeof params.filter);
 		console.log("[jsh] filter cnt 데이터  : "+ a.st_rm_c_cnt);

@@ -18,4 +18,5 @@ public interface StudentDao {
 	int chkStudentInfoCount(StudentDto vo);
 	StudentDto getStudnetInfoByIdx(int st_idx);
 	int modifyStudentInfo(StudentDto vo);
+	int deleteStudent(int st_idx);
 }

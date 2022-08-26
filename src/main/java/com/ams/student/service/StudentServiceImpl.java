@@ -79,5 +79,11 @@ public class StudentServiceImpl implements StudentService{
 		// TODO Auto-generated method stub
 		return studentDao.modifyStudentInfo(vo);
 	}
+
+	@Override
+	public int deleteStudent(int st_idx) {
+		// TODO Auto-generated method stub
+		return studentDao.deleteStudent(st_idx);
+	}
 	
 }
