@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ams.student.model.dao.AttendanceDao">
+<!-- 	<insert id="insertStudent" parameterType="com.ams.teacher.model.dto.StudentDto"  useGeneratedKeys="true" keyProperty="st_idx"> -->
+	<insert id="insertStudent" parameterType="com.ams.student.model.dto.StudentDto">
+		INSERT INTO a_member(
+			c_idx
+			, st_nm
+			, st_bth
+			, st_gen
+			, st_pn
+			, st_schl
+			, st_en_dt
+			, st_dis_dt
+			, st_prt_nm
+			, st_prt_rlt
+			, st_prt_pn
+			, st_prt_em
+			, st_adr
+			, st_dtl
+			, st_rm_c_cnt
+		) VALUES(
+			#{c_idx}
+			, #{st_nm}
+			, #{st_bth}
+			, #{st_gen}
+			, #{st_pn}
+			, #{st_schl}
+			, #{st_en_dt}
+			, ''
+			, #{st_prt_nm}
+			, #{st_prt_rlt}
+			, #{st_prt_pn}
+			, #{st_prt_em}
+			, #{st_adr}
+			, #{st_dtl}
+			, #{st_rm_c_cnt}
+		)
+	</insert>
+	<select id="getStudentList" resultType="com.ams.student.model.dto.StudentDto">
+		SELECT * FROM a_member
+		ORDER BY st_idx DESC
+	</select>
+	<select id="getStudentListPaging" parameterType="com.ams.common.model.dto.PaginationCriteriaDto" resultType="com.ams.student.model.dto.StudentDto">
+		SELECT * FROM a_member m
+		LEFT OUTER JOIN a_class c
+		ON m.c_idx = c.c_idx
+		<if test='search != null'>
+			WHERE
+			st_nm LIKE CONCAT('%',#{search},'%')
+		</if>
+		ORDER BY st_idx DESC
+		LIMIT #{page}, #{perPageNum}			
+	</select>
+	<select id="getStudentListCount" resultType="int">
+		SELECT COUNT(*) FROM a_member
+		ORDER BY st_idx DESC
+	</select>
+	<select id="getStudentListCountParam" parameterType="string" resultType="int">
+		SELECT COUNT(*) FROM a_member
+		WHERE
+		st_nm LIKE CONCAT('%',#{search},'%')
+		ORDER BY st_idx DESC
+	</select>
+	<select id="getStdDate" resultType="String">
+		SELECT DATE_SUB(MAKEDATE(year(now()),1), INTERVAL 12 YEAR) AS STANDARD_DATE
+	</select>
+	<select id="getStudnetInfoByIdx" resultType="com.ams.student.model.dto.StudentDto">
+		SELECT * FROM a_member WHERE st_idx=#{st_idx}
+	</select>
+	<select id="chkStudentInfoCount" parameterType="com.ams.student.model.dto.StudentDto" resultType="int">
+		SELECT COUNT(*) FROM a_member
+		WHERE
+		st_idx 						  = #{st_idx}
+		AND c_idx 					  = #{c_idx}
+		AND IFNULL(st_nm		, '') = #{st_nm}
+		AND IFNULL(st_bth		, '') = #{st_bth}
+		AND IFNULL(st_gen		, '') = #{st_gen}
+		AND IFNULL(st_pn		, '') = #{st_pn}
+		AND IFNULL(st_schl		, '') = #{st_schl}
+		AND IFNULL(st_en_dt		, '') = #{st_en_dt}
+		AND IFNULL(st_dis_dt	, '') = #{st_dis_dt}
+		AND IFNULL(st_prt_nm	, '') = #{st_prt_nm}
+		AND IFNULL(st_prt_rlt	, '') = #{st_prt_rlt}
+		AND IFNULL(st_prt_em	, '') = #{st_prt_em}
+		AND IFNULL(st_prt_pn	, '') = #{st_prt_pn}
+		AND IFNULL(st_prt_em	, '') = #{st_prt_em}
+		AND IFNULL(st_adr		, '') = #{st_adr}
+		AND IFNULL(st_dtl		, '') = #{st_dtl}
+		AND IFNULL(st_rm_c_cnt	, 0 ) = #{st_rm_c_cnt}
+	</select>
+	<update id="modifyStudentInfo" parameterType="com.ams.student.model.dto.StudentDto">
+		UPDATE a_member 
+		SET
+		c_idx              = #{c_idx}
+		, st_nm            = #{st_nm}
+		, st_bth           = #{st_bth}
+		, st_gen           = #{st_gen}
+		, st_pn            = #{st_pn}
+		, st_schl          = #{st_schl}
+		, st_en_dt         = #{st_en_dt}
+		, st_dis_dt        = #{st_dis_dt}
+		, st_prt_nm        = #{st_prt_nm}
+		, st_prt_rlt       = #{st_prt_rlt}
+		, st_prt_pn        = #{st_prt_pn}
+		, st_prt_em        = #{st_prt_em}
+		, st_adr           = #{st_adr}
+		, st_dtl           = #{st_dtl}
+		, st_rm_c_cnt      = #{st_rm_c_cnt}
+		WHERE
+		st_idx			   = #{st_idx}
+	</update>
+	<delete id="deleteStudent" parameterType="int">
+		DELETE FROM a_member
+		WHERE st_idx = #{st_idx}
+	</delete>
+	
+</mapper>

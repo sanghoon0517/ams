@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/template}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<script th:src='@{/js/student/student.js}'></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+$(document).ready(function(){
+	
+	$("#st_bth, #st_en_dt").dateDropper({
+		format: 'Y-m-d',
+		lang: 'ko',
+		theme: 'bootstrap',
+		expandedDefault: true,
+		expandedOnly: true,
+		expandable: true
+	});
+	
+	let date = new Date();
+	date.setMonth(0);
+	date.setDate(1);
+	let defaultBirthDate = (date.getFullYear()-12)+"-0"+(date.getMonth()+1)+"-0"+date.getDate();
+	$("#st_bth").val(defaultBirthDate);
+	
+	initInputDataBlocking();
+	
+});
+function initInputDataBlocking() {
+	//숫자 키코드(48~57까지)
+	let numKeyCodeList = [48,49,50,51,52,53,54,55,56,57];
+	
+	$("#st_pn, #st_prt_pn").keypress(function(e){
+		if(!numKeyCodeList.includes(e.keyCode)) {
+			return false;
+		}
+   });     
+	
+	//date 타입 날짜 입력 형식이 에러가 있어 키보드 입력 막음
+	$("input[type='date']").keypress((e)=>{
+		return false;
+	});
+
+}
+
+</script>
+<title>Profile - Brand</title>
+</head>
+
+
+<div class="container-fluid" layout:fragment="content">
+	<h3 class="text-dark mb-4">출결 관리</h3>
+	<div class="col">
+		<div class="card shadow mb-3">
+			<div class="card-header py-3">
+				<p class="text-primary m-0 fw-bold">출결 정보</p>
+			</div>
+			<form id="st_form" name="st_form">
+			<input type="hidden" id="st_adr" name="st_adr"/>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-12 col-sm-6 col-lg-6">
+						<div class="mb-3">
+							<label class="form-label" for="st_nm">
+								<strong>이름</strong>
+							</label>
+							<input class="form-control" type="text" id="st_nm" placeholder="이름" name="st_nm" >
+						</div>
+						</div>
+					<div class="col-12 col-sm-6 col-lg-6">
+						<div class="mb-3">
+							<label class="form-label" for="st_pn">
+								<strong>원생 연락처</strong>
+							</label>
+							<input class="form-control" type="tel" id="st_pn" placeholder="숫자만 입력 가능합니다." name="st_pn" maxlength=11>
+						</div>
+					</div>
+				</div>
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+</html>
