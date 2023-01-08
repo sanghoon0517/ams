@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ams.account.model.dao.AccountDao">
+    <insert id="insertDescription" parameterType="com.ams.account.model.dto.AccountDto">
+        insert into a_description(dscr_type, dscr_detail)
+        values(#{dscr_type},#{dscr_detail})
+    </insert>
+    <select id="selectDescription" resultType="com.ams.account.model.dto.AccountDto">
+        select * from a_description
+    </select>
+    <delete id="deleteDescription" parameterType="Integer">
+        delete from a_description where dscr_idx = #{dscr_idx}
+    </delete>
+</mapper>

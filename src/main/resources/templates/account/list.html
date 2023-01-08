@@ -13,7 +13,65 @@
 	<script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
 	<script src="https://unpkg.com/bootstrap-table@1.20.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
 <script type="text/javascript">
-
+	function deleteDscr(value){
+		var description="["+$('button[value='+value+']').parent().parent().children().eq(0).text()+"] "+$('button[value='+value+']').parent().parent().children().eq(1).text();
+		if(confirm(description+"을 삭제하시겠습니까?")){
+			$.ajax({
+				type: "DELETE",
+				url: getContextPath()+"/account/description/"+value,
+				contentType:"application/json;charset=utf-8",
+			}).done(function(resp){
+				//alert("삭제 성공");
+				$('button[value='+value+']').parent().parent().empty();
+			}).fail(function(error){
+				alert("삭제 실패");
+			});
+		}
+	}
+	$(function(){
+		$(".view-description").click(function(){
+			$.ajax({
+				type: "GET",
+				url: getContextPath()+"/account/description",
+				contentType:"application/json;charset=utf-8",
+				dataType:"json"
+			}).done(function(resp){
+				//alert("조회 성공");
+				//console.log(resp);
+				//적요 목록 초기화
+				$("#description_list").empty();
+				//적요 목록 불러오기
+				for (var i=0;resp.data.length;i++){
+					var option = $("<tr><td>"+resp.data[i].dscr_type+
+							"</td><td>"+resp.data[i].dscr_detail+
+							"</td><td>"+"<button value='"+resp.data[i].dscr_idx+"' type='button' onclick='deleteDscr("+resp.data[i].dscr_idx+")' className='btn btn-outline-danger description-delete'>삭제</button></td></tr>");
+					$("#description_list").append(option);
+				}
+			}).fail(function(error){
+				alert("조회 실패");
+			});
+			$('#description').modal('show');
+		});
+		//적요 등록
+		$("#description-register").click(function(){
+			let data ={
+				dscr_type: $('#dscr_type').val(),
+				dscr_detail: $('#dscr_detail').val()
+			}
+			$.ajax({
+				type: "POST",
+				url: getContextPath()+"/account/description",
+				data: JSON.stringify(data),
+				contentType:"application/json;charset=utf-8",
+				dataType:"json"
+			}).done(function(resp){
+				//alert("저장 성공");
+			}).fail(function(error){
+				alert("저장 실패");
+			});
+			$('#description').modal('hide');
+		});
+	});
 </script>
 </head>
 
@@ -25,7 +83,7 @@
 		<h3 class="text-dark mb-4">장부 관리</h3>
 	</div>
 	<div class="col-auto">
-		<button class="btn btn-info" type="button">적요 등록</button>
+		<button class="btn btn-info view-description" type="button">적요 등록</button>
 	</div>
 	<div class="col-auto">
 		<button class="btn btn-primary" type="button">지출 등록</button>
@@ -37,11 +95,19 @@
 	<div class="row">
 		<div class="col-1">
 			<select class="form-control">
+				<option value="">2022 년</option>
+				<option value="all">2023 년</option>
+			</select>
+		</div>
+		<div class="col-1">
+			<select class="form-control">
 				<option value="">1월</option>
 				<option value="all">2월</option>
 			</select>
 		</div>
-
+		<div class="col-1">
+			<button class="btn btn-outline-info" type="button">조회</button>
+		</div>
 	</div>
 	<div class="row">
 			<div id="toolbar" class="select">
@@ -168,9 +234,66 @@
 
 
 	</div>
+<!--적요 등록-->
+	<div class="modal" id="description" tabindex="-1">
+		<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header d-block">
+						<h5 class="modal-title">적요 등록</h5>
+					<div class="row">
+						<div class="col-3 col-sm-3 col-lg-3 mb-3">
+							<label class="form-label" for="username"><strong>적요 타입</strong></label>
+							<select class="form-select form-control" name="dscr_type" id="dscr_type">
+								<option value="관리비">관리비</option>
+								<option value="공과금">공과금</option>
+								<option value="임대료">임대료</option>
+								<option value="교재비">교재비</option>
+								<option value="수강료">수강료</option>
+								<option value="재료비">재료비</option>
+								<option value="광고비">광고비</option>
+								<option value="부대비">부대비</option>
+								<option value="기자재 구매비">기자재 구매비</option>
+								<option value="프랜차이즈 월회비">프랜차이즈 월회비</option>
+								<option value="기타">기타</option>
+							</select>
+						</div>
+						<div class="col-9 col-sm-9 col-lg-9 mb-3">
+							<label class="form-label" ><strong >적요 내용</strong></label><input class="form-control" type="text" placeholder="적요 내용" name="dscr_detail" id="dscr_detail"/>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body">
+					<div class="row justify-content-center">
+						<label class="form-label" ><strong>적요 목록</strong></label>
+						<div class="col-11 col-sm-11 col-lg-11 mb-3">
+						<table class="table justify-content-center">
+							<thead>
+								<tr>
+									<th scope="col">적요 타입</th>
+									<th scope="col">적요 내용</th>
+									<th scope="col">삭제</th>
+								</tr>
+							</thead>
+							<tbody id="description_list">
+								<tr>
+									<td>sample1</td>
+									<td>sample2</td>
+									<td><button type="button" class="btn btn-outline-danger">삭제</button></td>
+								</tr>
+							</tbody>
+						</table>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+					<button type="button" class="btn btn-primary" id="description-register">등록</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
-	
 </div> <!-- end -->
 
 </html>
